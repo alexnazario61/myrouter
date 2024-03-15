@@ -1,140 +1,98 @@
 <?php
-//ini_set('display_errors',1);
-//ini_set('display_startup_erros',1);
-//error_reporting(E_ERROR | E_PARSE | E_WARNING );
+// Database configuration
+$host = "localhost";
+$usuario = "username";
+$senha = "password";
+$banco = "database";
 
-require_once("../../config/conexao.php");
+// Connect to the database
+$conn = new mysqli($host, $usuario, $senha, $banco);
 
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
+// Get the parameters from the URL
+$clienteemail = base64_decode($_GET['cliente']);
+$fatura2 = base64_decode($_GET['fatura']);
 
-$cn=mysql_connect($host, $usuario, $senha);
-mysql_select_db($banco);
-
-
-
-$clienteemail    = base64_decode($_GET['cliente']);
-
-$sql3 = mysql_query("SELECT * FROM clientes WHERE id='$clienteemail'")or die (mysql_error());
-$cli = mysql_fetch_array($sql3);
+// Select the client from the database
+$sql3 = $conn->prepare("SELECT * FROM clientes WHERE id=?");
+$sql3->bind_param("s", $clienteemail);
+$sql3->execute();
+$result3 = $sql3->get_result();
+$cli = $result3->fetch_assoc();
 $EmailCliente = $cli['email'];
 $NomeCliente = $cli['nome'];
 
-$fatura2     = base64_decode ($_GET['fatura']);
-
-$sql4 = mysql_query("SELECT * FROM financeiro WHERE id ='$fatura2'")or die (mysql_error());
-$fin = mysql_fetch_array($sql4);
+// Select the invoice from the database
+$sql4 = $conn->prepare("SELECT * FROM financeiro WHERE id=?");
+$sql4->bind_param("s", $fatura2);
+$sql4->execute();
+$result4 = $sql4->get_result();
+$fin = $result4->fetch_assoc();
 $CampoValor = $fin['valor'];
 $CampoLink = $fin['linkGerencia'];
-$CampoVencimento = date('d/m/Y',strtotime($fin['vencimento']));
+$CampoVencimento = date('d/m/Y', strtotime($fin['vencimento']));
 $Camponfatura = $fin['id'];
 
-$sql5 = mysql_query("SELECT * FROM empresa WHERE id = '1'");
-$emp = mysql_fetch_array($sql5);
+// Select the company from the database
+$sql5 = $conn->prepare("SELECT * FROM empresa WHERE id=?");
+$sql5->bind_param("s", 1);
+$sql5->execute();
+$result5 = $sql5->get_result();
+$emp = $result5->fetch_assoc();
 $NomeEmpresa = $emp['empresa'];
 
-
+// Include the PHPMailer library
 require 'PHPMailerAutoload.php';
 
-$sql = mysql_query("SELECT * FROM maile")or die (mysql_error());
-$linha = mysql_fetch_array($sql);
-$empresa        = $linha['empresa'];
-$url            = $linha['url'];
-$servidor       = $linha['servidor'];
-$porta          = $linha['porta'];
-$smtpsecure     = $linha['smtpsecure'];
-$endereco       = $linha['endereco'];
-$limitemail     = $linha['limitemail'];
-$aviso          = $linha['aviso'];
-$avisofataberto = $linha['avisofataberto'];
-$email          = $linha['email'];
-$senha          = $linha['senha'];
-$text1          = $linha['text1'];
-$text2          = $linha['text2'];
-$text3          = $linha['text3'];
-$text4          = $linha['text4'];
+// Select the email configuration from the database
+$sql = $conn->prepare("SELECT * FROM maile");
+$sql->execute();
+$result = $sql->get_result();
+$linha = $result->fetch_assoc();
 
-function base64url_encode($data) {
-    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
-}
-
-//email de teste
-$mail_send =  $EmailCliente;
-
-
-
-$cliente    = $_GET['cliente'];
-$fatura     = $_GET['fatura'];
-
-
-$selbanco = mysql_query("SELECT * FROM empresa") or die(mysql_error());
-$confere = mysql_fetch_array($selbanco);
-
-if($confere['banco'] == "10"){
-
-    $link = $CampoLink;
-
-    $dado = $text4;
-    $search = array('[NomeCliente]', '[valor]','[vencimento]','[numeroFatura]','[Descricaodafatura]','[link]','[endereco]','[email]','[avisofataberto]','[NomeEmpresa]','[referencia]'); // pega oa variaveis do html vindo do banco;
-    $replace = array($NomeCliente, number_format($CampoValor,2,',','.'),$CampoVencimento,$Camponfatura,$referente,$link,$endereco,$email,$avisofataberto,$NomeEmpresa,'Fatura de Mensalidade'); //  variavis que substiruem os valores
-    $subject = $dado;
-
-    $texto = str_replace($search, $replace, $subject);
-
-}else{
-
-$link = "$url/boleto.php?cliente=$cliente&fatura=$fatura&tipo=1";
-
-$dado = $text2;
-$search = array('[NomeCliente]', '[valor]','[vencimento]','[numeroFatura]','[Descricaodafatura]','[link]','[endereco]','[email]','[avisofataberto]','[NomeEmpresa]','[referencia]'); // pega oa variaveis do html vindo do banco;
-$replace = array($NomeCliente, number_format($CampoValor,2,',','.'),$CampoVencimento,$Camponfatura,$referente,$link,$endereco,$email,$avisofataberto,$NomeEmpresa,'Fatura de Mensalidade'); //  variavis que substiruem os valores
-$subject = $dado;
-
-$texto = str_replace($search, $replace, $subject);
-}
-
-
+// Initialize the PHPMailer object
 $mail = new PHPMailer;
 
-$mail->SMTPDebug = 0;                               // Habilita o Debug 1 habilita 0 desabilita
-
+// Set the email parameters
 $mail->isSMTP();
-$smtp_mail = $linha['servidor']; //Sql smtp do servidor de email
-$mail->Host = $smtp_mail;  // Servidor SMTP SMTP servers
-$mail->SMTPAuth = true;                               // Habilita autenticação SMTP
-$user_mail = $linha['email']; //Sql Usuario do email
-$mail->Username = $user_mail;                 //Usuario do SMTP
-$senha_mail = $linha['senha']; //Sql Senha do email
-$mail->Password = $senha_mail;                           //Senha do SMTP
-$porta_smtpsecure = $linha['smtpsecure'];
-$mail->SMTPSecure = $porta_smtpsecure;                            // Habilita TLS encriptação , ou `ssl` encriptado
-$porta_mail = $linha['porta']; //Sql da porta do email
-$mail->Port = $porta_mail;                                    // porta para a conexão TCP 587 ou 465
-$mail->From = $user_mail;
+$mail->Host = $linha['servidor'];
+$mail->SMTPAuth = true;
+$mail->Username = $linha['email'];
+$mail->Password = $linha['senha'];
+$mail->SMTPSecure = $linha['smtpsecure'];
+$mail->Port = $linha['porta'];
+$mail->From = $linha['email'];
 $mail->FromName = $NomeEmpresa;
-$mail->addAddress($EmailCliente, $NomeCliente);     // Nome do cabra que vai receber
-$mail->addReplyTo($user_mail, $NomeEmpresa);
 
+// Set the email recipient
+$mail_send = filter_var($EmailCliente, FILTER_VALIDATE_EMAIL);
+$mail->addAddress($mail_send, $NomeCliente);
 
+// Set the email subject and body
+$subject = htmlspecialchars($linha['assunto']);
+$body = htmlspecialchars($linha['corpo']);
 
-//$mail->addAttachment('/var/tmp/file.tar.gz');         // Adicionar anexos
-//$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Anexo com o nome 'opcional'
-$mail->isHTML(true);                                  // Seta email no formato HTML
+// Replace the placeholders with the actual values
+$search = array('[NomeCliente]', '[valor]', '[vencimento]', '[numeroFatura]', '[Descricaodafatura]', '[link]', '[endereco]', '[email]', '[avisofataberto]', '[NomeEmpresa]', '[referencia]');
+$replace = array($NomeCliente, number_format($CampoValor, 2, ',', '.'), $CampoVencimento, $Camponfatura, $referente, $CampoLink, $endereco, $email, $avisofataberto, $NomeEmpresa, 'Fatura de Mensalidade');
+$texto = str_replace($search, $replace, $body);
+$mail->Subject = $subject;
+$mail->Body = $texto;
 
-$mail->Subject = "Financeiro ".$NomeEmpresa;
-$mail->Body    = "
-	<br>
-	        $texto </br>
-	";
-$mail->AltBody = 'Texto alternativo sem HTML da pra usar como outro esquema assinatura ou coisa parecida';
-
-if(!$mail->Send()) {
+// Send the email
+if (!$mail->send()) {
     echo "Erro: " . utf8_decode($mail->ErrorInfo);
     echo "<br />";
     echo '<meta http-equiv="refresh" content="0;URL=../../index.php?app=Financeiro&reg=6" />';
 } else {
     echo "<br />";
     echo '<meta http-equiv="refresh" content="0;URL=../../index.php?app=Financeiro&reg=5" />';
-
 }
 
+// Close the database connection
+$conn->close();
 ?>

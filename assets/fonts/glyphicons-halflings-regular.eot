@@ -15,7 +15,7 @@ SCREEN_HEIGHT = 600
 BACKGROUND_COLOR = (0, 0, 0)
 BALL_COLOR = (255, 255, 255)
 BALL_RADIUS = 10
-NBALLS_NUM = 10
+NBALLS_NUM = 100
 
 # Setting up the display
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -25,49 +25,45 @@ pygame.display.set_caption('Balls simulation')
 clock = pygame.time.Clock()
 
 # Setting up the balls list
-balls = []
-for i in range(NBALLS_NUM):
-    balls.append(Ball(random.randint(0, SCREEN_WIDTH), 
-                      random.randint(0, SCREEN_HEIGHT), 
-                      random.randint(1, BALL_RADIUS)))
-
-# Game loop
-while True:
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-
-    # Updating the balls positions
-    for ball in balls:
-        ball.move()
-
-    # Drawing everything
-    screen.fill(BACKGROUND_COLOR)
-    for ball in balls:
-        pygame.draw.circle(screen, BALL_COLOR, (int(ball.x), int(ball.y)), ball.radius)
-
-    # Flipping the display
-    pygame.display.flip()
-
-    # Limiting the frame rate
-    clock.tick(60)
-
-# Class representing a ball
 class Ball:
+    """A class representing a ball."""
+
     def __init__(self, x, y, radius):
-        self.x = x    # The ball's x coordinate
-        self.y = y    # The ball's y coordinate
-        self.radius = radius  # The ball's radius
+        """Initialize a new Ball object.
+
+        Args:
+            x (int): The ball's x coordinate.
+            y (int): The ball's y coordinate.
+            radius (int): The ball's radius.
+        """
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.direction = (random.randint(-1, 1), random.randint(-1, 1))
 
     def move(self):
-        # Moving the ball by changing its coordinates
-        self.x += random.randint(-1, 1)
-        self.y += random.randint(-1, 1)
+        """Move the ball by changing its coordinates.
 
-        # Making sure the ball stays within the screen boundaries
-        if self.x < 0 or self.x > SCREEN_WIDTH:
-            self.x -= random.randint(-1, 1)
-        if self.y < 0 or self.y > SCREEN_HEIGHT:
-            self.y -= random.randint(-1, 1)
+        Make sure the ball stays within the screen boundaries.
+        """
+        self.x += self.direction[0]
+        self.y += self.direction[1]
+
+        # Keep the ball inside the screen boundaries
+        self.keep_inside_screen()
+
+    def keep_inside_screen(self):
+        """Keep the ball inside the screen boundaries."""
+        if self.x - self.radius < 0:
+            self.x = self.radius
+            self.direction = (-self.direction[0], self.direction[1])
+        elif self.x + self.radius > SCREEN_WIDTH:
+            self.x = SCREEN_WIDTH - self.radius
+            self.direction = (-self.direction[0], self.direction[1])
+
+        if self.y - self.radius < 0:
+            self.y = self.radius
+            self.direction = (self.direction[0], -self.direction[1])
+        elif self.y + self.radius > SCREEN_HEIGHT:
+            self.y = SCREEN_HEIGHT - self.radius
+            self.direction = (self.direction[0

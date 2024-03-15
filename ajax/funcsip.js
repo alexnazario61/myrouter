@@ -1,43 +1,44 @@
-// Vari·vel que receber· o objeto XMLHttpRequest
+// Vari√°vel que receber√° o objeto XMLHttpRequest
+// This variable will hold the XMLHttpRequest object
 var req;
 
 function validarIP(campo, valor) {
+  
+  // Verificar o Browser
+  // Function to check the browser
+  if(window.XMLHttpRequest) {
+      // If the browser supports XMLHttpRequest, create a new instance
+      req = new XMLHttpRequest();
+  }
+  // If the browser is Internet Explorer
+  else if(window.ActiveXObject) {
+      // Create a new ActiveXObject instance for XMLHttpRequest
+      req = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  
+  // Aqui vai o valor e o nome do campo que pediu a requisi√ß√£o.
+  // The value and the name of the field that requested the request
+  var url = "ajax/ip.php?campo="+campo+"&valor="+valor;
 
-// Verificar o Browser
-// Firefox, Google Chrome, Safari e outros
-    if(window.XMLHttpRequest) {
-        req = new XMLHttpRequest();
-    }
-// Internet Explorer
-    else if(window.ActiveXObject) {
-        req = new ActiveXObject("Microsoft.XMLHTTP");
-    }
+  // Chamada do m√©todo open para processar a requisi√ß√£o
+  // Call the open method to process the request
+  req.open("Get", url, true);
 
-// Aqui vai o valor e o nome do campo que pediu a requisiÁ„o.
-    var url = "ajax/ip.php?campo="+campo+"&valor="+valor;
+  // Quando o objeto recebe o retorno, √© chamada a seguinte fun√ß√£o;
+  // When the object receives the return, the following function is called
+  req.onreadystatechange = function() {
 
-// Chamada do mÈtodo open para processar a requisiÁ„o
-    req.open("Get", url, true);
+      // Exibe a mensagem "Verificando" enquanto carrega
+      // Display "Verifying" message while loading
+      if(req.readyState == 1) {
+          document.getElementById('campo_ip').innerHTML = '<font color="gray">Verificando...</font>';
+      }
 
-// Quando o objeto recebe o retorno, È chamada a seguinte funÁ„o;
-    req.onreadystatechange = function() {
+      // Verifica se o Ajax realizou todas as opera√ß√µes corretamente
+      // Check if the Ajax has completed all operations correctly
+      if(req.readyState == 4 && req.status == 200) {
+          // Resposta retornada pelo validacao.php (pagina de conex√£o com o BD)
+          // Response returned by validacao.php (page for connecting to the database)
+          var resposta = req.responseText;
 
-        // Exibe a mensagem "Verificando" enquanto carrega
-        if(req.readyState == 1) {
-            document.getElementById('campo_ip').innerHTML = '<font color="gray">Verificando...</font>';
-        }
-
-        // Verifica se o Ajax realizou todas as operaÁıes corretamente
-        if(req.readyState == 4 && req.status == 200) {
-            // Resposta retornada pelo validacao.php (pagina de conex„o com o BD)
-            var resposta = req.responseText;
-
-            // Resposta na div do campo que fez a requisiÁ„o
-            document.getElementById('campo_ip').innerHTML = resposta;
-        }
-
-    }
-
-    req.send(null);
-
-}
+          // Resposta na div do campo que

@@ -1,68 +1,48 @@
-# Registro Trailer de Lote
-# Baseado na documentação da caixa (CNAB 240)
+# Registro Trailer de Lote - Based on CNAB 240 documentation
 
-codigo_banco:
-  pos: [1, 3]
-  picture: '9(3)'
+# Banco code
+codigo_banco = {
+    'pos': [1, 3],  # Position in the file
+    'picture': '9(3)'  # Format: 3 numeric digits
+}
 
-lote_servico:
-  pos: [4, 7]
-  picture: '9(4)'
+# Service batch code
+lote_servico = {
+    'pos': [4, 7],  # Position in the file
+    'picture': '9(4)'  # Format: 4 numeric digits
+}
 
-tipo_registro:
-  pos: [8, 8]
-  picture: '9(1)'
-  default: '5'
+# Record type
+tipo_registro = {
+    'pos': [8, 8],  # Position in the file
+    'picture': '9(1)',  # Format: 1 numeric digit
+    'default': '5'  # Default value
+}
 
-uso_exclusivo_febraban_01:
-  pos: [9, 17]
-  picture: 'X(9)'
-  default: ''
+# Exclusive use for FEBRABAN - 01
+uso_exclusivo_febraban_01 = {
+    'pos': [9, 17],  # Position in the file
+    'picture': 'X(9)',  # Format: 9 alphanumeric digits
+    'default': ''  # Default value
+}
 
-qtde_registro_lote:
-  pos: [18, 23]
-  picture: '9(6)'
+# Quantity of records in the batch
+qtde_registro_lote = {
+    'pos': [18, 23],  # Position in the file
+    'picture': '9(6)'  # Format: 6 numeric digits
+}
 
-qtde_titulo_cobranca_simples:
-  pos: [24, 29]
-  picture: '9(6)'
+# Quantity of simple charge titles
+qtde_titulo_cobranca_simples = {
+    'pos': [24, 29],  # Position in the file
+    'picture': '9(6)'  # Format: 6 numeric digits
+}
 
-valor_total_titulo_simples:
-  pos: [30, 46]
-  picture: '9(15)V9(2)'
+# Total value of simple charge titles
+valor_total_titulo_simples = {
+    'pos': [30, 46],  # Position in the file
+    'picture': '9(15)V9(2)'  # Format: 15 numeric digits, 2 decimal places
+}
 
-uso_exclusivo_febraban_02:
-  pos: [47, 52]
-  picture: 'X(6)'
-  default: ''
-
-uso_exclusivo_febraban_03:
-  pos: [53, 69]
-  picture: '9(15)V9(2)'
-  default: '0'
-
-qtde_titulo_cobranca_caucionada:
-  pos: [70, 75]
-  picture: '9(6)'
-
-valor_total_titulo_caucionada:
-  pos: [76, 92]
-  picture: '9(15)V9(2)'
-
-qtde_titulo_cobranca_descontada:
-  pos: [93, 98]
-  picture: '9(6)'
-
-valor_total_titulo_descontada:
-  pos: [99, 115]
-  picture: '9(15)V9(2)'
-
-uso_exclusivo_febraban_04:
-  pos: [116, 123]
-  picture: 'X(8)'
-  default: ''
-
-uso_exclusivo_febraban_05:
-  pos: [124, 240]
-  picture: 'X(117)'
-  default: ''
+# Exclusive use for FEBRABAN - 02
+uso_exclusivo

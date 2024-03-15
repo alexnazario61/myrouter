@@ -3,15 +3,16 @@
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
  */
 
-@import "variables";
-@import "mixins";
-@import "path";
-@import "core";
-@import "larger";
-@import "fixed-width";
-@import "list";
-@import "bordered-pulled";
-@import "spinning";
-@import "rotated-flipped";
-@import "stacked";
-@import "icons";
+// Import the Font Awesome Sass partials
+@import "variables"; // Define variables used throughout the Font Awesome Sass files
+@import "mixins"; // Define mixins used throughout the Font Awesome Sass files
+@import "path"; // Define the Font Awesome icon path
+@import "core"; // Define the core Font Awesome styles
+@import "larger"; // Define larger icon sizes
+@import "fixed-width"; // Define fixed-width icons
+@import "list"; // Define list styles for Font Awesome icons
+@import "bordered-pulled"; // Define bordered and pulled icon styles
+@import "spinning"; // Define spinning icon styles
+@import "rotated-flipped"; // Define rotated and flipped icon styles
+@import "stacked"; // Define stacked icon styles
+@import "icons"; // Define the Font Awesome icon styles

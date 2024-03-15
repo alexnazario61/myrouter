@@ -1,46 +1,46 @@
-// CONEXAO PADRÃO
-require_once("conexao.php"); 
+<?php
 
-// ...
+// Database Connection
+require_once("conexao.php");
 
-$mysqli = new mysqli($host,$usuario,$senha,$banco) or die("Não é Possivel Conecta ao Banco de Dados");
+class Connection {
+    private $conn;
 
-$cn=mysql_connect($host, $login_db, $senha_db);
-mysql_select_db($database);
+    public function __construct() {
+        $this->conn = new mysqli($host, $usuario, $senha, $banco);
 
-class conexao
-{
+        if ($this->conn->connect_error) {
+            die("Connection failed: " . $this->conn->connect_error);
+        }
+    }
+
+    public function getConn() {
+        return $this->conn;
+    }
+}
+
+// String Manipulation Functions
+function extenso($valor = 0, $maiusculas = false) {
     // ...
 }
 
-
-function extenso($valor=0, $maiusculas=false) {
+function acento($string) {
     // ...
 }
 
-function acento($string)
-{
-  // ...
-}
-
-function Moeda($value){
+function Moeda($value) {
     return number_format($value, 2, ",", ".");
-};
+}
 
-
-function convdata($dataform, $tipo){
+function convdata($dataform, $tipo) {
     // ...
 }
 
-function diasEntreData($date_ini, $date_end){
+function diasEntreData($date_ini, $date_end) {
     // ...
 }
 
-
-// Função Backups
-
-// ...
-
-function smtpmailer($para, $de, $de_nome, $assunto, $corpo) { 
+// Email Function
+function smtpmailer($para, $de, $de_nome, $assunto, $corpo) {
     // ...
 }

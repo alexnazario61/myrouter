@@ -1,6 +1,19 @@
 package com.highcharts.export.server;
 
-
+// This enum represents the different states that the server can be in.
 public enum ServerState {
-	IDLE, DEAD, BUSY, TIMEDOUT, ACTIVE;
+    // The server is idle and ready to process a new request.
+    IDLE,
+
+    // The server has encountered an error and is no longer running.
+    DEAD,
+
+    // The server is currently processing a request.
+    BUSY,
+
+    // The server has timed out while processing a request.
+    TIMEDOUT,
+
+    // The server is actively processing a request.
+    ACTIVE;
 }

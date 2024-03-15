@@ -3,65 +3,68 @@
  * @author Torstein Hønsi
  */
 
-Highcharts.theme = {
-	// Define custom colors for the charts
-	colors: [...],
+(function (Highcharts) {
+  'use strict';
 
-	// Configuration for the chart container
-	chart: {
-		// Background color and border properties
-		backgroundColor: {...},
-		borderColor: '#000000',
-		borderWidth: 2,
-		// Additional class name for the container
-		className: 'dark-container',
-		// Plot background, border, and other properties
-		plotBackgroundColor: 'rgba(255, 255, 255, .1)',
-		plotBorderColor: '#CCCCCC',
-		plotBorderWidth: 1
-	},
+  Highcharts.theme = {
+    // Define custom colors for the charts
+    colors: [...],
 
-	// Configuration for the chart title and subtitle
-	title: {...},
-	subtitle: {...},
+    // Configuration for the chart container
+    chart: {
+      // Background color and border properties
+      backgroundColor: {...},
+      borderColor: '#000000',
+      borderWidth: 2,
+      // Additional class name for the container
+      className: 'dark-container',
+      // Plot background, border, and other properties
+      plotBackgroundColor: 'rgba(255, 255, 255, .1)',
+      plotBorderColor: '#CCCCCC',
+      plotBorderWidth: 1,
+    },
 
-	// Configuration for the x and y axes
-	xAxis: {...},
-	yAxis: {...},
+    // Configuration for the chart title and subtitle
+    title: {...},
+    subtitle: {...},
 
-	// Tooltip configuration
-	tooltip: {...},
+    // Configuration for the x and y axes
+    xAxis: {...},
+    yAxis: {...},
 
-	// Toolbar configuration
-	toolbar: {...},
+    // Tooltip configuration
+    tooltip: {...},
 
-	// Plot options for different chart types
-	plotOptions: {...},
+    // Toolbar configuration
+    toolbar: {...},
 
-	// Legend configuration
-	legend: {...},
+    // Plot options for different chart types
+    plotOptions: {...},
 
-	// Credits configuration
-	credits: {...},
+    // Legend configuration
+    legend: {...},
 
-	// Labels configuration
-	labels: {...},
+    // Credits configuration
+    credits: {...},
 
-	// Navigation configuration
-	navigation: {...},
+    // Labels configuration
+    labels: {...},
 
-	// Configuration for scroll charts
-	rangeSelector: {...},
-	navigator: {...},
-	scrollbar: {...}
+    // Navigation configuration
+    navigation: {...},
 
-	// Additional special color definitions
-	legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
-	legendBackgroundColorSolid: 'rgb(35, 35, 70)',
-	dataLabelsColor: '#444',
-	textColor: '#C0C0C0',
-	maskColor: 'rgba(255,255,255,0.3)'
-};
+    // Configuration for scroll charts
+    rangeSelector: {...},
+    navigator: {...},
+    scrollbar: {...},
 
-// Apply the theme to Highcharts
-var highchartsOptions = Highcharts.setOptions(Highcharts.theme);
+    // Additional special color definitions
+    legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+    legendBackgroundColorSolid: 'rgb(35, 35, 70)',
+    dataLabelsColor: '#444',
+    textColor: '#C0C0C0',
+    maskColor: 'rgba(255,255,255,0.3)',
+  };
+
+  // Apply the theme to Highcharts
+  var highchartsOptions = Highcharts.setOptions(Highcharts

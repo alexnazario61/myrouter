@@ -1,6 +1,6 @@
 /*
  * Smart Demo Switcher v1.5
- * http://www.smartplugins.info/plugin/javascript/smart-demo-switcher//
+ * A plugin for switching between different stylesheets for demonstration purposes.
  * 
  * Copyright 2008 - 2014 Milan Petrovic (email: milan@gdragon.info)
  *
@@ -9,46 +9,35 @@
  *
  */
 
+// Create a global variable to store the Smart Demo Switcher object
 var smartDemoSwitcherObj;
 
-;(function ($, window, document, undefined) {
-    smartDemoSwitcher.Loader = smartDemoSwitcher.Load.extend({
-		
-		
-		 display: {
-     style: "light",
-     location: "right",
-	 initOpen: false,
-     buttonContent: '<i class="fa fa-tint"></i>',
-     formHeaderContent: '<h4>ORB</h4>'
-   },
-   
-   
-     stylesheets: {
-     main: {
-       columns: 2,
-	   
-       title: true,
-	   boxShape: "circle",
-       titleContent: "<h5>Styles</h5>",
-       selector: "#demo-styles",
-       default: 'css/styles.css',
-       list: [
-         {file: 'css/styles-brown.css', name: 'Brown', colors: ['#b66d4a']},
-         {file: 'css/styles-green.css', name: 'Green', colors: ['#3c9474']},
-         {file: 'css/styles-blue.css', name: 'Blue', colors: ['#00425c']},
-         {file: 'css/styles-purple.css', name: 'Purple', colors: ['#684a76']},
-		 {file: 'css/styles-cherry.css', name: 'Cherry', colors: ['#b54f8b']},
-		 {file: 'css/styles-khaki.css', name: 'Khaki', colors: ['#bba439']}
-       ]
-     }
-   },
-   
-   
-        
-    });
+// Start the Smart Demo Switcher module as a self-invoking function
+(function ($, window, document, undefined) {
 
-    $(document).ready(function() {
-        smartDemoSwitcherObj = new smartDemoSwitcher.Core();
-    });
-})(jQuery, window, document);
+    // Extend the Smart Demo Switcher Load object with a new Loader object
+    smartDemoSwitcher.Loader = smartDemoSwitcher.Load.extend({
+
+        // Define the display properties
+        display: {
+            style: "light", // The style of the display
+            location: "right", // The location of the display
+            initOpen: false, // Whether the display is initially open
+            buttonContent: '<i class="fa fa-tint"></i>', // The content of the display button
+            formHeaderContent: '<h4>ORB</h4>' // The content of the form header
+        },
+
+        // Define the stylesheets properties
+        stylesheets: {
+            main: {
+                columns: 2, // The number of columns in the stylesheet list
+                title: true, // Whether to display a title for the stylesheet list
+                boxShape: "circle", // The shape of the boxes in the stylesheet list
+                titleContent: "<h5>Styles</h5>", // The content of the stylesheet list title
+                selector: "#demo-styles", // The selector for the stylesheet list container
+                default: 'css/styles.css', // The default stylesheet
+                list: [ // The list of available stylesheets
+                    {file: 'css/styles-brown.css', name: 'Brown', colors: ['#b66d4a']},
+                    {file: 'css/styles-green.css', name: 'Green', colors: ['#3c9474']},
+                    {file: 'css/styles-blue.css', name: 'Blue', colors: ['#00425c']},
+                    {file: 'css/styles-purple.css', name:

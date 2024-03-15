@@ -1,31 +1,36 @@
-/* The .CodeMirror-dialog class is used to position a dialog box relative to its parent element. */
+/* Position the dialog box relative to its parent element */
 .CodeMirror-dialog {
   position: relative;
 }
 
-/* The .CodeMirror-dialog > div rule styles the contents of the dialog box. The top, left, right, and background properties position the div and give it a white background color. The border-bottom property adds a bottom border to the div. The z-index property ensures that the dialog box appears above other elements on the page. The padding property adds some space around the contents of the div. The overflow property ensures that any content that overflows the div is hidden. The color property sets the text color. */
+/* Style the contents of the dialog box */
 .CodeMirror-dialog > div {
   position: absolute;
-  top: 0; left: 0; right: 0;
-  background: white;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
   border-bottom: 1px solid #eee;
+  box-sizing: border-box; /* Include padding and border in element's total width */
   z-index: 15;
-  padding: .1em .8em;
+  padding: 0.1em 0.8em;
   overflow: hidden;
   color: #333;
 }
 
-/* The .CodeMirror-dialog input rule styles the input element inside the dialog box. The border, outline, and background properties are set to none to remove any default styling. The width property sets the width of the input element. The color property sets the text color. */
+/* Style the input element inside the dialog box */
 .CodeMirror-dialog input {
   border: none;
   outline: none;
   background: transparent;
-  width: 20em;
+  width: 100%; /* Fill the width of the dialog box */
   color: inherit;
   font-family: monospace;
+  box-sizing: border-box; /* Include padding and border in element's total width */
 }
 
-/* The .CodeMirror-dialog button rule styles the button element inside the dialog box. The font-size property sets the font size of the button text. */
+/* Style the button element inside the dialog box */
 .CodeMirror-dialog button {
   font-size: 70%;
+  cursor: pointer; /* Add a pointer cursor on hover */
 }

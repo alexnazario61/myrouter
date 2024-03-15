@@ -1,137 +1,103 @@
-<?php	
-	ini_set("allow_url_fopen", 1);
-	ini_set("display_errors", 1);
-	error_reporting(1);
-	ini_set("track_errors","1");
+<?php
 
-	require_once 'config/conexao.class.php';
-	$con = new conexao(); // instancia classe de conxao
-    $con->connect(); // abre conexao com o banco
-	
-	$cskey = $mysqli->query("SELECT * FROM empresa WHERE id = '1'");
-    $chavekey = mysqli_fetch_array($cskey);
+// Allow URL fopen, display errors, and set error reporting level
+ini_set("allow_url_fopen", 1);
+ini_set("display_errors", 1);
+error_reporting(1);
+ini_set("track_errors","1");
 
-	require_once 'config/sws_extensao.php';
-	require_once 'config/sws_serasa_pefin.php';
-	
-	$credenciais        = new Credenciais();
-	$credenciais->Email = $chavekey['emailspc'];
-	$credenciais->Senha = $chavekey['senhaspc'];
-	
-	$pefin                = new Pefin();
-	$pefin->Credenciais   = $credenciais;
-	$pefin->Documento     = base64_decode($_GET['id']);
-	
-	$serasa = new SERASA();
-	$pefin = $serasa->getSerasaPefin($pefin);
-	echo "<html><title>Consulta Serasa</title>";
-	echo "<pre>";
-	echo "-----------------------   INFORMACOES GERAIS   -----------------------\n";
-	echo 'Documento:         ' . $pefin->Documento . "\n";
-	echo 'Nome:              ' . $pefin->Nome . "\n";
-	echo 'Nome da Mae:           ' . $pefin->NomeMae . "\n";
-    echo 'Nome Fantasia:           ' . $pefin->NomeFantasia . "\n";
-	echo 'Data Nascimento:   ' . $pefin->DataNascimento . "\n";
-    echo 'DataFundacao:   ' . $pefin->DataFundacao . "\n";
-    echo 'SituacaoRFB:   ' . $pefin->SituacaoRFB . "\n";
-    echo 'SituacaoDescricaoRFB:   ' . $pefin->SituacaoDescricaoRFB . "\n";
-    echo 'DataSituacaoRFB:   ' . $pefin->DataSituacaoRFB . "\n";
-	echo 'Total Ocorrencias: ' . $pefin->TotalOcorrencias . "\n";
-	echo 'Mensagem:          ' . $pefin->Mensagem . "\n";
-	echo 'Status:            ' . $pefin->Status . "\n";
-	
-	echo "\n\n\n";
-	echo "----------------------------------------------------------------------\n";
-	echo "Alerta Documentos\n";
-	echo "----------------------------------------------------------------------\n";
-	foreach ($pefin->AlertaDocumentos as $AlertaDocumentos)
-	{
-		echo 'Mensagem  : ' . $AlertaDocumentos->Mensagem . "\n";
-		echo 'DDD/Fone 1: ' . $AlertaDocumentos->DDD1 . "-" . $AlertaDocumentos->Fone1 . "\n";
-		echo 'DDD/Fone 2: ' . $AlertaDocumentos->DDD2 . "-" . $AlertaDocumentos->Fone2 . "\n";
-		echo 'DDD/Fone 3: ' . $AlertaDocumentos->DDD3 . "-" . $AlertaDocumentos->Fone3 . "\n";
-	}
-	
-	echo "\n\n\n";
-	echo "----------------------------------------------------------------------\n";
-	echo "Pendencias Financeiras\n";
-	echo "----------------------------------------------------------------------\n";
-	echo "<table border='0' width='100%'>";
-	echo "<tr bgcolor='#eeeeee' cellspacing='0' height='30'>";
-	echo "<td>Data Ocorrencia</td>";
-	echo "<td>Modalidade</td>";
-	echo "<td>Avalista</td>";
-	echo "<td>Valor</td>";
-	echo "<td>Contrato</td>";
-	echo "<td>Sigla</td>";
-	echo "</tr>";
-	foreach ($pefin->PendenciasFinanceiras as $PendenciasFinanceiras)
-	{
-		echo '<tr>';
-		echo '<td>' . $PendenciasFinanceiras->DataOcorrencia . '</td>';
-		echo '<td>' . $PendenciasFinanceiras->Modalidade . '</td>';
-		echo '<td>' . $PendenciasFinanceiras->Avalista . '</td>';
-		echo '<td>' . $PendenciasFinanceiras->Valor . '</td>';
-		echo '<td>' . $PendenciasFinanceiras->Contrato . '</td>';
-		echo '<td>' . $PendenciasFinanceiras->Sigla . '</td>';
-		echo '</tr>';
-	}
-	echo "</table>";
+// Include necessary files and classes
+require_once 'config/conexao.class.php';
+require_once 'config/sws_extensao.php';
+require_once 'config/sws_serasa_pefin.php';
 
-	echo "\n\n\n";
-	echo "----------------------------------------------------------------------\n";
-	echo "Pendencias Varejo\n";
-	echo "----------------------------------------------------------------------\n";
-	echo "<table border='0' width='100%'>";
-	echo "<tr bgcolor='#eeeeee' cellspacing='0' height='30'>";
-	echo "<td>Codigo Compensacao Banco</td>";
-	echo "<td>Numero Agencia</td>";
-	echo "<td>Origem Ocorrencia</td>";
-	echo "<td>Sigla</td>";
-	echo "<td>Numero Loja Filial</td>";
-	echo "</tr>";
-	foreach ($pefin->PendenciasVarejo as $PendenciasVarejo)
-	{
-		echo '<tr>';
-		echo '<td>' . $PendenciasVarejo->CodigoCompensacaoBanco . '</td>';
-		echo '<td>' . $PendenciasVarejo->NumeroAgencia . '</td>';
-		echo '<td>' . $PendenciasVarejo->OrigemOcorrencia . '</td>';
-		echo '<td>' . $PendenciasVarejo->Sigla . '</td>';
-		echo '<td>' . $PendenciasVarejo->NumeroLojaFilial . '</td>';
-		echo '</tr>';
-	}
-	echo "</table>";
+// Connect to the database
+$con = new conexao();
+$con->connect();
 
-	echo "\n\n\n";
-	echo "----------------------------------------------------------------------\n";
-	echo "Pendencias Bacen/CCF\n";
-	echo "----------------------------------------------------------------------\n";
-	echo "<table border='0' width='100%'>";
-	echo "<tr bgcolor='#eeeeee' cellspacing='0' height='30'>";
-	echo "<td>Total Cheques Sem Fundo</td>";
-	echo "<td>Data Ocorrencia Antiga</td>";
-	echo "<td>Data Ocorrencia Recente</td>";
-	echo "<td>Codigo Compensacao</td>";
-	echo "<td>Numero Agencia</td>";
-	echo "<td>Nome Fantasia Banco</td>";
-	echo "</tr>";
-	foreach ($pefin->PendenciasBacen as $PendenciasBacen)
-	{
-		echo '<tr>';
-		echo '<td>' . $PendenciasBacen->TotalChequesSemFundo . '</td>';
-		echo '<td>' . $PendenciasBacen->DataOcorrenciaAntiga . '</td>';
-		echo '<td>' . $PendenciasBacen->DataOcorrenciaRecente . '</td>';
-		echo '<td>' . $PendenciasBacen->CodigoCompensacao . '</td>';
-		echo '<td>' . $PendenciasBacen->NumeroAgencia . '</td>';
-		echo '<td>' . $PendenciasBacen->NomeFantasiaBanco . '</td>';
-		echo '</tr>';
-	}
-	echo "</table>";
+// Retrieve the company key information from the database
+$cskey = $mysqli->query("SELECT * FROM empresa WHERE id = '1'");
+$chavekey = mysqli_fetch_array($cskey);
 
+// Initialize the Credenciais class and set the email and password
+$credenciais = new Credenciais();
+$credenciais->Email = $chavekey['emailspc'];
+$credenciais->Senha = $chavekey['senhaspc'];
 
-	echo "</pre></html>";
+// Initialize the Pefin class and set the credentials and document
+$pefin = new Pefin();
+$pefin->Credenciais = $credenciais;
+$pefin->Documento = base64_decode($_GET['id']);
 
+// Connect to the SERASA system and retrieve the Pefin information
+$serasa = new SERASA();
+$pefin = $serasa->getSerasaPefin($pefin);
 
-	# PRINT TODOS ELEMENTOS (TESTE)
-	//print_r($pefin);
-?>
+// Display the retrieved information in an HTML format
+echo "<html><title>Consulta Serasa</title>";
+echo "<pre>";
+
+// Display general information
+echo "-----------------------   INFORMACOES GERAIS   -----------------------" . PHP_EOL;
+echo 'Documento:         ' . $pefin->Documento . PHP_EOL;
+echo 'Nome:              ' . $pefin->Nome . PHP_EOL;
+echo 'Nome da Mae:           ' . $pefin->NomeMae . PHP_EOL;
+echo 'Nome Fantasia:           ' . $pefin->NomeFantasia . PHP_EOL;
+echo 'Data Nascimento:   ' . $pefin->DataNascimento . PHP_EOL;
+echo 'DataFundacao:   ' . $pefin->DataFundacao . PHP_EOL;
+echo 'SituacaoRFB:   ' . $pefin->SituacaoRFB . PHP_EOL;
+echo 'SituacaoDescricaoRFB:   ' . $pefin->SituacaoDescricaoRFB . PHP_EOL;
+echo 'DataSituacaoRFB:   ' . $pefin->DataSituacaoRFB . PHP_EOL;
+echo 'Total Ocorrencias: ' . $pefin->TotalOcorrencias . PHP_EOL;
+echo 'Mensagem:          ' . $pefin->Mensagem . PHP_EOL;
+echo 'Status:            ' . $pefin->Status . PHP_EOL;
+
+// Display alert document information
+echo "\n\n\n";
+echo "----------------------------------------------------------------------" . PHP_EOL;
+echo "Alerta Documentos" . PHP_EOL;
+echo "----------------------------------------------------------------------" . PHP_EOL;
+foreach ($pefin->AlertaDocumentos as $AlertaDocumentos)
+{
+	echo 'Mensagem  : ' . $AlertaDocumentos->Mensagem . PHP_EOL;
+	echo 'DDD/Fone 1: ' . $AlertaDocumentos->DDD1 . "-" . $AlertaDocumentos->Fone1 . PHP_EOL;
+	echo 'DDD/Fone 2: ' . $AlertaDocumentos->DDD2 . "-" . $AlertaDocumentos->Fone2 . PHP_EOL;
+	echo 'DDD/Fone 3: ' . $AlertaDocumentos->DDD3 . "-" . $AlertaDocumentos->Fone3 . PHP_EOL;
+}
+
+// Display financial pendencies
+echo "\n\n\n";
+echo "----------------------------------------------------------------------" . PHP_EOL;
+echo "Pendencias Financeiras" . PHP_EOL;
+echo "----------------------------------------------------------------------" . PHP_EOL;
+echo "<table border='0' width='100%'>";
+echo "<tr bgcolor='#eeeeee' cellspacing='0' height='30'>";
+echo "<td>Data Ocorrencia</td>";
+echo "<td>Modalidade</td>";
+echo "<td>Avalista</td>";
+echo "<td>Valor</td>";
+echo "<td>Contrato</td>";
+echo "<td>Sigla</td>";
+echo "</tr>";
+foreach ($pefin->PendenciasFinanceiras as $PendenciasFinanceiras)
+{
+	echo '<tr>';
+	echo '<td>' . $PendenciasFinanceiras->DataOcorrencia . '</td>';
+	echo '<td>' . $PendenciasFinanceiras->Modalidade . '</td>';
+	echo '<td>' . $PendenciasFinanceiras->Avalista . '</td>';
+	echo '<td>' . $PendenciasFinanceiras->Valor . '</td>';
+	echo '<td>' . $PendenciasFinanceiras->Contrato . '</td>';
+	echo '<td>' . $PendenciasFinanceiras->Sigla . '</td>';
+	echo '</tr>';
+}
+echo "</table>";
+
+// Display retail pendencies
+echo "\n\n\n";
+echo "----------------------------------------------------------------------" . PHP_EOL;
+echo "Pendencias Varejo" . PHP_EOL;
+echo "----------------------------------------------------------------------" . PHP_EOL;
+echo "<table border='0' width='100%'>";
+echo "<tr bgcolor='#eeeeee' cellspacing='0' height='30'>";
+echo "<td>Codigo Compensacao Banco</td>";
+echo "<td>Numero Agencia

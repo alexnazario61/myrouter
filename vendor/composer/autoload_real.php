@@ -4,8 +4,10 @@
 
 class ComposerAutoloaderInit2e3fbcb1d8a8e806bb246974ff8ed20c
 {
+    // The private static $loader variable holds the Composer\Autoload\ClassLoader instance
     private static $loader;
 
+    // The loadClassLoader function is used to load the ClassLoader class
     public static function loadClassLoader($class)
     {
         if ('Composer\Autoload\ClassLoader' === $class) {
@@ -13,43 +15,41 @@ class ComposerAutoloaderInit2e3fbcb1d8a8e806bb246974ff8ed20c
         }
     }
 
+    // The getLoader function returns the Composer\Autoload\ClassLoader instance
     public static function getLoader()
     {
         if (null !== self::$loader) {
             return self::$loader;
         }
 
+        // Register the loadClassLoader function for autoloading using spl_autoload_register
         spl_autoload_register(array('ComposerAutoloaderInit2e3fbcb1d8a8e806bb246974ff8ed20c', 'loadClassLoader'), true, true);
+
+        // Initialize the Composer\Autoload\ClassLoader instance
         self::$loader = $loader = new \Composer\Autoload\ClassLoader();
+
+        // Unregister the loadClassLoader function from autoloading
         spl_autoload_unregister(array('ComposerAutoloaderInit2e3fbcb1d8a8e806bb246974ff8ed20c', 'loadClassLoader'));
 
+        // Load namespaces defined in autoload_namespaces.php
         $map = require __DIR__ . '/autoload_namespaces.php';
         foreach ($map as $namespace => $path) {
             $loader->set($namespace, $path);
         }
 
+        // Load PSR-4 namespaces defined in autoload_psr4.php
         $map = require __DIR__ . '/autoload_psr4.php';
         foreach ($map as $namespace => $path) {
             $loader->setPsr4($namespace, $path);
         }
 
+        // Register class map defined in autoload_classmap.php
         $classMap = require __DIR__ . '/autoload_classmap.php';
         if ($classMap) {
             $loader->addClassMap($classMap);
         }
 
+        // Register the ClassLoader instance with the autoloader
         $loader->register(true);
 
-        $includeFiles = require __DIR__ . '/autoload_files.php';
-        foreach ($includeFiles as $file) {
-            composerRequire2e3fbcb1d8a8e806bb246974ff8ed20c($file);
-        }
-
-        return $loader;
-    }
-}
-
-function composerRequire2e3fbcb1d8a8e806bb246974ff8ed20c($file)
-{
-    require $file;
-}
+        // Include required

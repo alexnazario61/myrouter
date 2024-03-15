@@ -1,20 +1,24 @@
 <?php
 
-    $alterararea = $mysqli->query("SELECT * FROM fib_conf WHERE id = '1'");
-    $campo = mysqli_fetch_array($alterararea);
+<?php // Connect to the database and select the row to edit
+$alterararea = $mysqli->query("SELECT * FROM fib_conf WHERE id = '1'");
+$campo = mysqli_fetch_array($alterararea);
 
+// Check if the form has been submitted
 if(isset ($_POST['editararea'])){
+    // Assign the submitted form data to variables
     $partida = $_POST['partida'];
-    $lat     = $_POST['lat'];
-    $longitude  = $_POST['longitude'];
-    $zoom    = $_POST['zoom'];
+    $lat = $_POST['lat'];
+    $longitude = $_POST['longitude'];
+    $zoom = $_POST['zoom'];
     $maxzoom = $_POST['maxzoom'];
     $minzoom = $_POST['minzoom'];
 
-    $crud = new crud('fib_conf'); // instancia classe com as operaÁıes crud, passando o nome da tabela como parametro
+    // Create a new instance of the crud class and update the row in the database
+    $crud = new crud('fib_conf'); // instancia classe com as opera√ß√µes crud, passando o nome da tabela como parametro
     $crud->atualizar("lat='$lat',partida='$partida',longitude='$longitude',zoom='$zoom',maxzoom='$maxzoom',minzoom='$minzoom'","id='1'");
 
-
+    // Redirect the user to the index page
     header("Location: index.php?app=ListaAreaFibra&reg=2");
 }
 
@@ -28,7 +32,8 @@ if(isset ($_POST['editararea'])){
     </ul>
 </div>
 
-<?php if($permissao['c2'] == S) { ?>
+<?php // Check if the user has permission to view this page
+if($permissao['c2'] == S) { ?>
 
     <div class="page-header">
         <h1>Editar<small>Area</small></h1>
@@ -71,7 +76,7 @@ if(isset ($_POST['editararea'])){
                     </section>
 
                     <section class="col col-2">
-                        <label class="label">M·x. Zoom</label>
+                        <label class="label">M√°x. Zoom</label>
                         <label class="input">
                             <input type="text" name="maxzoom" value="<?php echo @$campo['maxzoom']; ?>">
                         </label>
@@ -95,7 +100,7 @@ if(isset ($_POST['editararea'])){
 <?php } else { ?>
 
     <div class="page-header">
-        <h1>Permiss„o <small>Negada!</small></h1>
+        <h1>Permiss√£o <small>Negada!</small></h1>
     </div>
 
     <div class="row" id="powerwidgets">
@@ -104,7 +109,8 @@ if(isset ($_POST['editararea'])){
             <div class="alert alert-danger alert-dismissable">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
                     <i class="fa fa-times-circle"></i></button>
-                <strong>AtenÁ„o!</strong> VocÍ n„o possui permiss„o para esse modulo. </div>
+              `strong`Aten√ß√£o!</strong> Voc√™ n√£o possui permiss√£o para esse modulo. </div>
 
         </div></div>
 <?php } ?>
+

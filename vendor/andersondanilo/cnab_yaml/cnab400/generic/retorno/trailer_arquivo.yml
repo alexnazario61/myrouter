@@ -1,30 +1,33 @@
 # Registro de Detalhe, Retorno
 # Baseado na documentação da Caixa e do Itaú
 
+# The 'tipo_de_registro' field identifies the type of record. In this case, it is a trailer record.
 tipo_de_registro:
-  #Identificação Do Registro Trailer
+  # The position of the field in the record
   pos: [1, 1]
+  # The format of the field, in this case, it is a single digit numeric field
   picture: '9(01)'
+  # The default value of the field
   default: '9'
 
+# The 'codigo_de_retorno' field identifies the type of return for the transaction.
 codigo_de_retorno:
-  #Identificação De Arquivo Retorno
   pos: [2, 2]
   picture: '9(01)'
   default: '2'
 
+# The 'codigo_de_servico' field identifies the type of service provided.
 codigo_de_servico:
-  #Identificação Do Tipo De Serviço
   pos: [3, 4]
   picture: '9(02)'
   default: '01'
 
+# The 'codigo_do_banco' field identifies the bank that is involved in the transaction.
 codigo_do_banco:
-  #Identificação Do Banco Na Compensação
   pos: [5, 7]
   picture: '9(03)'
 
+# The 'numero_sequencial' field identifies the sequential number of the record in the file.
 numero_sequencial:
-  #Número Seqüencial Do Registro No Arquivo
   pos: [395, 400]
   picture: '9(06)'

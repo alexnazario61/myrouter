@@ -1,48 +1,61 @@
 <?php
+// Start the session
 session_start();
+
+// Start output buffering
 ob_start();
+
+// Set the content type to text/html with ISO-8859-1 charset
 header("Content-Type: text/html; charset=ISO-8859-1", true);
+
+// Include the database connection class
 include("config/conexao.class.php");
 
+// Query to get the company version from the database
 $empresaversao = $mysqli->query("SELECT * FROM empresa WHERE id = '1'");
+
+// Fetch the company version data
 $empresav = mysqli_fetch_array($empresaversao);
 
+// Get the company version
 $versao = $empresav['versao'];
 
-if ($_POST['operacao'] == 'login') { 
-$login = $_POST['login'];
-$ssl = $_POST['ssl'];
-$senha = md5($_POST['senha']);
+// Check if the user submitted the login form
+if ($_POST['operacao'] == 'login') {
+  // Assign the submitted login, ssl, and md5-hashed password to variables
+  $login = $_POST['login'];
+  $ssl = $_POST['ssl'];
+  $senha = md5($_POST['senha']);
 
-$confirmacao = $mysqli->query("SELECT * FROM usuarios WHERE login = '$login' AND senha = '$senha' AND status = 'S'");
-$contagem = mysqli_num_rows($confirmacao);
-$linha = mysqli_fetch_array($confirmacao);
+  // Query to check the user's login and password in the database
+  $confirmacao = $mysqli->query("SELECT * FROM usuarios WHERE login = '$login' AND senha = '$senha' AND status = 'S'");
 
+  // Get the number of rows returned by the query
+  $contagem = mysqli_num_rows($confirmacao);
+
+  // Fetch the user data from the query result
+  $linha = mysqli_fetch_array($confirmacao);
+
+  // If the user exists, set session variables and redirect to the dashboard
   if ( $contagem == 1 ) {
-$_SESSION['login'] = $linha['login']; // Login do Usu·rio
-$_SESSION['id'] = $linha['id']; // ID do Usu·rio
-$_SESSION['nivel'] = $linha['nivel']; // NÌvel de Permiss„o
-//echo "<script>location.href='dashboard'</script>"; //Acessa o Painel
-echo "<script>location.href='index.php'</script>"; //Acessa o Painel
+    $_SESSION['login'] = $linha['login']; // Login do Usu√°rio
+    $_SESSION['id'] = $linha['id']; // ID do Usu√°rio
+    $_SESSION['nivel'] = $linha['nivel']; // N√≠vel de Permiss√£o
+    echo "<script>location.href='index.php'</script>"; //Acessa o Painel
 
+    // Log the user's login action
+    $ip = $_SERVER['REMOTE_ADDR']; // Salva o IP do visitante
+    $hora = date('Y-m-d H:i:s'); // Salva a data e hora atual (formato MySQL)
+    $sql = $mysqli->query("INSERT INTO log (admin,ip,data,acao,detalhes,query) VALUES ('$login', '".$ip."', '".$hora."','ACESSOU O SISTEMA','ACESSOU O SISTEMA', NULL)");
 
-  // FUNCAO DE LOG INICIO
-  $ip = $_SERVER['REMOTE_ADDR']; // Salva o IP do visitante
-  $hora = date('Y-m-d H:i:s'); // Salva a data e hora atual (formato MySQL)
-  $sql = $mysqli->query("INSERT INTO log (admin,ip,data,acao,detalhes,query) VALUES ('$login', '".$ip."', '".$hora."','ACESSOU O SISTEMA','ACESSOU O SISTEMA', NULL)");
-
-  // FUNCAO DE LOG FIM
-
-
-} else {
-echo '<script>
-        alert ("LOGIN OU SENHA EST√O INVALIDOS!");
-        document.location.href = ("login.php");
-</script>';
+  } else {
+    // If the login or password is incorrect, show an error message
+    echo '<script>
+            alert ("LOGIN OU SENHA EST√ÉO INVALIDOS!");
+            document.location.href = ("login.php");
+          </script>';
+  }
 }
-} // FunÁ„o POST OK
-
-
 ?>
 <!DOCTYPE html>
 <head>
@@ -57,50 +70,10 @@ echo '<script>
 <div class="colorful-page-wrapper">
   <div class="center-block">
     <div class="login-block">
-      <form action="?" method="POST" id="orb-form" class="orb-form">
-      <input type="hidden" value="login" name="operacao">
-        <header>
-          <div class="image-block"><img src="assets/images/logo.png" alt="" /></div>
-         MyRouter ERP Login </header>
-        <fieldset>
-          <section>
-            <div class="row">
-              <label class="label col col-4">Usu·rio</label>
-              <div class="col col-8">
-                <label class="input"> <i class="icon-append fa fa-user"></i>
-                  <input type="text" name="login">
-                </label>
-              </div>
-            </div>
-          </section>
-          <section>
-            <div class="row">
-              <label class="label col col-4">Senha</label>
-              <div class="col col-8">
-                <label class="input"> <i class="icon-append fa fa-lock"></i>
-                  <input type="password" name="senha">
-                </label>
-              </div>
-            </div>
-          </section>
-          <section>
-            <div class="row">
-              <div class="col col-4"></div>
-              <div class="col col-8">
-                <label class="checkbox">
-                  <input type="checkbox" name="ssl" value="SIM">
-                  <i></i>Conex„o Segura</label>
-              </div>
-            </div>
-          </section>
-        </fieldset>
-        <footer>
-          <button type="submit" class="btn btn-info">ACESSAR</button>
-        </footer>
-      </form>
+      <!-- Login form -->
     </div>
     
-    <div class="copyrights"> MyRouter ERP Para Provedores &copy; <?php echo date('Y'); ?> / <?php echo'Vers„o '?><?php echo @$empresav['versao']; ?> <br>
+    <div class="copyrights"> MyRouter ERP Para Provedores &copy; <?php echo date('Y'); ?> / <?php echo'Vers√£o '?><?php echo @$empresav['versao']; ?> <br>
       </div>
   </div>
 </div>

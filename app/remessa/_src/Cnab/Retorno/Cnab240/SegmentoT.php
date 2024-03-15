@@ -1,11 +1,15 @@
 <?php
 namespace Cnab\Retorno\Cnab240;
 
-class SegmentoT extends \Cnab\Format\Linha
+use Cnab\Format\Linha;
+use Cnab\Format\YamlLoad;
+use Cnab\Retorno\IArquivo;
+
+class SegmentoT extends Linha
 {
-	public function __construct(\Cnab\Retorno\IArquivo $arquivo)
+    public function __construct(IArquivo $arquivo)
     {
-        $yamlLoad = new \Cnab\Format\YamlLoad($arquivo->codigo_banco, $arquivo->layoutVersao);
-        $yamlLoad->load($this, 'cnab240', 'retorno/detalhe_segmento_t');
-	}
+        $yamlLoader = new YamlLoad($arquivo->codigoBanco, $arquivo->layoutVersao);
+        $yamlLoader->load($this, 'cnab240', 'retorno/detalhe_segmento_t');
+    }
 }

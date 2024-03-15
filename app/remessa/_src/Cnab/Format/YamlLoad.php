@@ -1,21 +1,26 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Cnab\Format;
 
 use Cnab\Factory;
+use Cnab\Linha;
+use Symfony\Component\Yaml\Yaml;
 
 class YamlLoad
 {
     // The bank code
-    public $codigo_banco = null;
-    
+    public int $codigo_banco;
+
     // The path to the format directory
-    public $formatPath;
-    
+    public string $formatPath;
+
     // The version of the layout
-    public $layoutVersao;
+    public ?string $layoutVersao;
 
     // Constructor function to initialize the object with the bank code and layout version
-    public function __construct($codigo_banco, $layoutVersao = null)
+    public function __construct(int $codigo_banco, ?string $layoutVersao = null)
     {
         $this->codigo_banco = $codigo_banco;
         $this->layoutVersao = $layoutVersao;
@@ -23,7 +28,7 @@ class YamlLoad
     }
 
     // Function to validate that there are no collisions between the fields
-    public function validateCollision($fields)
+    public function validateCollision(array $fields): void
     {
         // Loop through each field
         foreach ($fields as $name => $field)
@@ -54,96 +59,4 @@ class YamlLoad
                     (
                         $pos_end <= $current_pos_end && $pos_end >= $current_pos_start
                     )
-                )
-                {
-                    throw new \DomainException("O campo $name colide com o campo $current_name");
-                }
-            }
-
-            // If there are no collisions, return true
-            return true;
-        }
-    }
-
-    // Function to validate the structure of the YAML array
-    public function validateArray($array)
-    {
-        // Check if the array is empty or if it doesn't have a 'generic' key
-        if (empty($array) || empty($array['generic']))
-            throw new \Exception('arquivo yaml sem campo "generic"');
-
-        // Loop through each key in the array
-        foreach ($array as $key => $fields)
-        {
-            // Call the validateCollision function to check for collisions
-            $this->validateCollision($fields);
-        }
-
-        // If there are no collisions, return true
-        return true;
-    }
-
-    // Function to load the fields from the YAML array into the CNAB line object
-    public function loadArray(Linha $cnabLinha, $array)
-    {
-        // Call the validateArray function to check for collisions
-        $this->validateArray($array);
-
-        // Define the keys to loop through
-        $keys = array('generic');
-        if (array_key_exists(sprintf('%03d', $this->codigo_banco), $array))
-            $keys[] = sprintf('%03d', $this->codigo_banco);
-
-        // Loop through each key in the array
-        foreach ($array as $key => $fields)
-        {
-            // Check if the key is one of the keys to loop through
-            if (in_array($key, $keys))
-            {
-                // Loop through each field in the current key
-                foreach ($fields as $name => $info)
-                {
-                    // Get the field information
-                    $picture = $info['picture'];
-                    $start = $info['pos'][0];
-                    $end = $info['pos'][1];
-                    $default = isset($info['default']) ? $info['default'] : false;
-                    $options = $info;
-
-                    // Add the field to the CNAB line object
-                    $cnabLinha->addField($name, $start, $end, $picture, $default, $options);
-                }
-            }
-        }
-    }
-
-    // Function to load a YAML file
-    public function loadYaml($filename)
-    {
-        // Check if the file exists
-        if (file_exists($filename))
-            return spyc_load_file($filename);
-        else
-            return null;
-    }
-
-    // Function to load the format from the YAML files
-    public function loadFormat($cnab, $filename)
-    {
-        // Get the bank code as a 3-digit string
-        $banco = sprintf('%03d', $this->codigo_banco);
-
-        // Define the file paths
-        $filenamePadrao = $this->formatPath . '/' . $cnab . '/generic/' . $filename . '.yml';
-        $filenameEspecifico = $this->formatPath . '/' . $cnab . '/' . $banco . '/' . $filename . '.yml';
-
-        // Check if the layout version is set and if the bank code is 104
-        if ($this->layoutVersao != null && $this->codigo_banco == 104)
-        {
-            // Use a different file path when the bank has multiple layout versions
-            $filenameEspecifico = $this->formatPath . '/' . $cnab . '/' . $banco . '/' . $this->layoutVersao . '/' . $filename . '.yml';
-        }
-
-        // Check if the standard file and the specific file exist
-        if (!file_exists($filenamePadrao) && !file_exists($filenameEspecifico))
-            throw new \Exception('Arquivo não encontrado ' .
+              

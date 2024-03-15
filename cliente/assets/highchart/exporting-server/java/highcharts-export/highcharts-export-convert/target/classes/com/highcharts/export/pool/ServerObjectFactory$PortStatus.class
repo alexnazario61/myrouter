@@ -1,25 +1,15 @@
-// This is an enumeration of possible port statuses for ServerObjectFactory
-public final class ServerObjectFactory$PortStatus extends Enum<ServerObjectFactory$PortStatus> {
+// Enumeration of possible port statuses for ServerObjectFactory
+public enum ServerObjectFactoryPortStatus {
+    BUSY,
+    FREE;
 
-    // Declare the possible port statuses as constants
-    public static final ServerObjectFactory$PortStatus BUSY = new ServerObjectFactory$PortStatus("BUSY", 0);
-    public static final ServerObjectFactory$PortStatus FREE = new ServerObjectFactory$PortStatus("FREE", 1);
-
-    // Define a private constructor for the enumeration
-    private ServerObjectFactory$PortStatus(String name, int ordinal) {
-        super(name, ordinal);
+    // Static method to get a PortStatus object by its name
+    public static ServerObjectFactoryPortStatus fromString(String name) {
+        return valueOf(ServerObjectFactoryPortStatus.class, name);
     }
 
-    // Define a static method to get a PortStatus object by its name
-    public static ServerObjectFactory$PortStatus valueOf(String name) {
-        return Enum.valueOf(ServerObjectFactory$PortStatus.class, name);
+    // Static method to get an array of all PortStatus objects
+    public static ServerObjectFactoryPortStatus[] values() {
+        return ServerObjectFactoryPortStatus.values();
     }
-
-    // Define a static method to get an array of all PortStatus objects
-    public static ServerObjectFactory$PortStatus[] values() {
-        return (ServerObjectFactory$PortStatus[]) $VALUES.clone();
-    }
-
-    // Define a private array of all PortStatus objects
-    private static final ServerObjectFactory$PortStatus[] $VALUES = {BUSY, FREE};
 }

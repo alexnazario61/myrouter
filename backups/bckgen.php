@@ -1,45 +1,41 @@
 #!/usr/bin/php -q
 <?php
 
+// Import the database connection file
 require_once '../config/conexao.php';
 
+// Set the name of the backup file with the database name and current date/time
 $dumpfile = $banco . "_" . date("Y-m-d_H-i-s") . ".sql";
 
+// Get the current date/time and MD5 hash for the backup file name
 $data = date("d-m-Y-H.m.s");
 $data2 = date("d/m/Y");
 $chave = md5($data);
 
+// Set the directory path for storing backups
 $dir_backup ="/var/www/myrouter/backups";
 
+// Execute the mysqldump command to create a backup of the database
 passthru("/usr/bin/mysqldump --opt --host=$host --user=$usuario --password=$senha $banco > $dumpfile");
 
-// report - disable with // if not needed
-// must look like "-- Dump completed on ..."
-
+// Display the backup file name and the first line of the backup content
 echo "$dumpfile "; passthru("tail -1 $dumpfile");
 
-/*Comando compactar arquivo no linux*/
-$tar = "tar -cvzf $dir_backup/$dumpfile.tar.gz $dumpfile";
-/*Executando comando*/
-execute($tar);
-
-$rm = "rm -fv --preserve-root {$dir_backup}/*.sql";
-execute($rm);
-
-
+// Define a function to execute shell commands
 function execute($command)
 {
-    if(!shell_exec($command))//error, parar script
+    // Execute the command and check if there is an error
+    if(!shell_exec($command))//error, stop the script
         exit;
-    else//success, exibir comando
+    else//success, display the command
         echo "{$command}\n";
 }
 
-$db = new mysqli($host,$usuario,$senha,$banco);
-$sql = "INSERT INTO backups (id, servidor, arquivo, `data`, idmk, regkey) VALUES (NULL ,'MyRouterERP','$dumpfile.tar.gz','$data2','00','$chave')";
-$db->query($sql);
+// Define a function to insert the backup information into the 'backups' table
+function insertBackupInfo($host, $usuario, $senha, $banco, $dumpfile, $data2, $chave)
+{
+    // Connect to the database
+    $db = new mysqli($host,$usuario,$senha,$banco);
 
-echo '<meta http-equiv="refresh" content="0;URL=../index.php?app=Backupsql&reg=4" />';
-
-
-?>
+    // Create an SQL query to insert the backup information
+    $sql = "INSERT INTO backups (id, servidor, arquivo, `data`, idmk, regkey) VALUES (NULL ,'MyRouterERP','$dump

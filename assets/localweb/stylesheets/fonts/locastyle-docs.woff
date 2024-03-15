@@ -1,23 +1,11 @@
-wOFF (WOFF font format)
+font_table_tags = {
+    "wOFF": "WOFF font format",
+    "CFF": "Compact Font Format",
+    "mont": "Morton order, for compressing bitmaps",
+    "OS/2": "Information about the font in Microsoft Windows",
+    "cmap": "Character map, defines how characters are encoded",
+    "gasp": "Grid-fitting and scan-conversion control table",
+    "head": "Font header",
+    "hhea": "Horizontal header",
+    "hmtx": "Horizontal metrics",
 
-CFF  (Compact Font Format)
-
-`mont` (Morton order, for compressing bitmaps)
-
-`OS/2` (Information about the font in Microsoft Windows)
-
-`cmap` (Character map, defines how characters are encoded)
-
-`gasp` (Grid-fitting and scan-conversion control table)
-
-`head` (Font header)
-
-`hhea` (Horizontal header)
-
-`hmtx` (Horizontal metrics)
-
-`maxp` (Maximum profile)
-
-`name` (Name table)
-
-`post` (Postscript)

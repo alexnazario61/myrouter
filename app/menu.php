@@ -1,31 +1,26 @@
-<?php $paginaLink = $_SERVER['QUERY_STRING'];?>
-<!-- active: stores the current page link for highlighting the active menu item -->
+<?php
+$paginaLink = !empty($_SERVER['QUERY_STRING']) ? htmlspecialchars(trim($_SERVER['QUERY_STRING'])) : '';
+?>
 
 <div class="responsive-admin-menu">
-  <!-- container for the navigation menu -->
-
   <div class="responsive-menu">MyRouter
-    <!-- title of the menu -->
-
-    <div class="menuicon"><i class="fa fa-angle-down"></i></div>
-    <!-- icon for displaying/hiding the submenu items -->
+    <div class="menuicon"><i class="fa fa-angle-down" tabindex="0"></i></div>
   </div>
 
   <ul id="menu">
-    <!-- list for the navigation menu -->
-
     <li>
-      <!-- menu item -->
-
       <a class="<?php if($paginaLink == 'app=Dashboard') {echo 'active';} ?>" href="index.php?app=Dashboard" title="Dashboard">
-        <!-- link for the menu item -->
-
         <i class="entypo-monitor "></i>
-        <span> Dashboard</span>
+        <span>Dashboard</span>
       </a>
     </li>
 
-    <!-- More menu items follow... -->
-
-  </ul>
-</div>
+    <?php
+    switch ($paginaLink) {
+      case 'app=Page1':
+        echo '<li><a class="' . ($paginaLink == 'app=Page1' ? 'active' : '') . '" href="index.php?app=Page1" title="Page 1">Page 1</a></li>';
+        break;
+      case 'app=Page2':
+        echo '<li><a class="' . ($paginaLink == 'app=Page2' ? 'active' : '') . '" href="index.php?app=Page2" title="Page 2">Page 2</a></li>';
+        break;
+      // Add more cases as needed

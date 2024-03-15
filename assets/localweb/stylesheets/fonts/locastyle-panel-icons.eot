@@ -1,1 +1,29 @@
- 
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+
+def factorial(n):
+    """Calculate the factorial of a number using recursion.
+
+    Args:
+        n (int): The number to calculate the factorial of.
+
+    Returns:
+        int: The factorial of the given number.
+
+    Raises:
+        ValueError: If the input is not an integer.
+    """
+    if not isinstance(n, int):
+        raise ValueError("Input must be an integer.")
+
+    if n < 0:
+        raise ValueError("Input must be non-negative.")
+
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n - 1)

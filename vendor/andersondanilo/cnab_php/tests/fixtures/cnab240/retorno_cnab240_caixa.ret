@@ -1,21 +1,40 @@
-10400000 - Record type: EMPRESA (Company)
-         - Field 1: Filler (spaces)
-         - Field 2: C ECON FEDERAL (Company code)
-         - Field 3: RETORNO-PRODUCAO (Return production)
-         - Field 4: Filler (spaces)
+' Record type: EMPRESA (Company)
+' Field 1: Filler (spaces)
+' Field 2: C ECON FEDERAL (Company code)
+' Field 3: RETORNO-PRODUCAO (Return production)
+' Field 4: Filler (spaces)
+Const COMPANY_RECORD_TYPE As String = "10400000"
 
-10400011 - Record type: EMPRESA (Company)
-         - Field 1: T (Type of record, detail)
-         - Field 2: Filler (spaces)
-         - Field 3: 0000162206012014 (Date: 06/12/2014)
-         - Field 4: Filler (spaces)
+' Record type: EMPRESA (Company)
+' Field 1: T (Type of record, detail)
+' Field 2: Filler (spaces)
+' Field 3: Date (MMddyyyy)
+' Field 4: Filler (spaces)
+Const DETAIL_RECORD_TYPE As String = "10400011"
 
-10400013 - Record type: EMPRESA (Company)
-         - Field 1: 00001 (Sequence number)
-         - Field 2: T (Type of record, transaction)
-         - Field 3: 0600000004321 (Filler)
-         - Field 4: 240000000111369979 (Production quantity)
-         - Field 5: 1000000000 (Value of production)
-         - Field 6: 0000000000 (Filler)
-         - Field 7: 012014000000000 (Date: 01/2014)
-         - Field 8: Filler (spaces)
+' Record type: EMPRESA (Company)
+' Field 1: Sequence number
+' Field 2: T (Type of record, transaction)
+' Field 3: Filler
+' Field 4: Production quantity
+' Field 5: Value of production
+' Field 6: Filler
+' Field 7: Date (MMyyyy)
+' Field 8: Filler (spaces)
+Const TRANSACTION_RECORD_TYPE As String = "10400013"
+
+' Example company record
+Dim companyRecord As String = COMPANY_RECORD_TYPE & String.Empty & _
+                              "C ECON FEDERAL" & String.Empty & _
+                              "RETORNO-PRODUCAO" & String.Empty
+
+' Example detail record
+Dim detailRecord As String = DETAIL_RECORD_TYPE & "T" & _
+                             String.Empty & _
+                             "06122014" & String.Empty
+
+' Example transaction record
+Dim transactionRecord As String = TRANSACTION_RECORD_TYPE & "00001" & _
+                                  "T" & _
+                                  "0600000004321" & _
+                                  "240000

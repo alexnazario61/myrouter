@@ -1,17 +1,17 @@
 // This is the serial version UID for the PoolException class.
 private static final long serialVersionUID = 675600850805080011L;
 
-// The mistake variable is a string that will hold the error message.
-private String mistake;
+// The error message is a private instance variable.
+private String errorMessage;
 
 // This is the constructor for the PoolException class, it takes a string argument.
-public PoolException(String err) {
-    // The error message is stored in the mistake variable.
-    this.mistake = err;
+public PoolException(String errorMessage) {
+    // The error message is stored in the errorMessage instance variable.
+    this.errorMessage = errorMessage;
 }
 
 // This method returns the error message as a string.
-public String getError() {
+public String getErrorMessage() {
     // Returns the error message.
-    return this.mistake;
+    return this.errorMessage;
 }

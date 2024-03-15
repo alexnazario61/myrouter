@@ -1,109 +1,41 @@
-# This code defines a series of codes used in the Itaú banking system
+# Banking system codes
 
-# Code 2: Entry confirmed with the possibility of a message (Rating 20 - Table 10)
-# This code represents an entry that has been confirmed with the possibility of a message.
+# Entry status codes
+code_2 = "Entry confirmed with possibility of message"
+code_3 = "Entry rejected"
+code_4 = "Data change - New entry or change/exclusion of accepted data"
+code_6 = "Normal liquidation"
+code_7 = "Partial liquidation - Intelligent billing (B2B)"
+code_8 = "Liquidation at notary office"
+code_9 = "Simple write-off"
+code_10 = "Write-off due to being liquidated"
+code_11 = "Write-off in installments (only in the monthly return)"
+code_12 = "Discount granted"
+code_13 = "Discount cancelled"
+code_14 = "Due date altered"
+code_15 = "Rejected write-offs"
+code_16 = "Instructions rejected"
+code_17 = "Change/exclusion of data rejected"
+code_18 = "Contractual billing - Rejected/pending instructions/changes"
+code_19 = "Confirmation of receipt of protest instruction"
+code_20 = "Confirmation of receipt of suspension of protest instruction / fee"
+code_21 = "Confirmation of receipt of do not protest instruction"
+code_23 = "Title sent to notary office / fee"
+code_24 = "Protest instruction rejected / suspended / pending"
+code_25 = "Debtor's allegations"
+code_32 = "Write-off due to being protested"
+code_33 = "Protest costs"
+code_34 = "Suspension of protest costs"
+code_35 = "Court clerk costs"
+code_36 = "Costs of the edict"
+code_37 = "Fee for issuing a bill/fee for sending a duplicate"
+code_38 = "Instruction fee"
+code_39 = "Fee for occurrences"
 
-# Code 3: Entry rejected (Rating 20 - Table 1)
-# This code represents an entry that has been rejected.
-
-# Code 4: Data change - New entry or change/exclusion of accepted data
-# This code represents a change in data, which can be a new entry or a change/exclusion of accepted data.
-
-# Code 5: Data change - Write-off
-# This code represents a change in data, which results in a write-off.
-
-# Code 6: Normal liquidation
-# This code represents a normal liquidation.
-
-# Code 7: Partial liquidation - Intelligent billing (B2B)
-# This code represents a partial liquidation using intelligent billing for business-to-business transactions.
-
-# Code 8: Liquidation at notary office
-# This code represents a liquidation that takes place at a notary office.
-
-# Code 9: Simple write-off
-# This code represents a simple write-off.
-
-# Code 10: Write-off due to being liquidated
-# This code represents a write-off that occurs because the entry has been liquidated.
-
-# Code 11: Write-off in installments (only in the monthly return)
-# This code represents a write-off in installments, which only appears in the monthly return.
-
-# Code 12: Discount granted
-# This code represents a discount that has been granted.
-
-# Code 13: Discount cancelled
-# This code represents a discount that has been cancelled.
-
-# Code 14: Due date altered
-# This code represents a change in the due date of an entry.
-
-# Code 15: Rejected write-offs (Rating 20 - Table 4)
-# This code represents a write-off that has been rejected.
-
-# Code 16: Instructions rejected (Rating 20 - Table 3)
-# This code represents an instruction that has been rejected.
-
-# Code 17: Change/exclusion of data rejected (Rating 20 - Table 2)
-# This code represents a change or exclusion of data that has been rejected.
-
-# Code 18: Contractual billing - Rejected/pending instructions/changes (Rating 20 - Table 5)
-# This code represents a contractual billing with rejected, pending instructions or changes.
-
-# Code 19: Confirmation of receipt of protest instruction
-# This code represents the confirmation of receipt of a protest instruction.
-
-# Code 20: Confirmation of receipt of suspension of protest instruction / fee
-# This code represents the confirmation of receipt of a suspension of protest instruction and the associated fee.
-
-# Code 21: Confirmation of receipt of do not protest instruction
-# This code represents the confirmation of receipt of a do not protest instruction.
-
-# Code 23: Title sent to notary office / fee
-# This code represents a title that has been sent to a notary office along with the associated fee.
-
-# Code 24: Protest instruction rejected / suspended / pending (Rating 20 - Table 7)
-# This code represents a protest instruction that has been rejected, suspended or is pending.
-
-# Code 25: Debtor's allegations (Rating 20 - Table 6)
-# This code represents allegations made by the debtor.
-
-# Code 26: Fee for notice of collection
-# This code represents the fee for a notice of collection.
-
-# Code 27: Fee for position statement (B40X)
-# This code represents the fee for a position statement (B40X).
-
-# Code 28: Fee for statement of liquidations
-# This code represents the fee for a statement of liquidations.
-
-# Code 29: Fee for maintenance of overdue titles
-# This code represents the fee for the maintenance of overdue titles.
-
-# Code 30: Monthly fee for entries and write-offs
-# This code represents the monthly fee for entries and write-offs.
-
-# Code 32: Write-off due to being protested
-# This code represents a write-off that occurs because the entry has been protested.
-
-# Code 33: Protest costs
-# This code represents the costs associated with a protest.
-
-# Code 34: Suspension of protest costs
-# This code represents the costs associated with the suspension of a protest.
-
-# Code 35: Court clerk costs
-# This code represents the costs associated with a court clerk.
-
-# Code 36: Costs of the edict
-# This code represents the costs associated with an edict.
-
-# Code 37: Fee for issuing a bill/fee for sending a duplicate
-# This code represents the fee for issuing a bill or sending a duplicate.
-
-# Code 38: Instruction fee
-# This code represents the fee for an instruction.
-
-# Code 39: Fee for occurrences
-# This code represents the fee for occur
+# Fee codes
+fee_26 = "Fee for notice of collection"
+fee_27 = "Fee for position statement (B40X)"
+fee_28 = "Fee for statement of liquidations"
+fee_29 = "Fee for maintenance of overdue titles"
+fee_30 = "Monthly fee for entries and write-offs"
+fee_34 = "Suspension of protest costs"

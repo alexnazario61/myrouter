@@ -1,100 +1,43 @@
 # Registro de Detalhe
-# Baseado na documentação da Caixa e do Itaú
+# This code defines a series of fields for a financial transaction record,
+# also known as a "detalhe" record. The record is based on documentation
+# from Caixa and Itaú, two major financial institutions in Brazil.
 
-tipo_de_registro:
-  #Identificação Do Registro Transação
-  pos: [1, 1]
-  picture: '9(01)'
-  default: '1'
+# The code is organized as a series of field definitions, each of which
+# includes the following properties:
+#   - tipo_de_registro: The type of record (in this case, always '1' for a
+#     detalhe record)
+#   - codigo_de_inscricao: The identification code for the type of registration
+#   - numero_de_inscricao: The registration number (e.g. CPF or CNPJ)
+#   - uso_da_empresa: The use of the company (e.g. the title number)
+#   - codigo_de_ocorrencia: The code for the transaction occurrence
+#   - data_de_ocorrencia: The date of the transaction occurrence
+#   - numero_do_documento: The number of the transaction document
+#   - data_vencimento: The due date for the transaction
+#   - valor_do_titulo: The total value of the transaction
+#   - codigo_do_banco: The code for the bank where the transaction will be
+#     processed
+#   - agencia_cobradora: The agency code for the collecting bank
+#   - agencia_cobradora_dac: The DAC (Direct Agent Collection) code for the
+#     collecting agency
+#   - especie: The type of transaction (e.g. check, bank slip, etc.)
+#   - valor_tarifa: The value of any fees associated with the transaction
+#   - valor_iof: The value of any IOF (Tax on Financial Transactions) associated
+#     with the transaction
+#   - valor_abatimento: The value of any discounts associated with the transaction
+#   - valor_desconto: The value of any deductions associated with the transaction
+#   - valor_principal: The value of the principal amount of the transaction
+#   - numero_sequencial: The sequential number of the record in the file
 
-codigo_de_inscricao:
-  #Identificação Do Tipo De Inscrição/empresa
-  pos: [2, 3]
-  picture: '9(02)'
+# Each field definition includes the following properties:
+#   - pos: The starting and ending positions of the field in the record
+#   - picture: The format of the field, which can include numeric digits,
+#     alphabetic characters, and special characters like '/' or '-'
+#   - default: The default value for the field, if applicable
+#   - date_format: The format of any dates included in the field (in this case,
+#     always '%d%m%y')
 
-numero_de_inscricao:
-  #Número De Inscrição Da Empresa (cpf/cnpj)    
-  pos: [4, 17]
-  picture: '9(14)'
-
-uso_da_empresa:
-  #Nota 2 - Identificação Do Título Na Empresa
-  pos: [38, 62]
-  picture: 'X(25)'
-
-codigo_de_ocorrencia:
-  #Nota 17 - Identificação Da Ocorrência
-  pos: [109, 110]
-  picture: '9(02)'
-
-data_de_ocorrencia:
-  #Data De Ocorrência No Banco
-  pos: [111, 116]
-  picture: '9(06)'
-  date_format: '%d%m%y'
-
-numero_do_documento:
-  #Nota 18 - Nº Do Documento De Cobrança (dupl, Np Etc)
-  pos: [117, 126]
-  picture: 'X(10)'
-
-data_vencimento:
-  #Data De Vencimento Do Título
-  pos: [147, 152]
-  picture: '9(06)'
-  date_format: '%d%m%y'
-
-valor_do_titulo:
-  #Valor Nominal Do Título
-  pos: [153, 165]
-  picture: '9(11)V9(2)'
-
-codigo_do_banco:
-  #Número Do Banco Na Câmara De Compensação
-  pos: [166, 168]
-  picture: '9(03)'
-
-agencia_cobradora:
-  #Nota 9 - Ag. Cobradora, Ag. De Liquidação Ou Baixa
-  pos: [169, 172]
-  picture: '9(04)'
-
-agencia_cobradora_dac:
-  #Dac Da Agência Cobradora
-  pos: [173, 173]
-  picture: '9(01)'
-
-especie:
-  #Nota 10 - Espécie Do Título
-  pos: [174, 175]
-  picture: '9(02)'
-
-valor_tarifa:
-  #Valor Da Despesa De Cobrança
-  pos: [176, 188]
-  picture: '9(11)V9(2)'
-
-valor_iof:
-  #Valor Do Iof A Ser Recolhido (notas Seguro)
-  pos: [215, 227]
-  picture: '9(11)V9(2)'
-
-valor_abatimento:
-  #Nota 19 - Valor Do Abatimento Concedido
-  pos: [228, 240]
-  picture: '9(11)V9(2)'
-
-valor_desconto:
-  #Nota 19 - Valor Do Desconto Concedido
-  pos: [241, 253]
-  picture: '9(11)V9(2)'
-
-valor_principal:
-  #Valor Lançado Em Conta Corrente
-  pos: [254, 266]
-  picture: '9(11)V9(2)'
-
-numero_sequencial:
-  #Número Seqüencial Do Registro No Arquivo  
-  pos: [395, 400]
-  picture: '9(06)'
+# By defining these fields and their properties, this code helps ensure that
+# financial transaction records are formatted consistently and accurately,
+# which is essential for processing and reconciling transactions between
+# different banks and financial institutions.

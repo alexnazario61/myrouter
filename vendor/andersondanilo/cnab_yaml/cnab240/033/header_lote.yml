@@ -1,39 +1,28 @@
-uso_exclusivo_banco_01:
-  pos: [12, 13]
-  picture: 'X(2)'
-  default: ''
+FIELD_LENGTHS: const dict = {
+  'uso_exclusivo_banco_01': 2,
+  'codigo_cedente': 9,
+  'uso_exclusivo_banco_02': 11,
+  'agencia': 4,
+  'agencia_dv': 1,
+  'conta': 9,
+  'conta_dv': 1,
+  'uso_exclusivo_banco_03': 5,
+  'uso_exclusivo_banco_04': 41,
+}
 
-codigo_cedente:
-  pos: [34, 42]
-  picture: '9(9)'
+FIELD_DEFAULTS: const dict = {
+  'uso_exclusivo_banco_01': '',
+  'uso_exclusivo_banco_02': '',
+  'uso_exclusivo_banco_03': '',
+  'uso_exclusivo_banco_04': '',
+}
 
-uso_exclusivo_banco_02:
-  pos: [43,  53]
-  picture: 'X(11)'
-  default: ''
-
-agencia:
-  pos: [54, 57]
-  picture: '9(4)'
-
-agencia_dv:
-  pos: [58, 58]
-  picture: '9(1)'
-
-conta:
-  pos: [59, 67]
-  picture: '9(9)'
-
-conta_dv:
-  pos: [68, 68]
-  picture: '9(1)'
-
-uso_exclusivo_banco_03:
-  pos: [69, 73]
-  picture: 'X(5)'
-  default: ''
-
-uso_exclusivo_banco_04:
-   pos: [200, 240]
-   picture: 'X(41)'
-   default: ''
+FIELDS: const list = [
+  {'name': 'uso_exclusivo_banco_01', 'pos': [12, 13], 'picture': 'X(2)'},
+  {'name': 'codigo_cedente', 'pos': [34, 42], 'picture': '9(9)'},
+  {'name': 'uso_exclusivo_banco_02', 'pos': [43, 53], 'picture': 'X(11)'},
+  {'name': 'agencia', 'pos': [54, 57], 'picture': '9(4)'},
+  {'name': 'agencia_dv', 'pos': [58, 58], 'picture': '9(1)'},
+  {'name': 'conta', 'pos': [59, 67], 'picture': '9(9)'},
+  {'name': 'conta_dv', 'pos': [68, 68], 'picture': '9(1)'},
+  {'name': 'uso_exclusivo_banco_03', 'pos': [69, 73], 'picture': 'X(

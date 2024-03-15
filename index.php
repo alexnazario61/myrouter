@@ -2,26 +2,22 @@
 // Start the session
 session_start();
 
-// Enable output buffering
-ob_start();
+// Disable output buffering
+@ini_set('output_buffering', 'off');
 
-// Set configurations for error reporting and file handling
-ini_set("allow_url_fopen", 1);
-ini_set("display_errors", 1);
-error_reporting(1);
-ini_set("track_errors","1");
+// Enable error reporting with the highest level
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 // Define the configuration file path
-$filename = 'config/conexao.php';
+$configFilePath = 'config/conexao.php';
 
 // Check if the configuration file exists
-if (!file_exists($filename)) {
+if (!file_exists($configFilePath)) {
     // Redirect to the installation page if the configuration file does not exist
     header("Location: setup/instalar.php");
+    exit;
 }
-
-// Set the content type and charset
-header("Content-Type: text/html; charset=ISO-8859-1", true);
 
 // Require necessary configuration and class files
 require_once 'config/conexao.class.php';
@@ -31,15 +27,15 @@ require_once 'config/librouteros/RouterOS.php';
 require_once 'config/ubnt_class.php';
 
 // Instantiate the database connection class
-$con = new conexao();
+$database = new conexao();
 
 // Connect to the database
-$con->connect();
+$connection = $database->connect();
 
 // Check if the user is logged in and has the correct permissions
-if(!isset($_SESSION['login']) or $_SESSION['nivel'] == "0"){
+if (!isset($_SESSION['login']) || $_SESSION['nivel'] == "0") {
     // Redirect to the login page if the user is not logged in or has no permissions
-    if($_SESSION['nivel'] == "0"){
+    if ($_SESSION['nivel'] == "0") {
         echo "
         <script>
             window.location = 'cliente/index.php';
@@ -53,13 +49,19 @@ if(!isset($_SESSION['login']) or $_SESSION['nivel'] == "0"){
     ";
 } else {
     // Set necessary session variables
-    $idbase = $_SESSION['id'];
-    $cslogin = $mysqli->query("SELECT * FROM usuarios WHERE id = + $idbase");
-    $logado = mysqli_fetch_array($cslogin);
+    $idBase = (int) $_SESSION['id'];
+    $csLoginQuery = $connection->prepare("SELECT * FROM usuarios WHERE id = ?");
+    $csLoginQuery->bind_param("i", $idBase);
+    $csLoginQuery->execute();
+    $csLoginResult = $csLoginQuery->get_result();
+    $logado = $csLoginResult->fetch_assoc();
     $_SESSION['empresa'] = 1;
-    $idpuser = $logado['id'];
-    $gper = $mysqli->query("SELECT * FROM permissoes WHERE codigo = '$idpuser'");
-    $permissao = mysqli_fetch_array($gper);
+    $idPUser = (int) $logado['id'];
+    $gperQuery = $connection->prepare("SELECT * FROM permissoes WHERE codigo = ?");
+    $gperQuery->bind_param("i", $idPUser);
+    $gperQuery->execute();
+    $gperResult = $gperQuery->get_result();
+    $permissao = $gperResult->fetch_assoc();
 
     // Include the navigation file
     include("app/nav.php");
@@ -68,9 +70,8 @@ if(!isset($_SESSION['login']) or $_SESSION['nivel'] == "0"){
     include("app/menu.php");
 
     // Include the content based on the user's request
-    $app = (isset ( $_GET ['app'] ) ? $_GET ['app'] : 'app');
+    $app = isset($_GET['app']) ? $_GET['app'] : 'app';
     switch ($app) {
         // ... (Include comments for each case as needed)
     }
 }
-?>

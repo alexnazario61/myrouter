@@ -1,11 +1,18 @@
 # Registro Detalhe - Segmento U (Obrigatório - Retorno)
-# Baseado na documentação da caixa cef
+# This section represents the Detail Register - Segment U, which is required and part of the return data.
 
+# data_debito_tarifa: This variable stores the debit tariff date.
+# The position of the variable in the data field is defined by the 'pos' attribute, which is [154, 161].
+# The variable is formatted as a 8-digit number, representing the date in the format 'ddmmyyyy'.
+# The 'picture' attribute defines the format as '9(8)', and the 'date_format' attribute defines the date format.
 data_debito_tarifa:
   pos: [154, 161]
   picture: '9(8)'
   date_format: '%d%m%Y'
 
+# uso_exclusivo_febraban_02: This variable is used exclusively for FEBRABAN and is 79 digits long.
+# The position of the variable in the data field is defined by the 'pos' attribute, which is [162, 240].
+# The 'picture' attribute defines the format as '9(79)', indicating that the variable can store a maximum of 79 digits.
 uso_exclusivo_febraban_02:
   pos: [162, 240]
   picture: '9(79)'

@@ -1,17 +1,35 @@
 <?php
-// Define a namespace for the TrailerArquivo class
+
 namespace Cnab\Retorno\Cnab240;
 
-// Define the TrailerArquivo class that extends the \Cnab\Format\Linha class
+use Cnab\Format\YamlLoad;
+use Cnab\Retorno\IArquivo;
+
 class TrailerArquivo extends \Cnab\Format\Linha
 {
-    // Define the constructor method for the TrailerArquivo class
-    public function __construct(\Cnab\Retorno\IArquivo $arquivo)
-    {
-        // Create a new instance of the YamlLoad class, passing the bank code and layout version
-        $yamlLoad = new \Cnab\Format\YamlLoad($arquivo->codigo_banco, $arquivo->layoutVersao);
+    /**
+     * @var IArquivo $arquivo The associated arquivo object
+     */
+    private $arquivo;
 
-        // Load the trailer_arquivo format from the cnab240 file
+    /**
+     * TrailerArquivo constructor.
+     * @param IArquivo $arquivo The associated arquivo object
+     */
+    public function __construct(IArquivo $arquivo)
+    {
+        $this->arquivo = $arquivo;
+
+        $yamlLoad = new YamlLoad($this->arquivo->codigo_banco, $this->arquivo->layoutVersao);
         $yamlLoad->load($this, 'cnab240', 'trailer_arquivo');
+    }
+
+    /**
+     * Get the associated arquivo object
+     * @return IArquivo
+     */
+    public function getArquivo(): IArquivo
+    {
+        return $this->arquivo;
     }
 }

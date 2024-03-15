@@ -1,23 +1,33 @@
 <?php
+// Start a new session
 session_start();
+
+// Start output buffering
 ob_start();
+
+// Set the content type to ISO-8859-1
 header("Content-Type: text/html; charset=ISO-8859-1", true);
-    require_once 'config/conexao.class.php';
-    require_once 'config/crud.class.php';
-    require_once 'config/mikrotik.class.php';
-    $con = new conexao(); // instancia classe de conxao
-    $con->connect(); // abre conexao com o banco
-    
-    if(isset ($_POST['registro'])){
-    
+
+// Require the necessary classes and connect to the database
+require_once 'config/conexao.class.php';
+require_once 'config/crud.class.php';
+require_once 'config/mikrotik.class.php';
+$con = new conexao(); // instantiate the connection class
+$con->connect(); // connect to the database
+
+// Check if the 'registro' POST variable is set
+if(isset ($_POST['registro'])){
+
+    // Assign the value of the 'chave' POST variable to the $chave variable
     $chave = $_POST['chave'];
-        
-    $crud = new crud('empresa'); // instancia classe com as operaÁıes crud, passando o nome da tabela como parametro
+
+    // Instantiate the CRUD class and update the 'chave' field where the 'id' is 1
+    $crud = new crud('empresa'); // instantiate the CRUD class and pass the table name as a parameter
     $crud->atualizar("chave='$chave'", "id='1'"); 
-    
+
+    // Redirect the user to the Dashboard page
     header("Location: index.php?app=Dashboard");
-    }
-    
+}
 ?>
 <!DOCTYPE html>
 
@@ -27,7 +37,7 @@ header("Content-Type: text/html; charset=ISO-8859-1", true);
 <meta name="author" content="MyRouter ERP">
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MyRouter ERP | Sistema N„o Registrado</title>
+<title>MyRouter ERP | Sistema N√£o Registrado</title>
 <link href="assets/css/styles.css" rel="stylesheet" type="text/css">
 
 <link id="demo-styles" href="assets/css/styles-defaults.css" rel="stylesheet" type="text/css">
@@ -49,17 +59,15 @@ header("Content-Type: text/html; charset=ISO-8859-1", true);
       <div class="error-code">BLOQUEADO</div>
       <div class="todo">
         <h4>Por que isso ?</h4>
-        Desculpe o nosso sistema n„o reconheceu sua chave por varios motivos.<br>
-        - Nova atualizaÁ„o ou instalaÁ„o do programa.<br>
-        - Copia sem autorizaÁ„o.<br>
+        Desculpe o nosso sistema n√£o reconheceu sua chave por varios motivos.<br>
+        - Nova atualiza√ß√£o ou instala√ß√£o do programa.<br>
+        - Copia sem autoriza√ß√£o.<br>
         - Bloqueio da mensalidade. <br>
-        - Problema de Acesso ao Servidor de LicenÁa server.myrouter.com.br <br>
+        - Problema de Acesso ao Servidor de Licen√ßa server.myrouter.com.br <br>
         * Entre em contato com nosso suporte; <b>contato@myrouter.com.br</b>, <b>http://www.myrouter.com.br</b> <br>
-        ou Ligue para nossa Central de Atendimento (61) 4063-8485 ou 8203-6581(plant„o)
+        ou Ligue para nossa Central de Atendimento (61) 4063-8485 ou 8203-6581(plant√£o)
 
-        <div class="input-group">
-
-       <!--
+        <!--
         <form action="" method="POST">
           <input placeholder="CHAVE" name="chave" type="text" class="form-control">
           <span class="input-group-btn">

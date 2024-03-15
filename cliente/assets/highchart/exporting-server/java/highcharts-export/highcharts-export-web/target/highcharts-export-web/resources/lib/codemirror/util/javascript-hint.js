@@ -1,8 +1,10 @@
 (function () {
+  // Defines a higher-order function for iterating over an array using a given function
   function forEach(arr, f) {
     for (var i = 0, e = arr.length; i < e; ++i) f(arr[i]);
   }
-  
+
+  // Checks if a given array contains a specific item
   function arrayContains(arr, item) {
     if (!Array.prototype.indexOf) {
       var i = arr.length;
@@ -16,11 +18,12 @@
     return arr.indexOf(item) != -1;
   }
 
+  // The main function for providing script hints based on the current editor, keywords, and getToken function
   function scriptHint(editor, keywords, getToken) {
     // Find the token at the cursor
     var cur = editor.getCursor(), token = getToken(editor, cur), tprop = token;
     // If it's not a 'word-style' token, ignore the token.
-		if (!/^[\w$_]*$/.test(token.string)) {
+    if (!/^[\w$_]*$/.test(token.string)) {
       token = tprop = {start: cur.ch, end: cur.ch, string: "", state: token.state,
                        className: token.string == "." ? "property" : null};
     }
@@ -52,15 +55,14 @@
             to: {line: cur.line, ch: token.end}};
   }
 
+  // Sets the CodeMirror.javascriptHint property to the scriptHint function
   CodeMirror.javascriptHint = function(editor) {
     return scriptHint(editor, javascriptKeywords,
                       function (e, cur) {return e.getTokenAt(cur);});
   };
 
+  // Defines a getToken function for CoffeeScript, imitating the behavior of the getTokenAt method in javascript.js
   function getCoffeeScriptToken(editor, cur) {
-  // This getToken, it is for coffeescript, imitates the behavior of
-  // getTokenAt method in javascript.js, that is, returning "property"
-  // type and treat "." as indepenent token.
     var token = editor.getTokenAt(cur);
     if (cur.ch == token.start + 1 && token.string.charAt(0) == '.') {
       token.end = token.start;
@@ -75,20 +77,25 @@
     return token;
   }
 
+  // Sets the CodeMirror.coffeescriptHint property to the scriptHint function with the CoffeeScript-specific getToken function
   CodeMirror.coffeescriptHint = function(editor) {
     return scriptHint(editor, coffeescriptKeywords, getCoffeeScriptToken);
   };
 
+  // Defines arrays of string properties, array properties, and function properties
   var stringProps = ("charAt charCodeAt indexOf lastIndexOf substring substr slice trim trimLeft trimRight " +
                      "toUpperCase toLowerCase split concat match replace search").split(" ");
   var arrayProps = ("length concat join splice push pop shift unshift slice reverse sort indexOf " +
                     "lastIndexOf every some filter forEach map reduce reduceRight ").split(" ");
   var funcProps = "prototype apply call bind".split(" ");
+
+  // Defines arrays of JavaScript and CoffeeScript keywords
   var javascriptKeywords = ("break case catch continue debugger default delete do else false finally for function " +
                   "if in instanceof new null return switch throw true try typeof var void while with").split(" ");
   var coffeescriptKeywords = ("and break catch class continue delete do else extends false finally for " +
                   "if in instanceof isnt new no not null of off on or return switch then throw true try typeof until void while with yes").split(" ");
 
+  // The main function for getting completions based on the token, context, and keywords
   function getCompletions(token, context, keywords) {
     var found = [], start = token.string;
     function maybeAdd(str) {
@@ -98,7 +105,7 @@
       if (typeof obj == "string") forEach(stringProps, maybeAdd);
       else if (obj instanceof Array) forEach(arrayProps, maybeAdd);
       else if (obj instanceof Function) forEach(funcProps, maybeAdd);
-      for (var name in obj) maybeAdd(name);
+      else for (var name in obj) maybeAdd(name);
     }
 
     if (context) {
@@ -109,26 +116,4 @@
         base = window[obj.string];
       else if (obj.className == "string")
         base = "";
-      else if (obj.className == "atom")
-        base = 1;
-      else if (obj.className == "function") {
-        if (window.jQuery != null && (obj.string == '$' || obj.string == 'jQuery') &&
-            (typeof window.jQuery == 'function'))
-          base = window.jQuery();
-        else if (window._ != null && (obj.string == '_') && (typeof window._ == 'function'))
-          base = window._();
-      }
-      while (base != null && context.length)
-        base = base[context.pop().string];
-      if (base != null) gatherCompletions(base);
-    }
-    else {
-      // If not, just look in the window object and any local scope
-      // (reading into JS mode internals to get at the local variables)
-      for (var v = token.state.localVars; v; v = v.next) maybeAdd(v.name);
-      gatherCompletions(window);
-      forEach(keywords, maybeAdd);
-    }
-    return found;
-  }
-})();
+      else if (obj

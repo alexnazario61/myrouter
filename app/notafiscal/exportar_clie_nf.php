@@ -1,51 +1,60 @@
 <?php
-ini_set('display_errors',1);
-ini_set('display_startup_erros',1);
-error_reporting(E_ERROR | E_PARSE | E_WARNING );
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-require_once("../../config/conexao.class.php");
+require_once "../../config/conexao.class.php";
 
-$conlote = base64_decode($_GET['id']);
+$conlote = filter_var(base64_decode($_GET['id']), FILTER_SANITIZE_STRING);
+$nlote = filter_var($_GET['nlote'], FILTER_SANITIZE_STRING);
 
-$nlote =  $_GET['nlote'];
+if ($conlote && $nlote) {
+    $conn = new Conexao();
+    $mysqli = $conn->connect();
 
-$alterar =$mysqli->query("SELECT * FROM notafiscal");
-$campo = mysqli_fetch_array($alterar);
+    if ($mysqli) {
+        $sql = "SELECT
+                    cliente,
+                    cliente,
+                    clientenome,
+                    clienteendereco,
+                    clientenumero,
+                    clientecomplemento,
+                    clientebairro,
+                    clientecidade,
+                    clienteuf,
+                    clientecep,
+                    clientecpf,
+                    clienterg,
+                    diavencimento,
+                    modelonota,
+                    cfop,
+                    clientetelefone,
+                    clienteemail,
+                    tipoassinante,
+                    tipoutilizacao,
+                    emissao,
+                    emissao,
+                    nnota,
+                    codmunicipio
+                FROM
+                    notafiscal
+                WHERE
+                    nlote = ?";
 
+        if ($stmt = $mysqli->prepare($sql)) {
+            $stmt->bind_param("s", $nlote);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-$data_emissao = date('d/m/Y',strtotime($campo['emissao']));
+            if ($result->num_rows > 0) {
+                $output = "";
+                while ($row = $result->fetch_assoc()) {
+                    $data_emissao = date('d/m/Y', strtotime($row['emissao']));
+                    $telefone = preg_replace("/\D+/", "", $row['clientetelefone']);
 
-$telefone = preg_replace("/\D+/", "", $campo['clientetelefone']); // remove qualquer caracter não numérico
-
-
-$selEmpresa = $mysqli->query("SELECT * FROM empresa");
-$campoEmpresa = mysqli_fetch_array($selEmpresa);
-
-$ModeloNotaCampo = $campoEmpresa['modelonota'];
-
-// Fetch Record from Database
-
-$output = "";
-$sql = $mysqli->query("SELECT cliente,cliente,clientenome,clienteendereco,clientenumero,clientecomplemento,clientebairro,clientecidade,clienteuf,clientecep,'','',clientecpf,clienterg,diavencimento,'$ModeloNotaCampo',cfop,'$telefone',clienteemail,'$telefone',tipoassinante,tipoutilizacao,'$data_emissao','$data_emissao',nnota,'',codmunicipio FROM notafiscal WHERE nlote ='$conlote'");
-$columns_total = mysqli_num_fields($sql);
-
-// Get Records from the table
-
-while ($row = mysqli_fetch_array($sql)) {
-    for ($i = 0; $i < $columns_total; $i++) {
-        $output .=''.$row["$i"].'|';
-    }
-    $output .="\n";
-}
-
-
-// Download the file
-
-$filename = "clie_nf.txt";
-header('Content-type: application/text');
-header('Content-Disposition: attachment; filename='.$filename);
-
-echo $output;
-exit;
-
-?>
+                    $output .= "{$row['cliente']}|"
+                              . "{$row['cliente']}|"
+                              . "{$row['clientenome']}|"
+                              . "{$row['clienteendereco']}|"
+                              . "{$row['clientenumero']}|

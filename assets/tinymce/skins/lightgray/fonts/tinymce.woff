@@ -1,71 +1,10 @@
-// This is an OS/2 header for a font file.
-OS/2          // OS/2 header tag
+; OS/2 header for a font file
+;
+; For more information about each field, refer to the OS/2/fONTMETRICS structure
+; in the Microsoft documentation:
+; https://docs.microsoft.com/en-us/typography/opentype/spec/os2#fontmetrics-font-metrics-table
+;
 
+OS/2               ; OS/2 header tag
 
-// The following line specifies the version number of the font file.
-00010000      // Version number: 0.0.1
-
-
-// The following lines define the x-height, cap height, and ascender and descender values for the font.
-0000          // x-height
-0000          // cap height
-0000          // ascender
-F7FF          // descender
-
-// The following lines define the line gap and the typographic ascender and descender values for the font.
-0000          // line gap
-0000          // typographic ascender
-F7FF          // typographic descender
-
-
-// The following lines define the usWinAscent and usWinDescent values for the font.
-0000          // usWinAscent
-F7FF          // usWinDescent
-
-// The following lines define the ulCodePageRange values for the font.
-00030000      // ulCodePageRange1
-00000300      // ulCodePageRange2
-00000000      // ulCodePageRange3
-
-// The following lines define the sxHeight and sCapHeight values for the font.
-0000          // sxHeight
-0000          // sCapHeight
-
-// The following lines define the usFirstChar and usLastChar values for the font.
-0020          // usFirstChar
-007E          // usLastChar
-
-// The following lines define the usDefaultChar and usBreakChar values for the font.
-0000          // usDefaultChar
-0000          // usBreakChar
-
-// The following lines define the uFontFamily value for the font.
-0002          // uFontFamily
-
-// The following lines define the uFontSubfamily value for the font.
-0000          // uFontSubfamily
-
-// The following lines define the uReserved_0 value for the font.
-0000          // uReserved_0
-
-// The following lines define the uReserved_1 value for the font.
-0000          // uReserved_1
-
-// The following lines define the uReserved_2 value for the font.
-0000          // uReserved_2
-
-// The following lines define the uReserved_3 value for the font.
-0000          // uReserved_3
-
-// The following lines define the uReserved_4 value for the font.
-0000          // uReserved_4
-
-// The following lines define the uReserved_5 value for the font.
-0000          // uReserved_5
-
-// The following lines define the fsSelection value for the font.
-0002          // fsSelection
-
-// The following lines define the fsType value for the font.
-0001          // fsType
-
+00010000           ; Version number: 

@@ -1,53 +1,18 @@
-/* 
- * ServerState.java
- * 
- * This enumeration class represents the different states that a server can be in.
- */
-
 package com.highcharts.export.server;
 
-import java.lang.Enum;
+public enum ServerState {
+    IDLE,
+    DEAD,
+    BUSY,
+    TIMEDOUT,
+    ACTIVE;
 
-public final class ServerState extends Enum<ServerState> {
-    
-    /* 
-     * IDLE - The server is idle and ready to process requests.
-     */
-    public static final ServerState IDLE = new ServerState("IDLE", 0);
-    
-    /* 
-     * DEAD - The server has failed and cannot process requests.
-     */
-    public static final ServerState DEAD = new ServerState("DEAD", 1);
-    
-    /* 
-     * BUSY - The server is currently processing a request.
-     */
-    public static final ServerState BUSY = new ServerState("BUSY", 2);
-    
-    /* 
-     * TIMEDOUT - The server has timed out while processing a request.
-     */
-    public static final ServerState TIMEDOUT = new ServerState("TIMEDOUT", 3);
-    
-    /* 
-     * ACTIVE - The server is actively processing requests.
-     */
-    public static final ServerState ACTIVE = new ServerState("ACTIVE", 4);
-    
-    /* 
-     * $VALUES - A table containing all the enumeration values.
-     */
-    private static final ServerState[] $VALUES = { IDLE, DEAD, BUSY, TIMEDOUT, ACTIVE };
-    
-    /* 
-     * values - Returns an array of all the enumeration values.
-     */
-    public static ServerState[] values() {
-        return (ServerState[]) $VALUES.clone();
+    private ServerState(String name) {
+        this.name = name;
     }
-    
-    /* 
-     * valueOf - Returns the enumeration value corresponding to the given string.
-     */
-    public static ServerState valueOf
+
+    private String name;
+
+    public String getName() {
+        return name;
+

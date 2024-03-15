@@ -1,19 +1,27 @@
 # Registro Detalhe - Segmento T (Obrigatório - Retorno)
+# This code defines a structured format for a "Registro Detalhe - Segmento T" which is a required segment for a return transaction.
+
 # Baseado na documentação da Caixa
-# Disponível em: http://www.caixa.gov.br/downloads/cobranca-caixa-manuais/LEIAUTE_CNAB_240_SIGCB_COBRANCA_CAIXA.pdf
+# Disponível em: <http://www.caixa.gov.br/downloads/cobranca-caixa-manuais/LEIAUTE_CNAB_240_SIGCB_COBRANCA_CAIXA.pdf>
+# The code is based on the documentation provided by Caixa. The specific document can be found at the following URL:
 
-codigo_cedente:
-  pos: [24, 29]
-  picture: '9(6)'
+# codigo_cedente:
+# This section defines a field called "codigo_cedente" which contains the identification number of the financial institution.
+#  pos: [24, 29]
+#  The field starts at position 24 and ends at position 29, with a total length of 6 digits.
+#  picture: '9(6)'
+#  The field only contains numeric characters and is exactly 6 digits long.
 
-nosso_numero:
-  pos: [42, 56]
-  picture: '9(15)'
+# nosso_numero:
+# This section defines a field called "nosso_numero" which contains the identification number of the title in the creditor's records.
+#  pos: [42, 56]
+#  The field starts at position 42 and ends at position 56, with a total length of 15 digits.
+#  picture: '9(15)'
+#  The field only contains numeric characters and is exactly 15 digits long.
 
-numero_documento:
-  pos: [59, 69]
-  picture: 'X(11)'
-
-valor_titulo:
-  pos: [82, 96]
-  picture: '9(13)V9(2)'
+# numero_documento:
+# This section defines a field called "numero_documento" which contains the number of the document related to the title.
+#  pos: [59, 69]
+#  The field starts at position 59 and ends at position 69, with a total length of 11 characters.
+#  picture: 'X(11)'
+#  The field can contain any characters (numeric or alphabetic) and is

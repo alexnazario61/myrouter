@@ -3,60 +3,44 @@
 
 # Field: Código do banco
 codigo_banco = {
-  'pos': [1, 3],    # Position
-  'picture': '9(3)',  # Picture clause
+    'pos': [1, 3],    # Position
+    'picture': '000'   # Picture clause (3 digits)
 }
 
 # Field: Lote de serviço
 lote_servico = {
-  'pos': [4, 7],
-  'picture': '9(4)',
+    'pos': [4, 7],
+    'picture': '0000'  # Picture clause (4 digits)
 }
 
 # Field: Tipo de registro
 tipo_registro = {
-  'pos': [8, 8],
-  'picture': '9(1)',
-  'default': '3',  # Default value
+    'pos': [8, 8],
+    'picture': '0'    # Picture clause (1 digit)
+    'default': '3'    # Default value
 }
 
 # Field: Número sequencial do lote
 numero_sequencial_lote = {
-  'pos': [9, 13],
-  'picture': '9(5)',
+    'pos': [9, 13],
+    'picture': '00000'  # Picture clause (5 digits)
 }
 
 # Field: Código do segmento
 codigo_segmento = {
-  'pos': [14, 14],
-  'picture': 'X(1)',
-  'default': 'Q',  # Default value
+    'pos': [14, 14],
+    'picture': 'X'     # Picture clause (1 alphanumeric character)
+    'default': 'Q'     # Default value
 }
 
 # Field: Uso exclusivo Febraban 01
 uso_exclusivo_febraban_01 = {
-  'pos': [15, 15],
-  'picture': 'X(1)',
-  'default': '',  # Default value
+    'pos': [15, 15],
+    'picture': 'X'     # Picture clause (1 alphanumeric character)
+    'default': ''      # Default value
 }
 
 # Field: Código de ocorrência
 codigo_ocorrencia = {
-  'pos': [16, 17],
-  'picture': '9(2)',
-}
-
-# Field: Sacado - Código de inscrição
-sacado_codigo_inscricao = {
-  'pos': [18, 18],
-  'picture': '9(1)',
-}
-
-# Field: Sacado - Número de inscrição
-sacado_numero_inscricao = {
-  'pos': [19, 33],
-  'picture': '9(15)',
-}
-
-# Field: Nome do sacado
-n
+    'pos': [16, 17],
+    'picture': '00'    # Picture clause

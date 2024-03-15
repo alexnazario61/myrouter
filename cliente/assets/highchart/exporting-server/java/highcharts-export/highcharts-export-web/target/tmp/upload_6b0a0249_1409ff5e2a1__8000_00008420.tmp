@@ -1,23 +1,22 @@
-<!-- This is the background rectangle of the chart -->
-<rect rx="5" ry="5" fill="#FFFFFF" x="0" y="0" width="600" height="400"></rect>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
+  <!-- Background rectangle -->
+  <rect x="0" y="0" width="600" height="400" rx="5" ry="5" fill="#FFFFFF" />
 
-<!-- This is the grid lines for the chart -->
-<g class="highcharts-grid"></g>
+  <!-- Grid lines, x and y-axis, data series, and axis labels are typically generated dynamically using JavaScript in Highcharts library.
+       Here, I'll just provide placeholders for those elements. -->
+  <g class="highcharts-grid" />
+  <g class="highcharts-axis" />
+  <g class="highcharts-series-group" />
+  <g class="highcharts-axis-labels" />
 
-<!-- This is the x and y-axis of the chart -->
-<g class="highcharts-axis"></g>
+  <!-- Chart title -->
+  <text x="300" y="25" text-anchor="middle" class="highcharts-title">
+    <tspan x="300">Chart title</tspan>
+  </text>
 
-<!-- This is the data series or plotted points in the chart -->
-<g class="highcharts-series-group"></g>
+  <!-- Legend -->
+  <g class="highcharts-legend" />
 
-<!-- This is the title of the chart -->
-<text x="300" y="25" style="..." text-anchor="middle" class="highcharts-title"><tspan x="300">Chart title</tspan></text>
-
-<!-- This is the legend of the chart, which displays the series name -->
-<g class="highcharts-legend"></g>
-
-<!-- This is the labels for the x and y-axis -->
-<g class="highcharts-axis-labels"></g>
-
-<!-- This is the tooltip that appears when hovering over a data point -->
-<g class="highcharts-tooltip" style="..." visibility="hidden"></g>
+  <!-- Tooltip, typically shown/hidden using JavaScript in Highcharts library -->
+  <g class="highcharts-tooltip" style="..." visibility="hidden" />
+</svg>

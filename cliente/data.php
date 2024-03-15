@@ -1,40 +1,31 @@
-<?php
+<?php // Starting PHP code block
 
-require_once('../config/api_mt_include.php');
+require_once('../config/api_mt_include.php'); // Include the API configuration file
 
-$ipRouteros = $_GET["nasipaddress"];
-$Username="edielson";
-$Pass="33#@myrouter@#33";
-$api_puerto=8728;
-$interface = $_GET["interface"]; //"<pppoe-nombreusuario>";
+$ipRouteros = $_GET["nasipaddress"]; // Get the router IP address from GET request
+$Username = "edielson"; // Set the username
+$Pass = "33#@myrouter@#33"; // Set the password
+$api_puerto = 8728; // Set the API port
+$interface = $_GET["interface"]; // Get the interface name from GET request
 
-	$API = new routeros_api();
-	$API->debug = false;
-	if ($API->connect($ipRouteros , $Username , $Pass, $api_puerto)) {
-		$rows = array(); $rows2 = array();	
-		   $API->write("/interface/monitor-traffic",false);
-		   $API->write("=interface=".'<pppoe-'.$interface.">",false);
-		   $API->write("=once=",true);
-		   $READ = $API->read(false);
-		   $ARRAY = $API->parse_response($READ);
-			if(count($ARRAY)>0){  
-				$rx = $ARRAY[0]["rx-bits-per-second"];
-				$tx = $ARRAY[0]["tx-bits-per-second"];
-				$rows['name'] = 'Tx';
-				$rows['data'][] = $tx;
-				$rows2['name'] = 'Rx';
-				$rows2['data'][] = $rx;
-			}else{  
-				echo $ARRAY['!trap'][0]['message'];	 
-			} 
-	}else{
-		echo "<font color='#ff0000'>La conexion ha fallado. Verifique si el Api esta activo.</font>";
-	}
-	$API->disconnect();
+$API = new routeros_api(); // Initialize the routeros_api
+$API->debug = false; // Disable debug mode
 
-	$result = array();
-	array_push($result,$rows);
-	array_push($result,$rows2);
-	print json_encode($result, JSON_NUMERIC_CHECK);
+if ($API->connect($ipRouteros, $Username, $Pass, $api_puerto)) { // Connect to the router using the provided credentials
+	$rows = array(); $rows2 = array(); // Initialize arrays to store traffic data
 
-?>
+	$API->write("/interface/monitor-traffic", false); // Write the command to monitor traffic
+	$API->write("=interface=" . '<pppoe-' . $interface . '>', false); // Set the interface to monitor
+	$API->write("=once=", true); // Get the traffic data once
+	$READ = $API->read(false); // Read the response
+	$ARRAY = $API->parse_response($READ); // Parse the response
+
+	if (count($ARRAY) > 0) { // Check if the response contains data
+		$rx = $ARRAY[0]["rx-bits-per-second"]; // Get the received traffic rate
+		$tx = $ARRAY[0]["tx-bits-per-second"]; // Get the transmitted traffic rate
+
+		$rows['name'] = 'Tx'; // Set the name for transmitted traffic data
+		$rows['data'][] = $tx; // Add the transmitted traffic rate to the data array
+
+		$rows2['name'] = 'Rx'; // Set the name for received traffic data
+		$rows2['data'][] = $

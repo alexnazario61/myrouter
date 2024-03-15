@@ -1,6 +1,32 @@
+<style>
 .editable-address {
-	margin-bottom: 5px; display: block;
+ margin-bottom: 5px; /* added semicolon to properly terminate the declaration */
+ display: block;
 }
 .editable-address span {
-	width: 70px; display: inline-block;
+ width: 70px; /* added semicolon to properly terminate the declaration */
+ display: inline-block;
+ vertical-align: top; /* added to align the labels and input fields */
 }
+.editable-address input {
+ vertical-align: top; /* added to align the labels and input fields */
+}
+</style>
+
+<!-- added some HTML to demonstrate how the CSS can be used -->
+<div class="editable-address">
+ <span>Street:</span>
+ <input type="text" name="street" />
+</div>
+<div class="editable-address">
+ <span>City:</span>
+ <input type="text" name="city" />
+</div>
+<div class="editable-address">
+ <span>State:</span>
+ <input type="text" name="state" />
+</div>
+<div class="editable-address">
+ <span>Zip:</span>
+ <input type="text" name="zip" />
+</div>

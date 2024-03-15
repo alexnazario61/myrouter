@@ -1,20 +1,37 @@
 // Stacked Icons
 // -------------------------
 
+// Creates a stack of icons using the Font Awesome library.
+// The stack is positioned relatively, and the individual icons are positioned absolutely.
 .#{$fa-css-prefix}-stack {
   position: relative;
   display: inline-block;
-  width: 2em;
-  height: 2em;
-  line-height: 2em;
-  vertical-align: middle;
+  width: 2em; // Sets the width of the stack to 2em
+  height: 2em; // Sets the height of the stack to 2em
+  line-height: 2em; // Sets the line-height of the stack to 2em
+  vertical-align: middle; // Vertically aligns the stack with surrounding elements
 }
-.#{$fa-css-prefix}-stack-1x, .#{$fa-css-prefix}-stack-2x {
+
+// Defines the styles for the first and second level icons in the stack.
+// The first level icon is positioned at the top of the stack, and the second level icon is positioned on top of the first level icon.
+.#{$fa-css-prefix}-stack-1x,
+.#{$fa-css-prefix}-stack-2x {
   position: absolute;
   left: 0;
   width: 100%;
-  text-align: center;
+  text-align: center; // Centers the icons horizontally within the stack
 }
-.#{$fa-css-prefix}-stack-1x { line-height: inherit; }
-.#{$fa-css-prefix}-stack-2x { font-size: 2em; }
-.#{$fa-css-prefix}-inverse { color: $fa-inverse; }
+
+// The first level icon is not adjusted in size, while the second level icon is doubled in size.
+.#{$fa-css-prefix}-stack-1x {
+  line-height: inherit; // Inherits the line-height from the parent stack element
+}
+
+.#{$fa-css-prefix}-stack-2x {
+  font-size: 2em; // Doubles the size of the second level icon
+}
+
+// The inverse class can be used to invert the colors of the icons in the stack.
+.#{$fa-css-prefix}-inverse {
+  color: $fa-inverse; // Sets the color of the icons to the inverse color
+}

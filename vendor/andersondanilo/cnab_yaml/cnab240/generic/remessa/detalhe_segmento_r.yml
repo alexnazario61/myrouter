@@ -1,80 +1,59 @@
+from typing import Dict, NamedTuple
+
+class Field(NamedTuple):
+    """A named tuple for defining a field in the detailed record of Segmento Q.
+
+    Args:
+        pos: A tuple of two integers representing the starting and ending positions of the field in the record.
+        picture: A string describing the format of the field, such as '9(3)' for a numeric field with 3 digits.
+        default: The default value of the field.
+    """
+    pos: tuple[int, int]
+    picture: str
+    default: str
+
+
 # Registro Detalhe - Segmento Q (Obrigatório - Remessa)
 # This code defines a dictionary for the layout of a detailed record in the Segmento Q
 # section of a remittance file. The layout is based on Caixa's documentation.
 
-codigo_banco = {
-  # The 'codigo_banco' key contains a dictionary that describes the 'Código do Banco' field.
-  # The value of this key is another dictionary with the following keys:
-  # 'pos': [1, 3], which indicates the starting and ending positions of the field in the
-  # record.
-  # 'picture': '9(3)', which describes the format of the field as a numeric field with 3 digits.
-  # The 'codigo_banco' field contains the bank code provided by the Central Bank for
-  # identification of the receiving or sending bank.
-  'pos': [1, 3],
-  'picture': '9(3)',
-  # The default value is set to '104', which is the bank code for CAIXA ECONÔMICA FEDERAL.
-  'default': '104'
-}
+CAIXA_BANK_CODE = '104'
 
-lote_servico = {
-  # The 'lote_servico' key contains a dictionary that describes the 'Lote de Serviço' field.
-  # The value of this key is another dictionary with the following keys:
-  # 'pos': [4, 7], which indicates the starting and ending positions of the field in the
-  # record.
-  # 'picture': '9(4)', which describes the format of the field as a numeric field with 4 digits.
-  # The 'lote_servico' field contains the number of the service batch.
-  'pos': [4, 7],
-  'picture': '9(4)'
+segmento_q_fields = {
+    'codigo_banco': Field(pos=(1, 3), picture='9(3)', default=CAIXA_BANK_CODE),
+    'lote_servico': Field(pos=(4, 7), picture='9(4)'),
+    'tipo_registro': Field(pos=(8, 8), picture='9(1)', default='3'),
+    'numero_sequencial_lote': Field(pos=(9, 13), picture='9(5)'),
+    'codigo_segmento': Field(pos=(14, 14), picture='X(1)', default='Q'),
+    'uso_exclusivo_febraban_01': Field(pos=(15, 15), picture='X(1)', default=''),
+    'codigo_ocorrencia': Field(pos=(16, 19), picture='9(4)'),
+    'numero_contrato': Field(pos=(20, 27), picture='9(8)'),
+    'numero_titulo': Field(pos=(28, 37), picture='9(10)'),
+    'data_vencimento': Field(pos=(38, 43), picture='9(6)'),
+    'valor_titulo': Field(pos=(44, 53), picture='9(10).2F'),
+    'uso_exclusivo_febraban_02': Field(pos=(54, 54), picture='X(1)', default=''),
+    'agencia_cedente': Field(pos=(55, 58), picture='9(4)'),
+    'numero_conta_cedente': Field(pos=(59, 63), picture='9(5)'),
+    'numero_conta_cedente_dv': Field(pos=(64, 64), picture='X(1)'),
+    'nome_cedente': Field(pos=(65, 104), picture='X(40)'),
+    'numero_documento': Field(pos=(105, 114), picture='9(10)'),
+    'uso_exclusivo_febraban_03': Field(pos=(115, 115), picture='X(1)', default=''),
+    'data_operacao_baixa': Field(pos=(116, 121), picture='9(6)'),
+    'valor_baixa': Field(pos=(122, 131), picture='9(10).2F'),
+    'valor_iof': Field(pos=(132, 141), picture='9(10).2F'),
+    'valor_abatimento': Field(pos=(142, 151), picture='9(10).2F'),
+    'valor_outras_deducoes': Field(pos=(152, 161), picture='9(10).2F'),
+    'valor_liquido_cobrado': Field(pos=(162, 171), picture='9(10).2F'),
+    'data_credito': Field(pos=(172, 177), picture='9(6)'),
+    'uso_exclusivo_febraban_04': Field(pos=(178, 178), picture='X(1)', default=''),
+    'numero_sequencial_titulo': Field(pos=(179, 183), picture='9(5)'),
+    'numero_sequencial_arquivo': Field(pos=(184, 193), picture='9(10)'),
+    'uso_exclusivo_febraban_05': Field(pos=(194, 194), picture='X(1)', default=''),
+    'codigo_banco_beneficiario': Field(pos=(195, 197), picture='9(3)'),
+    'nosso_numero': Field(pos=(198, 207), picture='9(10)'),
+    'numero_sequencial_registro': Field(pos=(208, 213), picture='9(6)'),
+    'uso_exclusivo_febraban_06': Field(pos=(214, 214), picture='X(1)', default=''),
+    'codigo_movimento': Field(pos=(215, 215), picture='X(1)'),
+    'uso_exclusivo_febraban_07': Field(pos=(216, 216), picture='X(1)', default=''),
+    'segmento_q_filler': Field(pos=(217, 220), picture='X(4)'),
 }
-
-tipo_registro = {
-  # The 'tipo_registro' key contains a dictionary that describes the 'Tipo do Registro' field.
-  # The value of this key is another dictionary with the following keys:
-  # 'pos': [8, 8], which indicates the starting and ending positions of the field in the
-  # record.
-  # 'picture': '9(1)', which describes the format of the field as a numeric field with 1 digit.
-  # The 'tipo_registro' field contains the type of record.
-  # The default value is set to '3', which is the type for the detailed record in Segmento Q.
-  'pos': [8, 8],
-  'picture': '9(1)',
-  'default': '3'
-}
-
-numero_sequencial_lote = {
-  # The 'numero_sequencial_lote' key contains a dictionary that describes the 'Número Sequencial do Lote' field.
-  # The value of this key is another dictionary with the following keys:
-  # 'pos': [9, 13], which indicates the starting and ending positions of the field in the
-  # record.
-  # 'picture': '9(5)', which describes the format of the field as a numeric field with 5 digits.
-  # The 'numero_sequencial_lote' field contains the sequential number of the lot.
-  'pos': [9, 13],
-  'picture': '9(5)'
-}
-
-codigo_segmento = {
-  # The 'codigo_segmento' key contains a dictionary that describes the 'Código do Segmento' field.
-  # The value of this key is another dictionary with the following keys:
-  # 'pos': [14, 14], which indicates the starting and ending positions of the field in the
-  # record.
-  # 'picture': 'X(1)', which describes the format of the field as an alphanumeric field with 1 character.
-  # The 'codigo_segmento' field contains the code of the segment.
-  # The default value is set to 'Q', which is the code for the detailed record in Segmento Q.
-  'pos': [14, 14],
-  'picture': 'X(1)',
-  'default': 'Q'
-}
-
-uso_exclusivo_febraban_01 = {
-  # The 'uso_exclusivo_febraban_01' key contains a dictionary that describes the 'Uso Exclusivo FEBRABAN 01' field.
-  # The value of this key is another dictionary with the following keys:
-  # 'pos': [15, 15], which indicates the starting and ending positions of the field in the
-  # record.
-  # 'picture': 'X(1)', which describes the format of the field as an alphanumeric field with 1 character.
-  # The 'uso_exclusivo_febraban_01' field is for exclusive use by FEBRABAN.
-  'pos': [15, 15],
-  'picture': 'X(1)',
-  'default': ''
-}
-
-codigo_ocorrencia = {
-  # The 'codigo_ocorrencia' key contains

@@ -1,6 +1,11 @@
 # 104 = Caixa Econômica
 
-brancos01:
+# The 'brancos01' variable is used to store the complement of a register.
+# The position of the complement in the register is between indices 8 and 394,
+# and it has a length of 387 characters. The 'picture' attribute 'X(387)'
+# indicates that each character in the complement can be any alphanumeric character.
+brancos01: 
   #Complemento De Registro
   pos: [8, 394]
   picture: 'X(387)'
+

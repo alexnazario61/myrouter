@@ -1,20 +1,35 @@
-// Stacked Icons
-// -------------------------
+// Font Awesome stacked icons
 
-.@{fa-css-prefix}-stack {
+.fa-stack {
+  // Position and size of the stacked icon container
   position: relative;
   display: inline-block;
   width: 2em;
   height: 2em;
   line-height: 2em;
   vertical-align: middle;
+
+  // Styles for the stacked icons (1x and 2x)
+  &-1x,
+  &-2x {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+
+    // Set the line-height of the 1x icon to inherit the line-height of its container
+    &-1x {
+      line-height: inherit;
+    }
+
+    // Double the font-size of the 2x icon
+    &-2x {
+      font-size: 2em;
+    }
+  }
+
+  // Inverse variant for stacked icons
+  &.fa-inverse {
+    color: $fa-inverse;
+  }
 }
-.@{fa-css-prefix}-stack-1x, .@{fa-css-prefix}-stack-2x {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  text-align: center;
-}
-.@{fa-css-prefix}-stack-1x { line-height: inherit; }
-.@{fa-css-prefix}-stack-2x { font-size: 2em; }
-.@{fa-css-prefix}-inverse { color: @fa-inverse; }

@@ -1,43 +1,39 @@
-// Vari·vel que receber· o objeto XMLHttpRequest
+// Vari√°vel que receber√° o objeto XMLHttpRequest
+// This variable will hold the XMLHttpRequest object, which is used to make AJAX requests.
 var req;
- 
+
 function validarLogin(campo, valor) {
  
 // Verificar o Browser
-// Firefox, Google Chrome, Safari e outros
+// This block checks if the user's browser supports the XMLHttpRequest object.
 if(window.XMLHttpRequest) {
    req = new XMLHttpRequest();
 }
-// Internet Explorer
+// If the browser is Internet Explorer, it uses the ActiveXObject instead.
 else if(window.ActiveXObject) {
    req = new ActiveXObject("Microsoft.XMLHTTP");
 }
- 
-// Aqui vai o valor e o nome do campo que pediu a requisiÁ„o.
+
+// Aqui vai o valor e o nome do campo que pediu a requisi√ß√£o.
+// This line creates the URL for the AJAX request, including the field name and value as parameters.
 var url = "ajax/logintecnicos.php?campo="+campo+"&valor="+valor;
- 
-// Chamada do mÈtodo open para processar a requisiÁ„o
+
+// Chamada do m√©todo open para processar a requisi√ß√£o
+// This line opens the connection to the server using the GET method.
 req.open("Get", url, true);
- 
-// Quando o objeto recebe o retorno, È chamada a seguinte funÁ„o;
+
+// Quando o objeto recebe o retorno, √© chamada a seguinte fun√ß√£o;
+// This block defines the function to be called when the AJAX request returns a response.
 req.onreadystatechange = function() {
  
 	// Exibe a mensagem "Verificando" enquanto carrega
+	// This block displays the message "Verificando..." while the AJAX request is being processed.
 	if(req.readyState == 1) {
 		document.getElementById('campo_login').innerHTML = '<font color="gray">Verificando...</font>';
 	}
  
-	// Verifica se o Ajax realizou todas as operaÁıes corretamente
+	// Verifica se o Ajax realizou todas as opera√ß√µes corretamente
+	// This block checks if the AJAX request was successful.
 	if(req.readyState == 4 && req.status == 200) {
-	// Resposta retornada pelo validacao.php (pagina de conex„o com o BD)
-	var resposta = req.responseText;
- 
-	// Resposta na div do campo que fez a requisiÁ„o
-	document.getElementById('campo_login').innerHTML = resposta;
-	}
- 
-}
- 
-req.send(null);
- 
-}
+	// Resposta retornada pelo validacao.php (pagina de conex√£o com o BD)
+	// This line gets

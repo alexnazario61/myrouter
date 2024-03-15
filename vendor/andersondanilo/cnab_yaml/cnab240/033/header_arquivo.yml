@@ -1,46 +1,53 @@
-uso_exclusivo_febraban_01:
-  pos: [9, 16]
-  picture: 'X(8)'
-  default: ''
+# This is a dictionary that defines a COEL (Comprovante de Evento Lote) layout for the FEBRABAN format.
+# Each key in the dictionary represents a specific field in the COEL, and its corresponding value
+# is another dictionary that contains information about the field's position, size, and format.
 
-codigo_inscricao:
-  pos: [17, 17]
-  picture: '9(1)'
+uso_exclusivo_febraban_01 = {
+  # The 'pos' key specifies the starting and ending positions of the field in the COEL.
+  # In this case, the field starts at position 9 and ends at position 16.
+  'pos': [9, 16],
+  # The 'picture' key specifies the format of the field.
+  # In this case, the field is formatted as a string of 8 characters, with each character being
+  # a digit or an uppercase letter (X).
+  'picture': 'X(8)',
+  # The 'default' key specifies the default value of the field.
+  # In this case, the default value is an empty string.
+  'default': ''
+}
 
-numero_inscricao:
-  pos: [18, 32]
-  picture: '9(15)'
+codigo_inscricao = {
+  'pos': [17, 17],
+  'picture': '9(1)'
+}
 
-agencia:
-  pos: [33, 36]
-  picture: '9(4)'
+numero_inscricao = {
+  'pos': [18, 32],
+  'picture': '9(15)'
+}
 
-agencia_dv:
-  pos: [37, 37]
-  picture: '9(1)'
+agencia = {
+  'pos': [33, 36],
+  'picture': '9(4)'
+}
 
-conta:
-  pos: [38, 46]
-  picture: '9(9)'
+agencia_dv = {
+  'pos': [37, 37],
+  'picture': '9(1)'
+}
 
-conta_dv:
-  pos: [47, 47]
-  picture: '9(1)'
+conta = {
+  'pos': [38, 46],
+  'picture': '9(9)'
+}
 
-uso_exclusivo_banco_01:
-  pos: [48, 52]
-  picture: 'X(5)'
-  default: ''
+conta_dv = {
+  'pos': [47, 47],
+  'picture': '9(1)'
+}
 
-codigo_cedente:
-  pos: [53, 61]
-  picture: '9(9)'
+uso_exclusivo_banco_01 = {
+  'pos': [48, 52],
+  'picture': 'X(5)',
+  'default': ''
+}
 
-uso_exclusivo_banco_02:
-  pos: [62, 72]
-  picture: 'X(11)'
-
-uso_exclusivo_febraban_03:
-  pos: [167, 240]
-  picture: 'X(74)'
-  default: ''

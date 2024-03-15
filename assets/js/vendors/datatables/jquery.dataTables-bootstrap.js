@@ -1,59 +1,63 @@
-/* Set the defaults for DataTables initialisation */
+/***************************************************************
+ * Set the defaults for DataTables initialisation             *
+ ***************************************************************/
 $.extend( true, $.fn.dataTable.defaults, {
 	"sDom":
-		"<'row'<'col-xs-6'l><'col-xs-6'f>r>"+
-		"t"+
-		"<'row'<'col-xs-6'i><'col-xs-6'p>>",
-	"oLanguage": {
-		"sLengthMenu": "_MENU_ Registros"
+		"<'row'<'col-xs-6'l><'col-xs-6'f>r>"+ // Layout template for the table control elements
+		"t"+ // The table itself
+		"<'row'<'col-xs-6'i><'col-xs-6'p>>", // Layout template for the table information and pagination elements
+	"oLanguage": { // Configuration for the language and text used in the table
+		"sLengthMenu": "_MENU_ Registros" // Text for the length menu, allowing users to select the number of records per page
 	}
 } );
 
 
-
-
-/* Default class modification */
-$.extend( $.fn.dataTableExt.oStdClasses, {
-	"sWrapper": "dataTables_wrapper form-inline",
-	"sFilterInput": "form-control input-sm",
-	"sLengthSelect": "form-control input-sm"
+/**************************************************************************
+ * Default class modification                                              *
+ **************************************************************************/
+$.extend( $.fn.dataTableExt.oStdClasses, { // Extend the default classes used by DataTables
+	"sWrapper": "dataTables_wrapper form-inline", // Wrapper class for the table and its controls
+	"sFilterInput": "form-control input-sm", // Class for the filter input element
+	"sLengthSelect": "form-control input-sm" // Class for the length select element
 } );
 
 
-// In 1.10 we use the pagination renderers to draw the Bootstrap paging,
-// rather than  custom plug-in
-if ( $.fn.dataTable.Api ) {
-	$.fn.dataTable.defaults.renderer = 'bootstrap';
-	$.fn.dataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, buttons, page, pages ) {
-		var api = new $.fn.dataTable.Api( settings );
-		var classes = settings.oClasses;
-		var lang = settings.oLanguage.oPaginate;
+/*******************************************************************************************
+ * In DataTables 1.10, use the pagination renderers to draw the Bootstrap paging, instead *
+ * of using a custom plugin                                                                 *
+ *******************************************************************************************/
+if ( $.fn.dataTable.Api ) { // Check if DataTables 1.10 or higher is being used
+	$.fn.dataTable.defaults.renderer = 'bootstrap'; // Set the default renderer to 'bootstrap'
+	$.fn.dataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, buttons, page, pages ) { // Define the 'bootstrap' renderer for the pagination buttons
+		var api = new $.fn.dataTable.Api( settings ); // Create a new DataTables API instance
+		var classes = settings.oClasses; // Get the classes object for the table
+		var lang = settings.oLanguage.oPaginate; // Get the language object for the pagination text
 		var btnDisplay, btnClass;
 
 
-		var attach = function( container, buttons ) {
+		var attach = function( container, buttons ) { // Function to attach the pagination buttons to the container
 			var i, ien, node, button;
-			var clickHandler = function ( e ) {
+			var clickHandler = function ( e ) { // Function to handle the button click event
 				e.preventDefault();
-				if ( e.data.action !== 'ellipsis' ) {
-					api.page( e.data.action ).draw( false );
+				if ( e.data.action !== 'ellipsis' ) { // If the button is not an ellipsis (for indicating a page range)
+					api.page( e.data.action ).draw( false ); // Change the page and redraw the table
 				}
 			};
 
 
-			for ( i=0, ien=buttons.length ; i<ien ; i++ ) {
+			for ( i=0, ien=buttons.length ; i<ien ; i++ ) { // Loop through the buttons
 				button = buttons[i];
 
 
-				if ( $.isArray( button ) ) {
-					attach( container, button );
+				if ( $.isArray( button ) ) { // If the button is an array (for indicating a page range)
+					attach( container, button ); // Recursively attach the buttons in the array
 				}
 				else {
-					btnDisplay = '';
-					btnClass = '';
+					btnDisplay = ''; // Initialize the button display text
+					btnClass = ''; // Initialize the button class
 
 
-					switch ( button ) {
+					switch ( button ) { // Set the button display text and class based on the button type
 						case 'ellipsis':
 							btnDisplay = '&hellip;';
 							btnClass = 'disabled';
@@ -77,201 +81,4 @@ if ( $.fn.dataTable.Api ) {
 						case 'next':
 							btnDisplay = lang.sNext;
 							btnClass = button + (page < pages-1 ?
-								'' : ' disabled');
-							break;
-
-
-						case 'last':
-							btnDisplay = lang.sLast;
-							btnClass = button + (page < pages-1 ?
-								'' : ' disabled');
-							break;
-
-
-						default:
-							btnDisplay = button + 1;
-							btnClass = page === button ?
-								'active' : '';
-							break;
-					}
-
-
-					if ( btnDisplay ) {
-						node = $('<li>', {
-								'class': classes.sPageButton+' '+btnClass,
-								'aria-controls': settings.sTableId,
-								'tabindex': settings.iTabIndex,
-								'id': idx === 0 && typeof button === 'string' ?
-									settings.sTableId +'_'+ button :
-									null
-							} )
-							.append( $('<a>', {
-									'href': '#'
-								} )
-								.html( btnDisplay )
-							)
-							.appendTo( container );
-
-
-						settings.oApi._fnBindAction(
-							node, {action: button}, clickHandler
-						);
-					}
-				}
-			}
-		};
-
-
-		attach(
-			$(host).empty().html('<ul class="pagination"/>').children('ul'),
-			buttons
-		);
-	}
-}
-else {
-	// Integration for 1.9-
-	$.fn.dataTable.defaults.sPaginationType = 'bootstrap';
-
-
-	/* API method to get paging information */
-	$.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
-	{
-		return {
-			"iStart":         oSettings._iDisplayStart,
-			"iEnd":           oSettings.fnDisplayEnd(),
-			"iLength":        oSettings._iDisplayLength,
-			"iTotal":         oSettings.fnRecordsTotal(),
-			"iFilteredTotal": oSettings.fnRecordsDisplay(),
-			"iPage":          oSettings._iDisplayLength === -1 ?
-				0 : Math.ceil( oSettings._iDisplayStart / oSettings._iDisplayLength ),
-			"iTotalPages":    oSettings._iDisplayLength === -1 ?
-				0 : Math.ceil( oSettings.fnRecordsDisplay() / oSettings._iDisplayLength )
-		};
-	};
-
-
-	/* Bootstrap style pagination control */
-	$.extend( $.fn.dataTableExt.oPagination, {
-		"bootstrap": {
-			"fnInit": function( oSettings, nPaging, fnDraw ) {
-				var oLang = oSettings.oLanguage.oPaginate;
-				var fnClickHandler = function ( e ) {
-					e.preventDefault();
-					if ( oSettings.oApi._fnPageChange(oSettings, e.data.action) ) {
-						fnDraw( oSettings );
-					}
-				};
-
-
-				$(nPaging).append(
-					'<ul class="pagination">'+
-						'<li class="prev disabled"><a href="#">&larr; '+oLang.sPrevious+'</a></li>'+
-						'<li class="next disabled"><a href="#">'+oLang.sNext+' &rarr; </a></li>'+
-					'</ul>'
-				);
-				var els = $('a', nPaging);
-				$(els[0]).bind( 'click.DT', { action: "previous" }, fnClickHandler );
-				$(els[1]).bind( 'click.DT', { action: "next" }, fnClickHandler );
-			},
-
-
-			"fnUpdate": function ( oSettings, fnDraw ) {
-				var iListLength = 5;
-				var oPaging = oSettings.oInstance.fnPagingInfo();
-				var an = oSettings.aanFeatures.p;
-				var i, ien, j, sClass, iStart, iEnd, iHalf=Math.floor(iListLength/2);
-
-
-				if ( oPaging.iTotalPages < iListLength) {
-					iStart = 1;
-					iEnd = oPaging.iTotalPages;
-				}
-				else if ( oPaging.iPage <= iHalf ) {
-					iStart = 1;
-					iEnd = iListLength;
-				} else if ( oPaging.iPage >= (oPaging.iTotalPages-iHalf) ) {
-					iStart = oPaging.iTotalPages - iListLength + 1;
-					iEnd = oPaging.iTotalPages;
-				} else {
-					iStart = oPaging.iPage - iHalf + 1;
-					iEnd = iStart + iListLength - 1;
-				}
-
-
-				for ( i=0, ien=an.length ; i<ien ; i++ ) {
-					// Remove the middle elements
-					$('li:gt(0)', an[i]).filter(':not(:last)').remove();
-
-
-					// Add the new list items and their event handlers
-					for ( j=iStart ; j<=iEnd ; j++ ) {
-						sClass = (j==oPaging.iPage+1) ? 'class="active"' : '';
-						$('<li '+sClass+'><a href="#">'+j+'</a></li>')
-							.insertBefore( $('li:last', an[i])[0] )
-							.bind('click', function (e) {
-								e.preventDefault();
-								oSettings._iDisplayStart = (parseInt($('a', this).text(),10)-1) * oPaging.iLength;
-								fnDraw( oSettings );
-							} );
-					}
-
-
-					// Add / remove disabled classes from the static elements
-					if ( oPaging.iPage === 0 ) {
-						$('li:first', an[i]).addClass('disabled');
-					} else {
-						$('li:first', an[i]).removeClass('disabled');
-					}
-
-
-					if ( oPaging.iPage === oPaging.iTotalPages-1 || oPaging.iTotalPages === 0 ) {
-						$('li:last', an[i]).addClass('disabled');
-					} else {
-						$('li:last', an[i]).removeClass('disabled');
-					}
-				}
-			}
-		}
-	} );
-}
-
-
-
-
-/*
- * TableTools Bootstrap compatibility
- * Required TableTools 2.1+
- */
-if ( $.fn.DataTable.TableTools ) {
-	// Set the classes that TableTools uses to something suitable for Bootstrap
-	$.extend( true, $.fn.DataTable.TableTools.classes, {
-		"container": "DTTT btn-group",
-		"buttons": {
-			"normal": "btn btn-default",
-			"disabled": "disabled"
-		},
-		"collection": {
-			"container": "DTTT_dropdown dropdown-menu",
-			"buttons": {
-				"normal": "",
-				"disabled": "disabled"
-			}
-		},
-		"print": {
-			"info": "DTTT_print_info modal"
-		},
-		"select": {
-			"row": "active"
-		}
-	} );
-
-
-	// Have the collection use a bootstrap compatible dropdown
-	$.extend( true, $.fn.DataTable.TableTools.DEFAULTS.oTags, {
-		"collection": {
-			"container": "ul",
-			"button": "li",
-			"liner": "a"
-		}
-	} );
-}
+								

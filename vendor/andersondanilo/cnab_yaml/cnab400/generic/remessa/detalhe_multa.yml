@@ -1,28 +1,34 @@
-# Baseado na documentação do itau
+# Configuration for a fixed-length record structure
 
+# Field: tipo_registro   Position: [1, 1]   Length: 1   Data Type: Numeric (9, 1)   Default: 2
 tipo_registro:
   pos: [1, 1]
   picture: '9(1)'
   default:  '2'
 
+# Field: codigo_multa    Position: [2, 2]   Length: 1   Data Type: Alphanumeric (X, 1)
 codigo_multa:
   pos: [2, 2]
   picture: 'X(1)'
 
+# Field: data_multa      Position: [3, 10]  Length: 8   Data Type: Numeric (9, 8)   Date Format: DDMMYYYY
 data_multa:
   pos: [3, 10]
   picture: '9(8)'
   date_format: '%d%m%Y'
 
+# Field: valor_multa     Position: [11, 23] Length: 13  Data Type: Numeric (9, 11) with decimal (V, 2)
 valor_multa:
   pos: [11, 23]
   picture: '9(11)V9(2)'
 
+# Field: brancos01       Position: [24, 394] Length: 371  Data Type: Alphanumeric (X, 371)   Default: ''
 brancos01:
   pos: [24, 394]
   picture: 'X(371)'
   default: ''
 
+# Field: numero_sequencial Position: [395, 400] Length: 6   Data Type: Numeric (9, 6)
 numero_sequencial:
   pos: [395, 400]
   picture: '9(6)'

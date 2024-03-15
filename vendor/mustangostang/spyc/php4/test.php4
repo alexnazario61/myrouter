@@ -1,34 +1,31 @@
 <?php
-#
-#    S P Y C
-#      a simple php yaml class
-#   v0.3
-#
-# author: [chris wanstrath, chris@ozmm.org]
-# websites: [http://www.yaml.org, http://spyc.sourceforge.net/]
-# license: [MIT License, http://www.opensource.org/licenses/mit-license.php]
-# copyright: (c) 2005-2006 Chris Wanstrath
-#
-# We're gonna load a file into memory and see if we get what we expect.
-# If not, we're gonna complain.
-#
-# Pretty lo-fi.  Let's see if we can't get some unit testing going in the next,
-# I dunno, 20 months?  Alright.  Go team.
-#
+// ------------------------------------------------------------------------------
+// SPYC - a simple PHP YAML class
+// 
+// Version: 0.3
+// Author: Chris Wanstrath (chris@ozmm.org)
+// Website: http://www.yaml.org, http://spyc.sourceforge.net/
+// License: MIT License (http://www.opensource.org/licenses/mit-license.php)
+// Copyright: (c) 2005-2006 Chris Wanstrath
+// 
+// This script demonstrates how to use the SPYC library to load and validate a
+// YAML file. It checks various types of keys, sequences, and mappings.
+// ------------------------------------------------------------------------------
 
+// Enable error reporting
 error_reporting(E_ALL);
 
+// Include the SPYC library
 include('spyc.php4');
 
+// Load the YAML file
 $yaml = Spyc::YAMLLoad('../spyc.yaml');
 
-// print_r ($yaml);
-
-# Added in .2
+// Check if the YAML file loaded correctly
 if ($yaml[1040] != "Ooo, a numeric key!")
 	die('Key: 1040 failed');
 
-# Test mappings / types
+// Test mappings / types
 if ($yaml['String'] != "Anyone's name, really.")
 	die('Key: String failed');
 
@@ -50,8 +47,7 @@ if (isset($yaml['Null']))
 if ($yaml['Float'] !== 5.34)
 	die('Key: Float failed');
 
-
-# Test sequences
+// Test sequences
 if ($yaml[0] != "PHP Class")
 	die('Sequence 0 failed');
 
@@ -61,67 +57,64 @@ if ($yaml[1] != "Basic YAML Loader")
 if ($yaml[2] != "Very Basic YAML Dumper")
 	die('Sequence 2 failed');
 
-# A sequence of a sequence
-if ($yaml[3] != array("YAML is so easy to learn.",
-											"Your config files will never be the same."))
+// A sequence of a sequence
+if ($yaml[3] != array("YAML is so easy to learn.", "Your config files will never be the same."))
 	die('Sequence 3 failed');
 
-# Sequence of mappings
-if ($yaml[4] != array("cpu" => "1.5ghz", "ram" => "1 gig",
-											"os" => "os x 10.4.1"))
+// Sequence of mappings
+if ($yaml[4] != array("cpu" => "1.5ghz", "ram" => "1 gig", "os" => "os x 10.4.1"))
 	die('Sequence 4 failed');
 
-# Mapped sequence
+// Mapped sequence
 if ($yaml['domains'] != array("yaml.org", "php.net"))
 	die("Key: 'domains' failed");
 
-# A sequence like this.
-if ($yaml[5] != array("program" => "Adium", "platform" => "OS X",
-											"type" => "Chat Client"))
+// A sequence like this.
+if ($yaml[5] != array("program" => "Adium", "platform" => "OS X", "type" => "Chat Client"))
 	die('Sequence 5 failed');
 
-# A folded block as a mapped value
+// A folded block as a mapped value
 if ($yaml['no time'] != "There isn't any time for your tricks!\nDo you understand?")
 	die("Key: 'no time' failed");
 
-# A literal block as a mapped value
+// A literal block as a mapped value
 if ($yaml['some time'] != "There is nothing but time\nfor your tricks.")
 	die("Key: 'some time' failed");
 
-# Crazy combinations
+// Crazy combinations
 if ($yaml['databases'] != array( array("name" => "spartan", "notes" =>
 																			array( "Needs to be backed up",
 																						 "Needs to be normalized" ),
 																			 "type" => "mysql" )))
   die("Key: 'databases' failed");
 
-# You can be a bit tricky
+// You can be a bit tricky
 if ($yaml["if: you'd"] != "like")
-	die("Key: 'if: you\'d' failed");
+	die("Key: 'if: you'd' failed");
 
-# Inline sequences
+// Inline sequences
 if ($yaml[6] != array("One", "Two", "Three", "Four"))
 	die("Sequence 6 failed");
 
-# Nested Inline Sequences
+// Nested Inline Sequences
 if ($yaml[7] != array("One", array("Two", "And", "Three"), "Four", "Five"))
 	die("Sequence 7 failed");
 
-# Nested Nested Inline Sequences
+// Nested Nested Inline Sequences
 if ($yaml[8] != array( "This", array("Is", "Getting", array("Ridiculous", "Guys")),
 									"Seriously", array("Show", "Mercy")))
 	die("Sequence 8 failed");
 
-# Inline mappings
+// Inline mappings
 if ($yaml[9] != array("name" => "chris", "age" => "young", "brand" => "lucky strike"))
 	die("Sequence 9 failed");
 
-# Nested inline mappings
+// Nested inline mappings
 if ($yaml[10] != array("name" => "mark", "age" => "older than chris",
 											 "brand" => array("marlboro", "lucky strike")))
 	die("Sequence 10 failed");
 
-# References -- they're shaky, but functional
+// References -- they're shaky, but functional
 if ($yaml['dynamic languages'] != array('Perl', 'Python', 'PHP', 'Ruby'))
 	die("Key: 'dynamic languages' failed");
 
@@ -134,29 +127,5 @@ if ($yaml['all languages'] != array(
 																	 ))
 	die("Key: 'all languages' failed");
 
-# Added in .2.2: Escaped quotes
-if ($yaml[11] != "you know, this shouldn't work.  but it does.")
-	die("Sequence 11 failed.");
-
-if ($yaml[12] != "that's my value.")
-	die("Sequence 12 failed.");
-
-if ($yaml[13] != "again, that's my value.")
-	die("Sequence 13 failed.");
-
-if ($yaml[14] != "here's to \"quotes\", boss.")
-	die("Sequence 14 failed.");
-
-if ($yaml[15] != array( 'name' => "Foo, Bar's", 'age' => 20))
-	die("Sequence 15 failed.");
-
-if ($yaml[16] != array( 0 => "a", 1 => array (0 => 1, 1 => 2), 2 => "b"))
-	die("Sequence 16 failed.");
-
-if ($yaml['endloop'] != "Does this line in the end indeed make Spyc go to an infinite loop?")
-	die("[endloop] failed.");
-
-
-print "spyc.yaml parsed correctly\n";
-
-?>
+// Added in .2.2: Escaped quotes
+if ($yaml[11] != "you know

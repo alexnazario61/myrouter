@@ -1,3 +1,12 @@
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import java.io.ByteArrayOutputStream;
+import java.io.SocketTimeoutException;
+import java.io.TimeoutException;
+import java.util.concurrent.TimeoutException;
+
 public class SVGConverter {
 
     // Logger instance for logging
@@ -10,21 +19,42 @@ public class SVGConverter {
 
     // Method to convert SVG to other formats
     public ByteArrayOutputStream convert(String input, MimeType mime, String constructor,
-                                     String globalOptions, String dataOptions, Float width, Float scale)
+                                         String globalOptions, String dataOptions, Float width, Float scale)
             throws Exception {
         // Check if the input string is not empty
-        if (input.isEmpty()) {
+        if (input == null || input.isEmpty()) {
             throw new Exception("Empty input string");
+        }
+
+        // Check if the MIME type is valid
+        if (mime == null || !isValidMimeType(mime)) {
+            throw new Exception("Invalid MIME type");
+        }
+
+        // Get the server instance
+        Server server = Server.getInstance();
+
+        // Check if the server is available
+        if (!server.isAvailable()) {
+            throw new Exception("Server is not available");
         }
 
         // Convert the input string to the desired format
         ByteArrayOutputStream stream = null;
         try {
-            stream = requestServer(input, constructor, globalOptions, dataOptions, mime, width, scale);
-        } catch (Exception e) {
+            stream = requestServer(server, input, constructor, globalOptions, dataOptions, mime, width, scale);
+        } catch (SocketTimeoutException e) {
             // Handle exceptions and log the error message
-            String errorMessage = "Received error from PhantomJS: " + e.getMessage();
-            logger.debug(errorMessage);
+            String errorMessage = "Exception while returning server to pool: " + e.getMessage();
+            logger.error(errorMessage);
+            throw new PoolException(errorMessage);
+        } catch (TimeoutException e) {
+            String errorMessage = "POOL EXHAUSTED!!";
+            logger.error(errorMessage);
+            throw new PoolException(errorMessage);
+        } catch (Exception e) {
+            String errorMessage = "Error converting SVG: " + e.getMessage();
+            logger.error(errorMessage);
             throw new SVGConverterException(errorMessage);
         }
 
@@ -33,63 +63,23 @@ public class SVGConverter {
     }
 
     // Method to request a server for conversion
-    private ByteArrayOutputStream requestServer(String input, String constructor, String globalOptions,
-                                           String dataOptions, MimeType mime, Float width, Float scale)
+    private ByteArrayOutputStream requestServer(Server server, String input, String constructor, String globalOptions,
+                                               String dataOptions, MimeType mime, Float width, Float scale)
             throws Exception {
-        // Get the server instance
-        Server server = Server.getInstance();
 
         // Request the server for conversion and handle exceptions
         ByteArrayOutputStream stream = null;
         try {
             stream = server.convert(input, constructor, globalOptions, dataOptions, mime, width, scale);
-        } catch (SocketTimeoutException response) {
-            String errorMessage = "Exception while returning server to pool: " + response.getMessage();
-            logger.debug(errorMessage);
-            throw new PoolException(errorMessage);
-        } catch (TimeoutException response) {
-            String errorMessage = "POOL EXHAUSTED!!";
-            logger.debug(errorMessage);
-            throw new PoolException(errorMessage);
         } catch (Exception e) {
             String errorMessage = "Error converting SVG: " + e.getMessage();
-            logger.debug(errorMessage);
+            logger.error(errorMessage);
             throw new SVGConverterException(errorMessage);
-        } finally {
-            // Return the server to the pool
-            server.returnObject(server);
         }
+
+        // Return the server to the pool
+        server.returnObject(server);
 
         // Return the converted stream
         return stream;
-    }
-
-    // Method to get a unique file name
-    private static String createUniqueFileName() {
-        // Get the file separator
-        String fileSeparator = System.getProperty("file.separator");
-
-        // Create a unique file name using the current timestamp and a random string
-        String fileName = new StringBuilder()
-                .append(fileSeparator)
-                .append(System.currentTimeMillis())
-                .append(fileSeparator)
-                .append(RandomStringUtils.randomAlphanumeric(10))
-                .toString();
-
-        // Return the unique file name
-        return fileName;
-    }
-
-    // Method to get the logger instance
-    private static Logger getLogger(Class clazz) {
-        // Get the logger instance with the class name
-        Logger logger = Logger.getLogger(clazz);
-
-        // Set the logger level to debug
-        logger.setLevel(Level.DEBUG);
-
-        // Return the logger instance
-        return logger;
-    }
-}
+   

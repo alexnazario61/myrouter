@@ -9,148 +9,141 @@
  * http://www.codrops.com
  * updated by DazeinCreative
  */
-;( function( window ) {
-	
-	'use strict';
 
-	var document = window.document;
+/**
+ * Creates a new cbpHorizontalSlideOutMenu instance.
+ * @constructor
+ * @param {Element} el - The root element of the menu.
+ * @param {Object} [options] - The options object.
+ */
+function cbpHorizontalSlideOutMenu(el, options) {
+  this.el = el;
+  this.options = Object.assign({}, this.defaults, options);
+  this._init();
+}
 
-	function extend( a, b ) {
-		for( var key in b ) { 
-			if( b.hasOwnProperty( key ) ) {
-				a[key] = b[key];
-			}
-		}
-		return a;
-	}
+cbpHorizontalSlideOutMenu.prototype = {
+  defaults: {},
 
-	function cbpHorizontalSlideOutMenu( el, options ) {	
-		this.el = el;
-		this.options = extend( this.defaults, options );
-		this._init();
-	}
+  _init: function() {
+    this.current = -1;
+    this.touch = 'ontouchstart' in window;
+    this.menu = this.el.querySelector('.cbp-hsmenu');
+    this.menuItems = this.el.querySelectorAll('.cbp-hsmenu > li');
+    this.tickb = this.el.querySelectorAll('*');
+    this.menuBg = document.createElement('div');
+    this.menuBg.className = 'cbp-hsmenubg';
+    this.el.appendChild(this.menuBg);
+    this._initEvents();
+    this.mark = 'marker-id';
+  },
 
-	cbpHorizontalSlideOutMenu.prototype = {
-		defaults : {},
-		_init : function() {
-			this.current = -1;
-			this.touch = Modernizr.touch;
-			this.menu = this.el.querySelector( '.cbp-hsmenu' ); 
-			this.menuItems = this.el.querySelectorAll( '.cbp-hsmenu > li' );
-			this.tickb = this.el.querySelectorAll( '*' );
-			this.menuBg = document.createElement( 'div' );
-			this.menuBg.className = 'cbp-hsmenubg';
-			this.el.appendChild( this.menuBg );
-			this._initEvents();
-			this.mark ='marker-id';
-		},
-		_openMenu : function( el, ev ) {
-			
-			var self = this,
-				item = el.parentNode,
-				  
-				items = Array.prototype.slice.call( this.menuItems ),
-				ticki = Array.prototype.slice.call(self.tickb),
-				submenu = item.querySelector( '.cbp-hssubmenu' ),
-				closeCurrent = function( current ) {
-					var current = current || self.menuItems[ self.current ];
-					current.className = '';
-					current.setAttribute( 'data-open', '' );	
-				},
-				marker = function(element, index, array) {
-				element.setAttribute( self.mark,'');
-				},
-				closePanel = function() {
-					self.current = -1;
-					self.menuBg.style.height = '0px';
-				};
-              ticki.forEach(marker);
-			if( submenu ) {
-                
-				ev.preventDefault();
-            	if( item.getAttribute( 'data-open' ) === 'open' ) {
-				   closeCurrent( item );
-					closePanel();
-				} else {
-					item.setAttribute( 'data-open', 'open' );
-					if( self.current !== -1 ) {
-						closeCurrent();
-					}
-					self.current = items.indexOf( item );
-					item.className = 'cbp-hsitem-open';
-					self.menuBg.style.height = submenu.offsetHeight + 'px';
-				}
-			
-			window.addEventListener( 'click',function(ev) {
-			
-          //document.onclick = function(ev) {
-		// ev.preventDefault();
-		  if ((!ev.target.hasAttribute(self.mark)) && (self.menuBg.style.height !== '0px') &&( item.getAttribute( 'data-open' ) === 'open' ))  {
-            closeCurrent(item );
-			closePanel();
-             }
-              });
-			  window.addEventListener( 'touchstart',function(ev) {
-           //document.touchstart = function(ev) {
-		 // ev.preventDefault();
-		  if ((!ev.target.hasAttribute(self.mark)) && (self.menuBg.style.height !== '0px') &&( item.getAttribute( 'data-open' ) === 'open' ))  {
-            closeCurrent(item );
-			closePanel();
-             }
-              }); 			  
-			
-				
-			} else {
-				if( self.current !== -1 ) {
-					closeCurrent();
-					closePanel();
-				}
-			}
+  _openMenu: function(el, ev) {
+    const self = this;
+    const item = el.parentNode;
+    const submenu = item.querySelector('.cbp-hssubmenu');
+    const closeCurrent = (current) => {
+      const currentItem = current || this.menuItems[this.current];
+      currentItem.className = '';
+      currentItem.setAttribute('data-open', '');
+    };
+    const marker = (element, index, array) => {
+      element.setAttribute(this.mark, '');
+    };
+    const closePanel = () => {
+      this.current = -1;
+      this.menuBg.style.height = '0px';
+    };
 
-		},
-		_initEvents : function() {
-			
-			var self = this;
+    this.tickb.forEach(marker);
 
-			Array.prototype.slice.call( this.menuItems ).forEach( function( el, i ) {
-				var trigger = el.querySelector( 'a' );
-				if( self.touch ) {
-					trigger.addEventListener( 'touchstart', function( ev ) { self._openMenu( this, ev ); } );
-				}
-				else {
-					trigger.addEventListener( 'click', function( ev ) { self._openMenu( this, ev ); } );	
-				}
-			} );
-			
-			window.addEventListener( 'resize', function( ev ) { self._resizeHandler(); } );
+    if (submenu) {
+      ev.preventDefault();
 
-		},
-		// taken from https://github.com/desandro/vanilla-masonry/blob/master/masonry.js by David DeSandro
-		// original debounce by John Hann
-    	// http://unscriptable.com/index.php/2009/03/20/debouncing-javascript-methods/
-		_resizeHandler : function() {
-			var self = this;
-			function delayed() {
-				self._resize();
-				self._resizeTimeout = null;
-			}
+      if (item.getAttribute('data-open') === 'open') {
+        closeCurrent(item);
+        closePanel();
+      } else {
+        item.setAttribute('data-open', 'open');
 
-			if ( this._resizeTimeout ) {
-				clearTimeout( this._resizeTimeout );
-			}
+        if (this.current !== -1) {
+          closeCurrent();
+        }
 
-			this._resizeTimeout = setTimeout( delayed, 50 );
-		},
-		_resize : function() {
-			if( this.current !== -1 ) {
-				this.menuBg.style.height = this.menuItems[ this.current ].querySelector( '.cbp-hssubmenu' ).offsetHeight + 'px';
-			}
-		}
-	}
+        this.current = Array.from(this.menuItems).indexOf(item);
+        item.className = 'cbp-hsitem-open';
 
-	// add to global namespace
-	window.cbpHorizontalSlideOutMenu = cbpHorizontalSlideOutMenu;
-	
-	
+        if (this.touch) {
+          this._measureSubmenu(submenu);
+        } else {
+          this.menuBg.style.height = submenu.offsetHeight + 'px';
+        }
+      }
 
-} )( window );
+      const closeMenu = (ev) => {
+        if (!ev.target.matches('.cbp-hsmenu a') && this.menuBg.style.height !== '0px' && item.getAttribute('data-open') === 'open') {
+          closeCurrent(item);
+          closePanel();
+          window.removeEventListener('click', closeMenu);
+          window.removeEventListener('touchstart', closeMenu);
+        }
+      };
+
+      window.addEventListener('click', closeMenu);
+      window.addEventListener('touchstart', closeMenu);
+    } else {
+      if (this.current !== -1) {
+        closeCurrent();
+        closePanel();
+      }
+    }
+  },
+
+  _initEvents: function() {
+    const self = this;
+
+    for (const el of this.menuItems) {
+      const trigger = el.querySelector('a');
+
+      if (self.touch) {
+        trigger.addEventListener('touchstart', (ev) => { self._openMenu(ev.currentTarget, ev); });
+      } else {
+        trigger.addEventListener('click', (ev) => { self._openMenu(ev.currentTarget, ev); });
+      }
+    }
+
+    window.addEventListener('resize', () => { this._resizeHandler(); });
+  },
+
+  _resizeHandler: function() {
+    const self = this;
+
+    function delayed() {
+      self._resize();
+      self._resizeObserver.disconnect();
+      self._resizeObserver = null;
+    }
+
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+    }
+
+    this._resizeObserver = new ResizeObserver(delayed);
+    this._resizeObserver.observe(this.el);
+  },
+
+  _resize: function() {
+    if (this.current !== -1) {
+      this.menuBg.style.height = this.menuItems[this.current].querySelector('.cbp-hssubmenu').offsetHeight + 'px';
+    }
+  },
+
+  _measureSubmenu: function(submenu) {
+    const self = this;
+
+    function delayed() {
+      self.menuBg.style.height = submenu.offsetHeight + 'px';
+    }
+
+    if (this._measureObserver) {
+      this._measureObserver

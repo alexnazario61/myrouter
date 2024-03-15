@@ -1,16 +1,47 @@
-.CodeMirror-completions {
+/* Better specificity for the parent element */
+div.CodeMirror-completions {
   position: absolute;
   z-index: 10;
   overflow: hidden;
-  -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
-  -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
-  box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
 }
-.CodeMirror-completions select {
-  background: #fafafa;
+
+/* Adding vendor prefixes using Autoprefixer */
+div.CodeMirror-completions {
+  will-change: transform;
+  -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+/* Even better specificity for the select element */
+div.CodeMirror-completions select {
+  background-color: #fafafa;
+  appearance: none;
+  -webkit-appearance: none;
   outline: none;
   border: none;
   padding: 0;
   margin: 0;
   font-family: monospace;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Adding reset for the scrollbar to ensure consistency across browsers */
+div.CodeMirror-completions::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+div.CodeMirror-completions::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+div.CodeMirror-completions::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 4px;
+}
+
+div.CodeMirror-completions::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
 }

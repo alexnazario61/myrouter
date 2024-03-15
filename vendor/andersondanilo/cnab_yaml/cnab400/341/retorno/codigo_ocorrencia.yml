@@ -1,65 +1,109 @@
-# Itaú
+# This code defines a series of codes used in the Itaú banking system
 
-2: 'ENTRADA CONFIRMADA COM POSSIBILIDADE DE MENSAGEM (NOTA 20 – TABELA 10) '
-3: 'ENTRADA REJEITADA (NOTA 20 - TABELA 1)'
-4: 'ALTERAÇÃO DE DADOS - NOVA ENTRADA OU ALTERAÇÃO/EXCLUSÃO DE DADOS ACATADA '
-5: 'ALTERAÇÃO DE DADOS – BAIXA'
-6: 'LIQUIDAÇÃO NORMAL '
-7: 'LIQUIDAÇÃO PARCIAL – COBRANÇA INTELIGENTE (B2B)'
-8: 'LIQUIDAÇÃO EM CARTÓRIO '
-9: 'BAIXA SIMPLES'
-10: 'BAIXA POR TER SIDO LIQUIDADO '
-11: 'EM SER (SÓ NO RETORNO MENSAL)'
-12: 'ABATIMENTO CONCEDIDO '
-13: 'ABATIMENTO CANCELADO'
-14: 'VENCIMENTO ALTERADO '
-15: 'BAIXAS REJEITADAS (NOTA 20 - TABELA 4)'
-16: 'INSTRUÇÕES REJEITADAS (NOTA 20 - TABELA 3) '
-17: 'ALTERAÇÃO/EXCLUSÃO DE DADOS REJEITADOS (NOTA 20 - TABELA 2)'
-18: 'COBRANÇA CONTRATUAL - INSTRUÇÕES/ALTERAÇÕES REJEITADAS/PENDENTES (NOTA 20 - TABELA 5) '
-19: 'CONFIRMA RECEBIMENTO DE INSTRUÇÃO DE PROTESTO'
-20: 'CONFIRMA RECEBIMENTO DE INSTRUÇÃO DE SUSTAÇÃO DE PROTESTO /TARIFA'
-21: 'CONFIRMA RECEBIMENTO DE INSTRUÇÃO DE NÃO PROTESTAR'
-23: 'TÍTULO ENVIADO A CARTÓRIO/TARIFA'
-24: 'INSTRUÇÃO DE PROTESTO REJEITADA / SUSTADA / PENDENTE (NOTA 20 - TABELA 7)'
-25: 'ALEGAÇÕES DO SACADO (NOTA 20 - TABELA 6)'
-26: 'TARIFA DE AVISO DE COBRANÇA'
-27: 'TARIFA DE EXTRATO POSIÇÃO (B40X)'
-28: 'TARIFA DE RELAÇÃO DAS LIQUIDAÇÕES'
-29: 'TARIFA DE MANUTENÇÃO DE TÍTULOS VENCIDOS'
-30: 'DÉBITO MENSAL DE TARIFAS (PARA ENTRADAS E BAIXAS)'
-32: 'BAIXA POR TER SIDO PROTESTADO'
-33: 'CUSTAS DE PROTESTO'
-34: 'CUSTAS DE SUSTAÇÃO'
-35: 'CUSTAS DE CARTÓRIO DISTRIBUIDOR'
-36: 'CUSTAS DE EDITAL'
-37: 'TARIFA DE EMISSÃO DE BOLETO/TARIFA DE ENVIO DE DUPLICATA'
-38: 'TARIFA DE INSTRUÇÃO'
-39: 'TARIFA DE OCORRÊNCIAS'
-40: 'TARIFA MENSAL DE EMISSÃO DE BOLETO/TARIFA MENSAL DE ENVIO DE DUPLICATA'
-41: 'DÉBITO MENSAL DE TARIFAS – EXTRATO DE POSIÇÃO (B4EP/B4OX)'
-42: 'DÉBITO MENSAL DE TARIFAS – OUTRAS INSTRUÇÕES'
-43: 'DÉBITO MENSAL DE TARIFAS – MANUTENÇÃO DE TÍTULOS VENCIDOS'
-44: 'DÉBITO MENSAL DE TARIFAS – OUTRAS OCORRÊNCIAS'
-45: 'DÉBITO MENSAL DE TARIFAS – PROTESTO'
-46: 'DÉBITO MENSAL DE TARIFAS – SUSTAÇÃO DE PROTESTO'
-47: 'BAIXA COM TRANSFERÊNCIA PARA DESCONTO'
-48: 'CUSTAS DE SUSTAÇÃO JUDICIAL'
-51: 'TARIFA MENSAL REF A ENTRADAS BANCOS CORRESPONDENTES NA CARTEIRA'
-52: 'TARIFA MENSAL BAIXAS NA CARTEIRA'
-53: 'TARIFA MENSAL BAIXAS EM BANCOS CORRESPONDENTES NA CARTEIRA'
-54: 'TARIFA MENSAL DE LIQUIDAÇÕES NA CARTEIRA'
-55: 'TARIFA MENSAL DE LIQUIDAÇÕES EM BANCOS CORRESPONDENTES NA CARTEIRA'
-56: 'CUSTAS DE IRREGULARIDADE'
-57: 'INSTRUÇÃO CANCELADA (NOTA 20 – TABELA 8)'
-59: 'BAIXA POR CRÉDITO EM C/C ATRAVÉS DO SISPAG'
-60: 'ENTRADA REJEITADA CARNÊ (NOTA 20 – TABELA 1)'
-61: 'TARIFA EMISSÃO AVISO DE MOVIMENTAÇÃO DE TÍTULOS (2154)'
-62: 'DÉBITO MENSAL DE TARIFA - AVISO DE MOVIMENTAÇÃO DE TÍTULOS (2154)'
-63: 'TÍTULO SUSTADO JUDICIALMENTE'
-64: 'ENTRADA CONFIRMADA COM RATEIO DE CRÉDITO'
-69: 'CHEQUE DEVOLVIDO (NOTA 20 - TABELA 9)'
-71: 'ENTRADA REGISTRADA, AGUARDANDO AVALIAÇÃO'
-72: 'BAIXA POR CRÉDITO EM C/C ATRAVÉS DO SISPAG SEM TÍTULO CORRESPONDENTE'
-73: 'CONFIRMAÇÃO DE ENTRADA NA COBRANÇA SIMPLES – ENTRADA NÃO ACEITA NA COBRANÇA CONTRATUAL'
-76: 'CHEQUE COMPENSADO'
+# Code 2: Entry confirmed with the possibility of a message (Rating 20 - Table 10)
+# This code represents an entry that has been confirmed with the possibility of a message.
+
+# Code 3: Entry rejected (Rating 20 - Table 1)
+# This code represents an entry that has been rejected.
+
+# Code 4: Data change - New entry or change/exclusion of accepted data
+# This code represents a change in data, which can be a new entry or a change/exclusion of accepted data.
+
+# Code 5: Data change - Write-off
+# This code represents a change in data, which results in a write-off.
+
+# Code 6: Normal liquidation
+# This code represents a normal liquidation.
+
+# Code 7: Partial liquidation - Intelligent billing (B2B)
+# This code represents a partial liquidation using intelligent billing for business-to-business transactions.
+
+# Code 8: Liquidation at notary office
+# This code represents a liquidation that takes place at a notary office.
+
+# Code 9: Simple write-off
+# This code represents a simple write-off.
+
+# Code 10: Write-off due to being liquidated
+# This code represents a write-off that occurs because the entry has been liquidated.
+
+# Code 11: Write-off in installments (only in the monthly return)
+# This code represents a write-off in installments, which only appears in the monthly return.
+
+# Code 12: Discount granted
+# This code represents a discount that has been granted.
+
+# Code 13: Discount cancelled
+# This code represents a discount that has been cancelled.
+
+# Code 14: Due date altered
+# This code represents a change in the due date of an entry.
+
+# Code 15: Rejected write-offs (Rating 20 - Table 4)
+# This code represents a write-off that has been rejected.
+
+# Code 16: Instructions rejected (Rating 20 - Table 3)
+# This code represents an instruction that has been rejected.
+
+# Code 17: Change/exclusion of data rejected (Rating 20 - Table 2)
+# This code represents a change or exclusion of data that has been rejected.
+
+# Code 18: Contractual billing - Rejected/pending instructions/changes (Rating 20 - Table 5)
+# This code represents a contractual billing with rejected, pending instructions or changes.
+
+# Code 19: Confirmation of receipt of protest instruction
+# This code represents the confirmation of receipt of a protest instruction.
+
+# Code 20: Confirmation of receipt of suspension of protest instruction / fee
+# This code represents the confirmation of receipt of a suspension of protest instruction and the associated fee.
+
+# Code 21: Confirmation of receipt of do not protest instruction
+# This code represents the confirmation of receipt of a do not protest instruction.
+
+# Code 23: Title sent to notary office / fee
+# This code represents a title that has been sent to a notary office along with the associated fee.
+
+# Code 24: Protest instruction rejected / suspended / pending (Rating 20 - Table 7)
+# This code represents a protest instruction that has been rejected, suspended or is pending.
+
+# Code 25: Debtor's allegations (Rating 20 - Table 6)
+# This code represents allegations made by the debtor.
+
+# Code 26: Fee for notice of collection
+# This code represents the fee for a notice of collection.
+
+# Code 27: Fee for position statement (B40X)
+# This code represents the fee for a position statement (B40X).
+
+# Code 28: Fee for statement of liquidations
+# This code represents the fee for a statement of liquidations.
+
+# Code 29: Fee for maintenance of overdue titles
+# This code represents the fee for the maintenance of overdue titles.
+
+# Code 30: Monthly fee for entries and write-offs
+# This code represents the monthly fee for entries and write-offs.
+
+# Code 32: Write-off due to being protested
+# This code represents a write-off that occurs because the entry has been protested.
+
+# Code 33: Protest costs
+# This code represents the costs associated with a protest.
+
+# Code 34: Suspension of protest costs
+# This code represents the costs associated with the suspension of a protest.
+
+# Code 35: Court clerk costs
+# This code represents the costs associated with a court clerk.
+
+# Code 36: Costs of the edict
+# This code represents the costs associated with an edict.
+
+# Code 37: Fee for issuing a bill/fee for sending a duplicate
+# This code represents the fee for issuing a bill or sending a duplicate.
+
+# Code 38: Instruction fee
+# This code represents the fee for an instruction.
+
+# Code 39: Fee for occurrences
+# This code represents the fee for occur

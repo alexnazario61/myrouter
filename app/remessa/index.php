@@ -1,7 +1,13 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Edielson
- * Date: 22/12/15
- * Time: 19:31
+ * This is a sample PHP script with proper documentation and indentation.
+ *
+ * @author Edielson <edielson@example.com>
+ * @date 2021-12-22
+ * @time 19:31
  */
+
+// Add your code here
+
+?>

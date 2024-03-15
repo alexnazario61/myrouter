@@ -1,84 +1,92 @@
+<div class="breadcrumb clearfix">
+  <!-- Breadcrumb for navigation -->
+  <ul>
+    <li><a href="index.php?app=Dashboard">Dashboard</a></li>
+    <li class="active">Permiss√µes</li> <!-- Current page */>
+  </ul>
+</div>
 
-        <div class="breadcrumb clearfix">
-          <ul>
-            <li><a href="index.php?app=Dashboard">Dashboard</a></li>
-            <li class="active">Permissıes</li>
-          </ul>
-        </div>
-       
-	<?php if ($_GET['reg'] == '2') { ?>
-	<div class="alert alert-info alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-	<i class="fa fa-times-circle"></i></button>
-        <strong>AtenÁ„o!</strong> Permissıes atribuidas com sucesso. </div>
-	<?php } ?>
-	
-        
-        <div class="page-header">
-          <h1>TÈcnicos</h1>
-        </div>
-        
-        <div class="row" id="powerwidgets">
-          <div class="col-md-12 bootstrap-grid"> 
-            
-            <div class="powerwidget" id="" data-widget-editbutton="false">
-              <header>
-                <h2>Gerenciar<small>Permissıes</small></h2>
-              </header>
-              <div class="inner-spacer">
-              
-                <table class="table table-striped table-hover" id="table-1">
-                  <thead>
-                    <tr>
-                      <th>CÛdigo</th>
-                      <th>Nome</th>
-                      <th>Login</th>
-                      <th>Chave</th>
-                      <th>NÌvel</th>
-                      <th width="80">AÁıes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <?php
-                  
- 		  $idempresa = $_SESSION['empresa'];
- 		  $consultas = $mysqli->query("SELECT * FROM usuarios WHERE empresa = '1'");
- 		  while($campo = mysqli_fetch_array($consultas)){
-		  
-		  ?>
-		  <tr>
-                     <td><?php echo $campo['codigo']; ?></td>
-                      <td><?php echo $campo['nome']; ?></td>
-                      <td><?php echo $campo['login']; ?></td>
- 		      <td><?php echo md5($campo['id']); ?></td>
-		      <td>
-              <?php if ($campo['nivel'] == '1') { ?>Administrador<?php } ?>
-		      <?php if ($campo['nivel'] == '2') { ?>Operador<?php } ?>
-		      <?php if ($campo['nivel'] == '3') { ?>TÈcnico<?php } ?>
-              </td>
-                      <td>
-	      <a href="?app=AtribuirPermissoes&id=<?php echo base64_encode($campo['id']); ?>" class="btn btn-info tooltiped" data-toggle="tooltip" data-placement="top" title="Alterar"><i class="fa fa-lock"></i></a>&nbsp;
-    
-		      </td>
-                    </tr>
-                   
-		  <?php  } ?>
+<?php if ($_GET['reg'] == '2') { ?>
+<div class="alert alert-info alert-dismissable">
+  <!-- Success message for added permissions */>
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+    <i class="fa fa-times-circle"></i>
+  </button>
+  <strong>Aten√ß√£o!</strong> Permiss√µes atribuidas com sucesso.
+</div>
+<?php } ?>
 
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                    <th>CÛdigo</th>
-                      <th>Nome</th>
-                      <th>Login</th>
-                      <th>Chave</th>
-                      <th>NÌvel</th>
-                      <th width="80">AÁıes</th>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </div>
-        	
-          </div>
-        </div> 
+<div class="page-header">
+  <!-- Page header with title -->
+  <h1>T√©cnicos</h1>
+</div>
+
+<div class="row" id="powerwidgets">
+  <div class="col-md-12 bootstrap-grid">
+
+    <div class="powerwidget" id="" data-widget-editbutton="false">
+      <!-- Powerwidget container -->
+      <header>
+        <h2>Gerenciar<small>Permiss√µes</small></h2>
+      </header>
+      <div class="inner-spacer">
+
+        <table class="table table-striped table-hover" id="table-1">
+          <!-- Table for displaying user data -->
+          <thead>
+            <tr>
+              <th>C√≥digo</th>
+              <th>Nome</th>
+              <th>Login</th>
+              <th>Chave</th>
+              <th>N√≠vel</th>
+              <th width="80">A√ß√µes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            // Fetching user data from the database
+            $idempresa = $_SESSION['empresa'];
+            $consultas = $mysqli->query("SELECT * FROM usuarios WHERE empresa = '1'");
+            while ($campo = mysqli_fetch_array($consultas)) {
+            ?>
+              <tr>
+                <td><?php echo $campo['codigo']; ?></td>
+                <td><?php echo $campo['nome']; ?></td>
+                <td><?php echo $campo['login']; ?></td>
+                <td><?php echo md5($campo['id']); ?></td>
+                <td>
+                  <?php if ($campo['nivel'] == '1') { ?>
+                    Administrador
+                  <?php } ?>
+                  <?php if ($campo['nivel'] == '2') { ?>
+                    Operador
+                  <?php } ?>
+                  <?php if ($campo['nivel'] == '3') { ?>
+                    T√©cnico
+                  <?php } ?>
+                </td>
+                <td>
+                  <!-- Actions for each user: Edit permissions -->
+                  <a href="?app=AtribuirPermissoes&id=<?php echo base64_encode($campo['id']); ?>" class="btn btn-info tooltiped" data-toggle="tooltip" data-placement="top" title="Alterar">
+                    <i class="fa fa-lock"></i>
+                  </a>&nbsp;
+                </td>
+              </tr>
+            <?php } ?>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>C√≥digo</th>
+              <th>Nome</th>
+              <th>Login</th>
+              <th>Chave</th>
+              <th>N√≠vel</th>
+              <th width="80">A√ß√µes</th>
+            </tr>
+          </tfoot>
+        </table>
       </div>
+    </div>
+  </div>
+</div>

@@ -3,86 +3,73 @@
 
 /* CSS Document */
 #boleto_parceiro {
-    /* Set the height, width, and font for the #boleto_parceiro element */
-    height: 350px;
-    width: 666px;
-    font-family: Arial, Helvetica, sans-serif;
-    margin-bottom: 15px;
-    /* Add a dashed bottom border with a color of #000000 */
-    border-bottom-width: 1px;
-    border-bottom-style: dashed;
-    border-bottom-color: #000000;
+  /* Set the height, width, and font for the #boleto_parceiro element */
+  height: 350px;
+  width: 666px;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 15px;
+  /* Add a dashed bottom border with a color of #000000 */
+  border-bottom: 1px dashed #000000;
 }
 
 .am {
-    /* Set the font-size, color, and height for the .am class */
-    font-size: 9px;
-    color: #333333;
-    height: 10px;
-    /* Make the text bold */
-    font-weight: bold;
-    /* Add margin-bottom */
-    margin-bottom: 2px;
-    /* Center the text */
-    text-align: center;
-    /* Set the width, border-width, border-style, and border-color for the .am class */
-    width: 320px;
-    border-top-width: 1px;
-    border-right-width: 2px;
-    border-left-width: 2px;
-    border-top-style: solid;
-    border-right-style: solid;
-    border-left-style: solid;
-    border-top-color: #000000;
-    border-right-color: #000000;
-    border-left-color: #000000;
+  /* Set the font-size, color, and height for the .am class */
+  font-size: 9px;
+  color: #333;
+  height: 10px;
+  /* Make the text bold */
+  font-weight: bold;
+  /* Add margin-bottom */
+  margin-bottom: 2px;
+  /* Center the text */
+  text-align: center;
+  /* Set the width, border-width, border-style, and border-color for the .am class */
+  width: 320px;
+  border-top: 1px solid #000;
+  border-right: 2px solid #000;
+  border-left: 2px solid #000;
 }
 
-#boleto{
-    /* Set the height, width, and color for the #boleto element */
-    height: 416px;
-    width: 666px;
-    color: #000000;
-    font-family: Arial, Helvetica, sans-serif;
+#boleto {
+  /* Set the height, width, and color for the #boleto element */
+  height: 416px;
+  width: 666px;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 #tb_logo {
-    /* Set the height, width, and border for the #tb_logo element */
-    height: 40px;
-    width: 666px;
-    border-bottom-width: 2px;
-    border-bottom-style: solid;
-    border-bottom-color: #000000;
+  /* Set the height, width, and border for the #tb_logo element */
+  height: 40px;
+  width: 666px;
+  border-bottom: 2px solid #000;
 }
 
 #tb_logo #td_banco {
-    /* Set the height, width, border, font-size, font-weight, and text-align for the #tb_logo #td_banco element */
-    height: 22px;
-    width: 53px;
-    border-right-width: 2px;
-    border-left-width: 2px;
-    border-right-style: solid;
-    border-left-style: solid;
-    border-right-color: #000000;
-    border-left-color: #000000;
-    font-size: 15px;
-    font-weight: bold;
-    text-align: center;
+  /* Set the height, width, border, font-size, font-weight, and text-align for the #tb_logo #td_banco element */
+  height: 22px;
+  width: 53px;
+  border-right: 2px solid #000;
+  border-left: 2px solid #000;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
 }
 
 .ld {
-    /* Set the font, font-size, and color for the .ld class */
-    font: bold 15px Arial;
-    color: #000000;
+  /* Set the font, font-size, and color for the .ld class */
+  font: bold 15px Arial;
+  color: #000;
 }
 
-.td_7_sb {
-    /* Set the height and width for the .td_7_sb class */
-    height: 26px;
-    width: 7px;
+.td_7_sb,
+.td_7_cb {
+  /* Set the height and width for the .td_7_sb and .td_7_cb classes */
+  height: 26px;
+  width: 7px;
 }
 
 .td_7_cb {
-    /* Set the width, border-left-width, border-left-style, border-left-color, and height for the .td_7_cb class */
-    width: 7px;
-    border
+  /* Set the border-left-width, border-left-style, border-left-color for the .td_7_cb class */
+  border-left: 2px solid #000;
+}

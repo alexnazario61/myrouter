@@ -1,8 +1,9 @@
 <?php
 
-$vendorDir = dirname(dirname(__FILE__));
-$baseDir = dirname($vendorDir);
+// Composer autoloader
+require_once __DIR__ . '/../vendor/autoload.php';
 
-return array(
-    $vendorDir . '/mustangostang/spyc/Spyc.php',
-);
+return [
+    \Mustangostang\Spyc\Spyc::class,
+];
+

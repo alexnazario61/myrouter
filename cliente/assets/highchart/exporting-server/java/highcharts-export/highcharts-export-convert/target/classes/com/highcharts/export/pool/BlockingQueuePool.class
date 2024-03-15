@@ -1,111 +1,76 @@
-/**
- * BlockingQueuePool class for managing a pool of objects.
- * This class uses a LinkedBlockingQueue to store the objects.
- *
- * @param <TT;> the type of objects in the pool
- */
-public class BlockingQueuePool<TT;> extends AbstractPool<TT;> {
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
-    /** The queue used to store the objects */
-    private final LinkedBlockingQueue<TT;> queue;
+import org.apache.commons.pool2.ObjectFactory;
+import org.apache.commons.pool2.PoolException;
 
-    /**
-     * Constructs a new BlockingQueuePool with the given object factory, number of objects,
-     * and maximum wait time in milliseconds.
-     *
-     * @param factory   the object factory
-     * @param number   the number of objects
-     * @param maxWait  the maximum wait time in milliseconds
-     */
-    public BlockingQueuePool(ObjectFactory<TT;> factory, int number, int maxWait) {
-        super(factory, number, maxWait);
-        this.queue = new LinkedBlockingQueue<>(number);
+public class BlockingQueuePool<T> extends AbstractPool<T> {
+
+    private final BlockingQueue<T> queue;
+    private final int maxWait;
+
+    public BlockingQueuePool(ObjectFactory<T> factory, int maxWait) {
+        super(factory);
+        if (maxWait < 0) {
+            throw new IllegalArgumentException("maxWait must be non-negative");
+        }
+        this.queue = new LinkedBlockingQueue<>();
+        this.maxWait = maxWait;
     }
 
-    /**
-     * Borrows an object from the pool.
-     *
-     * @return the borrowed object
-     * @throws PoolException if there is an error borrowing an object
-     */
     @Override
-    public TT borrowObject() throws PoolException {
-        TT object;
+    public T borrowObject() throws PoolException {
+        T object;
         try {
-            object = queue.poll(getMaxWait(), MILLISECONDS);
+            object = queue.poll(maxWait, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PoolException("Interrupted while waiting for an object", e);
         }
-        if (object == null) {
+        if (object == null && getAndDecrement() > 0) {
             throw new PoolException("Could not acquire an object");
         }
         return object;
     }
 
-    /**
-     * Returns an object to the pool.
-     *
-     * @param object the object to return
-     * @param valid  true if the object is still valid, false otherwise
-     */
     @Override
-    public void returnObject(TT object, boolean valid) {
-        if (valid) {
+    public void returnObject(T object, boolean valid) {
+        if (valid && queue.remainingCapacity() > 0) {
             queue.offer(object);
         } else {
             destroyObject(object);
         }
     }
 
-    /**
-     * Validates an object.
-     *
-     * @param object the object to validate
-     * @param valid  true if the object is valid, false otherwise
-     */
     @Override
-    public void validate(TT object, boolean valid) {
+    public void validate(T object, boolean valid) {
         if (!valid) {
             passivate(object);
         }
     }
 
-    /**
-     * Destroys an object.
-     *
-     * @param object the object to destroy
-     */
-    private void destroyObject(TT object) {
-        objectFactory.destroyObject(object);
+    @Override
+    public void destroyObject(T object) {
+        // implementation specific to the object type
     }
 
-    /**
-     * Passivates an object.
-     *
-     * @param object the object to passivate
-     */
-    private void passivate(TT object) {
-        if (!queue.offer(object)) {
+    @Override
+    public void passivate(T object) {
+        if (queue.remainingCapacity() > 0) {
+            queue.offer(object);
+        } else {
             destroyObject(object);
         }
     }
 
-    /**
-     * Increments the pool size.
-     *
-     * @return the new pool size
-     */
-    private int incrementAndGet() {
-        return poolSize.incrementAndGet();
+    @Override
+    protected int incrementAndGet() {
+        return super.incrementAndGet();
     }
 
-    /**
-     * Gets the pool size and decrements it.
-     *
-     * @return the previous pool size
-     */
-    private int getAndDecrement() {
-        return poolSize.getAndDecrement();
+    @Override
+    protected int getAndDecrement() {
+        return super.getAndDecrement();
     }
 }

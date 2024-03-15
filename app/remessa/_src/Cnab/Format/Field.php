@@ -1,74 +1,79 @@
 <?php
+
 namespace Cnab\Format;
 
-class Field {
-	private $cnabLinha;
-	public $nome;
-	public  $format;
-	private $valor_decoded;
-	private $valor_encoded = null;
-	
-	public $pos_start;
-	public $pos_end;
-	public $length;
-	public $options;
-	
-	public function __construct(Linha $linha, $nome, $format, $pos_start, $pos_end, $options)
-	{
-		if(!Picture::validarFormato($format))
-			throw new \InvalidArgumentException("'$format' is not a valid format on $nome");
-		
-		$this->options = $options;
-		$this->nome         = $nome;
-		$this->cnabLinha    = $linha;
-		$this->format       = $format;
-		$this->pos_start    = $pos_start;
-		$this->pos_end      = $pos_end;
-		$this->length       = ($pos_end + 1) - $pos_start;
-		
-		$p_length = Picture::getLength($this->format);
-		if($p_length > $this->length)
-			throw new \Exception("Picture length of '$this->nome' need more positions than  $pos_start : $pos_end");
-		else if($p_length < $this->length)
-			throw new \Exception("Picture length of '$this->nome' need less positions than  $pos_start : $pos_end");
-	}
+/**
+ * Field represents a field in a CNAB file.
+ */
+class Field
+{
+    public ?string $name;
+    public string $format;
+    public ?string $valueDecoded;
+    public ?string $valueEncoded;
+    public int $posStart;
+    public int $posEnd;
+    public int $length;
 
-	public function set($valor)
-	{
-		if($valor === false || is_null($valor))
-			throw new \Exception("'$this->nome' dont be false or null");
-			
-		$this->valor_decoded = $valor;
-		
-		try 
-		{
-			$this->valor_encoded = Picture::encode($valor, $this->format, $this->options);	
-		}
-		catch(\Exception $e)
-		{
-			trigger_error("Error in field '$this->nome': " . $e->getMessage(), E_USER_NOTICE);
-			throw $e; // para exibir o backtrace
-		}
-		
-		$len = strlen($this->valor_encoded);
-		if($len != $this->length)
-			throw new \Exception("'$this->nome' have length '$len', but field need length $this->length");
-	}
-	
-	public function getValue()
-	{		
-		return $this->valor_decoded;
-	}
+    /**
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(
+        string $name,
+        string $format,
+        int $posStart,
+        int $posEnd,
+        int $length,
+        array $options = []
+    ) {
+        if (!Picture::isValidFormat($format)) {
+            throw new \InvalidArgumentException("'$format' is not a valid format on $name");
+        }
 
-	public function getName()
-	{
-		return $this->nome;
-	}
-	
-	public function getEncoded()
-	{
-		if(is_null($this->valor_encoded))
-			throw new \Exception("'$this->nome' dont be null, need to set any value");
-		return $this->valor_encoded;
-	}
-}
+        $this->name = $name;
+        $this->format = $format;
+        $this->posStart = $posStart;
+        $this->posEnd = $posEnd;
+        $this->length = $length;
+
+        if (Picture::getLength($format) > $length) {
+            throw new \Exception("Picture length of '$name' needs more positions than $posStart : $posEnd");
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function set(?string $value): void
+    {
+        if ($value === false || is_null($value) || $value === '') {
+            throw new \Exception("'$this->name' cannot be false, null or empty");
+        }
+
+        $this->valueDecoded = $value;
+
+        try {
+            $this->valueEncoded = Picture::encode($value, $this->format, []);
+        } catch (\Exception $e) {
+            trigger_error("Error in field '$this->name': " . $e->getMessage(), E_USER_NOTICE);
+            throw $e; // for displaying the backtrace
+        }
+
+        if (strlen($this->valueEncoded) !== $this->length) {
+            throw new \Exception("'$this->name' has length " . strlen($this->valueEncoded) . ", but the field needs length $this->length");
+        }
+    }
+
+    public function getValue(): ?string
+    {
+        return $this->valueDecoded;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getEncoded(): ?string
+    {
+

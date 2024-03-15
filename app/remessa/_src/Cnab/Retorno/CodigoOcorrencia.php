@@ -1,23 +1,40 @@
 <?php
 namespace Cnab\Retorno;
 
+use Cnab\Format\YamlLoad;
 
 class CodigoOcorrencia
 {
     /**
-     * Por enquanto só foi implementado no Cnab400
+     * @var YamlLoad
      */
-    public function getNome($codigo_banco, $codigo_ocorrencia, $format='cnab400')
-    {
-        $format             = strtolower($format);
-        $codigo_banco       = (int)$codigo_banco;
-        $codigo_ocorrencia  = (int)$codigo_ocorrencia;
-        $yamlLoad           = new \Cnab\Format\YamlLoad($codigo_banco);
-        $array              = $yamlLoad->loadFormat($format, 'retorno/codigo_ocorrencia');
+    private $yamlLoad;
 
-        if(array_key_exists($codigo_banco, $array) && array_key_exists($codigo_ocorrencia, $array[$codigo_banco]))
-        {
-            return $array[$codigo_banco][$codigo_ocorrencia];
+    /**
+     * CodigoOcorrencia constructor.
+     * @param YamlLoad $yamlLoad
+     */
+    public function __construct(YamlLoad $yamlLoad)
+    {
+        $this->yamlLoad = $yamlLoad;
+    }
+
+    /**
+     * @param int $codigoBanco
+     * @param int $codigoOcorrencia
+     * @param string $format
+     * @return string|null
+     */
+    public function getNome(int $codigoBanco, int $codigoOcorrencia, string $format = 'cnab400'): ?string
+    {
+        $format = strtolower($format);
+
+        $array = $this->yamlLoad->loadFormat($format, 'retorno/codigo_ocorrencia');
+
+        if (isset($array[$codigoBanco][$codigoOcorrencia])) {
+            return $array[$codigoBanco][$codigoOcorrencia];
         }
+
+        return null;
     }
 }

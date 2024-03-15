@@ -4,25 +4,53 @@
 require('../config/mikrotik.class.php');
 
 // Initialize the API object
-$API = new routeros_api();
+$api = new routeros_api();
 
 // Disable debug mode
-$API->debug = false;
+$api->debug = false;
 
-// Connect to the router using IP, login, and password from GET request
-if ($API->connect($_GET['ip'], $_GET['login'], $_GET['senha'])) {
+// Set the IP, login, and password as variables
+$ip = isset($_GET['ip']) ? $_GET['ip'] : '';
+$login = isset($_GET['login']) ? $_GET['login'] : '';
+$password = isset($_GET['senha']) ? $_GET['senha'] : '';
 
-  // Execute the command to retrieve active hotspot users
-  $ARRAY = $API->comm("/ip/hotspot/active/print");
+// Check if all required variables are set
+if (!empty($ip) && !empty($login) && !empty($password)) {
 
-  // Get the first element from the returned array
-  $first = $ARRAY['0'];
+  // Connect to the router using IP, login, and password
+  if ($api->connect($ip, $login, $password)) {
 
-  // Output the uptime of the first user
-  ?>
-  <?php echo $first['uptime']; ?>
+    // Execute the command to retrieve active hotspot users
+    $array = $api->comm("/ip/hotspot/active/print");
 
-  <?php
+    // Check if at least one user is returned
+    if (isset($array[0])) {
+
+      // Output the uptime of the first user
+      echo $array[0]['uptime'];
+
+    } else {
+
+      // Output a message if no users are found
+      echo "No active hotspot users found.";
+
+    }
+
+    // Close the connection
+    $api->disconnect();
+
+  } else {
+
+    // Output a message if the connection fails
+    echo "Failed to connect to the router.";
+
+  }
+
+} else {
+
+  // Output a message if required variables are not set
+  echo "Missing required variables.";
+
 }
 
 ?>

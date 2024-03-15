@@ -1,3 +1,33 @@
-<g class="highcharts-series" visibility="visible"  transform="translate(63,40) scale(1 1)" clip-path="url(#highcharts-3)">
-  <path fill="none" d="M 21.958333333333332 100.8 L 65.875 85.3 L 109.79166666666666 72.3 L 153.70833333333334 63.8 L 197.625 58.2 L 241.54166666666666 46.3 L 285.4583333333333 61.4 L 329.37499999999994 56.6 L 373.29166666666663 31.2 L 417.2083333333333 39.5 L 461.12499999999994 76.3 L 505.04166666666663 91.7" stroke="#2f7ed8" stroke-width="2" ></path>
-</g>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+
+<svg width="550" height="120"></svg>
+
+
+const data = [
+  { x: 22, y: 100.8 },
+  { x: 66, y: 85.3 },
+  { x: 110, y: 72.3 },
+  { x: 154, y: 63.8 },
+  { x: 198, y: 58.2 },
+  { x: 242, y: 46.3 },
+  { x: 286, y: 61.4 },
+  { x: 330, y: 56.6 },
+  { x: 374, y: 31.2 },
+  { x: 418, y: 39.5 },
+  { x: 462, y: 76.3 },
+  { x: 506, y: 91.7 }
+];
+
+const svg = d3.select("svg");
+
+const xScale = d3.scaleLinear().domain([0, data.length]).range([0, 550]);
+const yScale = d3.scaleLinear().domain([0, 120]).range([120, 0]);
+
+const line = d3
+  .line()
+  .x((d, i) => xScale(i))
+  .y(d => yScale(d.y));
+
+svg
+  .append("path

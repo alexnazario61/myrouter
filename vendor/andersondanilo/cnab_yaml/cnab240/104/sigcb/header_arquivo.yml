@@ -2,88 +2,81 @@
 # This section defines the layout for the header of a file based on the documentation from Caixa SIGCB.
 # The documentation is available at: http://www.caixa.gov.br/downloads/cobranca-caixa-manuais/LEIAUTE_CNAB_240_SIGCB_COBRANCA_CAIXA.pdf
 
-# uso_exclusivo_caixa_01
+class FileLayout:
+    def __init__(self, pos, picture, default='', date_format=None):
+        self.pos = pos
+        self.picture = picture
+        self.default = default
+        self.date_format = date_format
+
 # Field properties:
 #   pos: [33, 52] - Position of the field in the file
 #   picture: '9(20)' - Format of the field (9 = numeric, 20 = 20 digits)
 #   default: '0' - Default value of the field
-# This field is for exclusive use by Caixa and should be filled with 20 digits.
+use_exclusivo_caixa_01 = FileLayout(pos=[33, 52], picture='9(20)', default='0')
 
-# uso_exclusivo_banco_01
 # Field properties:
 #   pos: [65, 71] - Position of the field in the file
 #   picture: 'X(7)' - Format of the field (X = alphanumeric, 7 = 7 characters)
 #   default: '' - Default value of the field
-# This field is for exclusive use by the bank and should be left blank.
+uso_exclusivo_banco_01 = FileLayout(pos=[65, 71], picture='X(7)', default='')
 
-# agencia
 # Field properties:
 #   pos: [53, 57] - Position of the field in the file
 #   picture: '9(5)' - Format of the field (9 = numeric, 5 = 5 digits)
-# This field contains the agency code of the account holder, provided by Caixa.
+agencia = FileLayout(pos=[53, 57], picture='9(5)')
 
-# agencia_dv
 # Field properties:
 #   pos: [58, 58] - Position of the field in the file
 #   picture: '9(1)' - Format of the field (9 = numeric, 1 = 1 digit)
-# This field contains the agency verification digit of the account holder, provided by Caixa.
+agencia_dv = FileLayout(pos=[58, 58], picture='9(1)')
 
-# codigo_cedente
 # Field properties:
 #   pos: [59, 64] - Position of the field in the file
 #   picture: '9(6)' - Format of the field (9 = numeric, 6 = 6 digits)
-# This field contains the code of the account holder, provided by Caixa.
+codigo_cedente = FileLayout(pos=[59, 64], picture='9(6)')
 
-# uso_exclusivo_caixa_02
 # Field properties:
 #   pos: [65, 71] - Position of the field in the file
 #   picture: '9(7)' - Format of the field (9 = numeric, 7 = 7 digits)
 #   default: '0' - Default value of the field
-# This field is for exclusive use by Caixa and should be filled with 7 digits.
+uso_exclusivo_caixa_02 = FileLayout(pos=[65, 71], picture='9(7)', default='0')
 
-# uso_exclusivo_caixa_03
 # Field properties:
 #   pos: [72, 72] - Position of the field in the file
 #   picture: '9(1)' - Format of the field (9 = numeric, 1 = 1 digit)
 #   default: '0' - Default value of the field
-# This field is for exclusive use by Caixa and should be filled with 1 digit.
+uso_exclusivo_caixa_03 = FileLayout(pos=[72, 72], picture='9(1)', default='0')
 
-# nome_empresa
 # Field properties:
 #   pos: [73, 102] - Position of the field in the file
 #   picture: 'X(30)' - Format of the field (X = alphanumeric, 30 = 30 characters)
-# This field contains the name of the company or individual associated with the account.
+nome_empresa = FileLayout(pos=[73, 102], picture='X(30)')
 
-# nome_banco
 # Field properties:
 #   pos: [103, 132] - Position of the field in the file
 #   picture: 'X(30)' - Format of the field (X = alphanumeric, 30 = 30 characters)
-# This field contains the name of the bank that is receiving or sending the file.
+nome_banco = FileLayout(pos=[103, 132], picture='X(30)')
 
-# uso_exclusivo_febraban_02
 # Field properties:
 #   pos: [133, 142] - Position of the field in the file
 #   picture: 'X(10)' - Format of the field (X = alphanumeric, 10 = 10 characters)
 #   default: '' - Default value of the field
-# This field is for exclusive use by Febraban and should be left blank.
+uso_exclusivo_febraban_02 = FileLayout(pos=[133, 142], picture='X(10)', default='')
 
-# codigo_remessa_retorno
 # Field properties:
 #   pos: [143, 143] - Position of the field in the file
 #   picture: '9(1)' - Format of the field (9 = numeric, 1 = 1 digit)
-# This field contains the code for remittance or return.
+codigo_remessa_retorno = FileLayout(pos=[143, 143], picture='9(1)')
 
-# data_geracao
 # Field properties:
 #   pos: [144, 151] - Position of the field in the file
 #   picture: '9(8)' - Format of the field (9 = numeric, 8 = 8 digits)
 #   date_format: '%d%m%Y' - Date format (DDMMYYYY)
-# This field contains the date of creation of the file.
+data_geracao = FileLayout(pos=[144, 151], picture='9(8)', date_format='%d%m%Y')
 
-# hora_geracao
 # Field properties:
 #   pos: [152, 157] - Position of the field in the file
 #   picture: '9(6)' - Format of the field (9 = numeric, 6 = 6 digits)
 #   date_format: '%H%M%S' - Date format (HHMMSS)
-# This field contains the time of creation of the file.
-
+hora_geracao = FileLayout(pos=[152, 157], picture='9(6)', date_format='%H%M%S')

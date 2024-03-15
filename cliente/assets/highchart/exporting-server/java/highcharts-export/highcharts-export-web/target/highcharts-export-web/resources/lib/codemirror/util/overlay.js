@@ -3,57 +3,74 @@
 // functionality, but a second (typically simple) mode is used, which
 // can override the style of text. Both modes get to parse all of the
 // text, but when both assign a non-null style to a piece of code, the
-// overlay wins, unless the combine argument was true, in which case
+// overlay wins, unless the `combine` argument was true, in which case
 // the styles are combined.
 
-// overlayParser is the old, deprecated name
-CodeMirror.overlayMode = CodeMirror.overlayParser = function(base, overlay, combine) {
-  return {
-    startState: function() {
-      return {
-        base: CodeMirror.startState(base),
-        overlay: CodeMirror.startState(overlay),
-        basePos: 0, baseCur: null,
-        overlayPos: 0, overlayCur: null
-      };
-    },
-    copyState: function(state) {
-      return {
-        base: CodeMirror.copyState(base, state.base),
-        overlay: CodeMirror.copyState(overlay, state.overlay),
-        basePos: state.basePos, baseCur: null,
-        overlayPos: state.overlayPos, overlayCur: null
-      };
-    },
+// `overlayParser` is the old, deprecated name
+const overlayMode = (base, overlay, combine = false) => ({
+  name: `overlay-mode(${base.name}, ${overlay.name})`,
 
-    token: function(stream, state) {
-      if (stream.start == state.basePos) {
-        state.baseCur = base.token(stream, state.base);
-        state.basePos = stream.pos;
-      }
-      if (stream.start == state.overlayPos) {
-        stream.pos = stream.start;
-        state.overlayCur = overlay.token(stream, state.overlay);
-        state.overlayPos = stream.pos;
-      }
-      stream.pos = Math.min(state.basePos, state.overlayPos);
-      if (stream.eol()) state.basePos = state.overlayPos = 0;
+  startState() {
+    return {
+      baseState: CodeMirror.startState(base),
+      overlayState: CodeMirror.startState(overlay),
+      basePos: 0,
+      overlayPos: 0,
+    };
+  },
 
-      if (state.overlayCur == null) return state.baseCur;
-      if (state.baseCur != null && combine) return state.baseCur + " " + state.overlayCur;
-      else return state.overlayCur;
-    },
-    
-    indent: base.indent && function(state, textAfter) {
-      return base.indent(state.base, textAfter);
-    },
-    electricChars: base.electricChars,
+  copyState(state) {
+    return {
+      baseState: CodeMirror.copyState(base, state.baseState),
+      overlayState: CodeMirror.copyState(overlay, state.overlayState),
+      basePos: state.basePos,
+      overlayPos: state.overlayPos,
+    };
+  },
 
-    innerMode: function(state) { return {state: state.base, mode: base}; },
-    
-    blankLine: function(state) {
-      if (base.blankLine) base.blankLine(state.base);
-      if (overlay.blankLine) overlay.blankLine(state.overlay);
+  token(stream, state) {
+    if (stream.start === state.basePos) {
+      state.baseState = base.token(stream, state.baseState);
+      state.basePos = stream.pos;
     }
-  };
-};
+
+    if (stream.start === state.overlayPos) {
+      stream.pos = stream.start;
+      state.overlayState = overlay.token(stream, state.overlayState);
+      state.overlayPos = stream.pos;
+    }
+
+    stream.pos = Math.min(state.basePos, state.overlayPos);
+
+    if (stream.eol()) {
+      state.basePos = state.overlayPos = 0;
+    }
+
+    const baseCur = state.baseState ? state.baseState.token : null;
+    const overlayCur = state.overlayState ? state.overlayState.token : null;
+
+    if (overlayCur == null) return baseCur;
+
+    if (baseCur != null && combine) {
+      return `${baseCur} ${overlayCur}`;
+    }
+
+    return overlayCur;
+  },
+
+  indent(state, textAfter) {
+    return base.indent(state.baseState, textAfter);
+  },
+
+  electricChars: base.electricChars,
+
+  innerMode(state) {
+    return { state: state.baseState, mode: base };
+  },
+
+  blankLine(state) {
+    if (base.blankLine) base.blankLine(state.baseState);
+    if (overlay.blankLine) overlay.blankLine(state.overlayState);
+  },
+});
+

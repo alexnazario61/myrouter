@@ -1,12 +1,17 @@
 <?php
+
 namespace Cnab\Remessa\Cnab400;
 
-class Header extends \Cnab\Format\Linha
+use Cnab\Format\Linha;
+use Cnab\Format\YamlLoad;
+use Cnab\Remessa\IArquivo;
+
+class Header extends Linha
 {
-	public function __construct(\Cnab\Remessa\IArquivo $arquivo)
+    public function __construct(IArquivo $arquivo)
     {
-    	$codigo_banco = $arquivo->codigo_banco;
-        $yamlLoad = new \Cnab\Format\YamlLoad($codigo_banco);
+        $codigoBanco = $arquivo->getCodigoBanco();
+        $yamlLoad = new YamlLoad($codigoBanco);
         $yamlLoad->load($this, 'cnab400', 'remessa/header_arquivo');
-	}
+    }
 }

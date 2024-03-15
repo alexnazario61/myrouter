@@ -1,33 +1,52 @@
 CodeMirror.runMode = function(string, modespec, callback, options) {
+  // Validate parameters
+  if (typeof modespec !== 'string' || typeof callback !== 'function') {
+    throw new Error('Invalid parameters: modespec and callback must be provided and be a string and a function, respectively');
+  }
+
   function esc(str) {
     return str.replace(/[<&]/g, function(ch) { return ch == "<" ? "&lt;" : "&amp;"; });
   }
 
-  var mode = CodeMirror.getMode(CodeMirror.defaults, modespec);
-  var isNode = callback.nodeType == 1;
-  var tabSize = (options && options.tabSize) || CodeMirror.defaults.tabSize;
+  // Get the mode object
+  let mode;
+  try {
+    mode = CodeMirror.getMode(CodeMirror.defaults, modespec);
+  } catch (e) {
+    throw new Error(`Invalid modespec: ${modespec}`);
+  }
+
+  // Set default options
+  const defaultOptions = {
+    tabSize: CodeMirror.defaults.tabSize
+  };
+  options = Object.assign({}, defaultOptions, options);
+
+  // Set up the callback function
+  const isNode = callback.nodeType === 1;
   if (isNode) {
-    var node = callback, accum = [], col = 0;
+    let node = callback;
+    let accum = [];
+    let col = 0;
     callback = function(text, style) {
       if (text == "\n") {
         accum.push("<br>");
         col = 0;
         return;
       }
-      var escaped = "";
-      // HTML-escape and replace tabs
-      for (var pos = 0;;) {
-        var idx = text.indexOf("\t", pos);
-        if (idx == -1) {
+      let escaped = "";
+      for (let pos = 0;;) {
+        let idx = text.indexOf("\t", pos);
+        if (idx === -1) {
           escaped += esc(text.slice(pos));
           col += text.length - pos;
           break;
         } else {
           col += idx - pos;
           escaped += esc(text.slice(pos, idx));
-          var size = tabSize - col % tabSize;
+          let size = options.tabSize - col % options.tabSize;
           col += size;
-          for (var i = 0; i < size; ++i) escaped += " ";
+          for (let i = 0; i < size; ++i) escaped += " ";
           pos = idx + 1;
         }
       }
@@ -38,16 +57,12 @@ CodeMirror.runMode = function(string, modespec, callback, options) {
         accum.push(escaped);
     };
   }
-  var lines = CodeMirror.splitLines(string), state = CodeMirror.startState(mode);
-  for (var i = 0, e = lines.length; i < e; ++i) {
-    if (i) callback("\n");
-    var stream = new CodeMirror.StringStream(lines[i]);
-    while (!stream.eol()) {
-      var style = mode.token(stream, state);
-      callback(stream.current(), style, i, stream.start);
-      stream.start = stream.pos;
-    }
-  }
-  if (isNode)
-    node.innerHTML = accum.join("");
-};
+
+  // Split the input string into lines
+  const lines = CodeMirror.splitLines(string);
+
+  // Initialize the state object
+  let state = CodeMirror.startState(mode);
+
+  // Process each line
+  for (let

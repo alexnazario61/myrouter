@@ -1,107 +1,80 @@
 # Registro Detalhe - Segmento Q (Obrigatório - Remessa)
-# Baseado na documentação da caixa
-codigo_banco:
-  # Código fornecido pelo Banco Central para identificação do Banco que está recebendo ou enviando o
-  # arquivo, com o qual se firmou o contrato de prestação de serviços.
-  # CAIXA ECONÔMICA FEDERAL = ‘104’
-  pos: [1, 3]
-  picture: '9(3)'
+# This code defines a dictionary for the layout of a detailed record in the Segmento Q
+# section of a remittance file. The layout is based on Caixa's documentation.
 
-lote_servico:
-  pos: [4, 7]
-  picture: '9(4)'
+codigo_banco = {
+  # The 'codigo_banco' key contains a dictionary that describes the 'Código do Banco' field.
+  # The value of this key is another dictionary with the following keys:
+  # 'pos': [1, 3], which indicates the starting and ending positions of the field in the
+  # record.
+  # 'picture': '9(3)', which describes the format of the field as a numeric field with 3 digits.
+  # The 'codigo_banco' field contains the bank code provided by the Central Bank for
+  # identification of the receiving or sending bank.
+  'pos': [1, 3],
+  'picture': '9(3)',
+  # The default value is set to '104', which is the bank code for CAIXA ECONÔMICA FEDERAL.
+  'default': '104'
+}
 
-tipo_registro:
-  pos: [8, 8]
-  picture: '9(1)'
-  default: '3'
+lote_servico = {
+  # The 'lote_servico' key contains a dictionary that describes the 'Lote de Serviço' field.
+  # The value of this key is another dictionary with the following keys:
+  # 'pos': [4, 7], which indicates the starting and ending positions of the field in the
+  # record.
+  # 'picture': '9(4)', which describes the format of the field as a numeric field with 4 digits.
+  # The 'lote_servico' field contains the number of the service batch.
+  'pos': [4, 7],
+  'picture': '9(4)'
+}
 
-numero_sequencial_lote:
-  pos: [9, 13]
-  picture: '9(5)'
+tipo_registro = {
+  # The 'tipo_registro' key contains a dictionary that describes the 'Tipo do Registro' field.
+  # The value of this key is another dictionary with the following keys:
+  # 'pos': [8, 8], which indicates the starting and ending positions of the field in the
+  # record.
+  # 'picture': '9(1)', which describes the format of the field as a numeric field with 1 digit.
+  # The 'tipo_registro' field contains the type of record.
+  # The default value is set to '3', which is the type for the detailed record in Segmento Q.
+  'pos': [8, 8],
+  'picture': '9(1)',
+  'default': '3'
+}
 
-codigo_segmento:
-  pos: [14, 14]
-  picture: 'X(1)'
-  default: 'Q'
+numero_sequencial_lote = {
+  # The 'numero_sequencial_lote' key contains a dictionary that describes the 'Número Sequencial do Lote' field.
+  # The value of this key is another dictionary with the following keys:
+  # 'pos': [9, 13], which indicates the starting and ending positions of the field in the
+  # record.
+  # 'picture': '9(5)', which describes the format of the field as a numeric field with 5 digits.
+  # The 'numero_sequencial_lote' field contains the sequential number of the lot.
+  'pos': [9, 13],
+  'picture': '9(5)'
+}
 
-uso_exclusivo_febraban_01:
-  pos: [15, 15]
-  picture: 'X(1)'
-  default: ''
+codigo_segmento = {
+  # The 'codigo_segmento' key contains a dictionary that describes the 'Código do Segmento' field.
+  # The value of this key is another dictionary with the following keys:
+  # 'pos': [14, 14], which indicates the starting and ending positions of the field in the
+  # record.
+  # 'picture': 'X(1)', which describes the format of the field as an alphanumeric field with 1 character.
+  # The 'codigo_segmento' field contains the code of the segment.
+  # The default value is set to 'Q', which is the code for the detailed record in Segmento Q.
+  'pos': [14, 14],
+  'picture': 'X(1)',
+  'default': 'Q'
+}
 
-codigo_ocorrencia:
-  # Código de Movimento Remessa
-  # Código adotado pela FEBRABAN, para identificar o tipo de movimentação enviado nos registros do
-  # arquivo de remessa.
-  # Cada Banco definirá os campos a serem alterados para o código de movimento ‘31’.
-  # Código Descrição
-  # ‘01’ Entrada de Títulos
-  # ‘02’ Pedido de Baixa
-  # ‘04’ Concessão de Abatimento
-  # ‘05’ Cancelamento de Abatimento
-  # ‘06’ Alteração de Vencimento
-  # ‘07’ Concessão de Desconto
-  # ‘08’ Cancelamento de Desconto
-  # ‘09’ Protestar
-  # ‘10’ Sustar Protesto e Baixar Título
-  # ‘31’ Alteração de Outros Dados
-  pos: [16, 17]
-  picture: '9(2)'
+uso_exclusivo_febraban_01 = {
+  # The 'uso_exclusivo_febraban_01' key contains a dictionary that describes the 'Uso Exclusivo FEBRABAN 01' field.
+  # The value of this key is another dictionary with the following keys:
+  # 'pos': [15, 15], which indicates the starting and ending positions of the field in the
+  # record.
+  # 'picture': 'X(1)', which describes the format of the field as an alphanumeric field with 1 character.
+  # The 'uso_exclusivo_febraban_01' field is for exclusive use by FEBRABAN.
+  'pos': [15, 15],
+  'picture': 'X(1)',
+  'default': ''
+}
 
-uso_exclusivo_febraban_02:
-  pos: [18, 65]
-  picture: 'X(48)'
-  default: ''
-
-codigo_multa:
-  # Código adotado pela FEBRABAN para identificação do critério de pagamento de pena pecuniária, a
-  # ser aplicada pelo atraso do pagamento do Título. Pode ser:
-  # '1' = Valor Fixo
-  # '2' = Percentual
-  # ‘0’ = Sem Multa
-  pos: [66, 66]
-  picture: '9(1)'
-
-data_multa:
-  # Data a partir da qual a multa deverá ser cobrada. Na ausência, será considerada a data de
-  # vencimento. Utilizar o formato DDMMAAAA, onde:
-  # DD = dia
-  # MM = mês
-  # AAAA = ano
-  pos: [67, 74]
-  picture: '9(8)'
-  date_format: '%d%m%Y'
-
-valor_multa:
-  # Valor ou percentual de multa a ser aplicado sobre o valor do Título, por atraso no pagamento.
-  pos: [75, 89]
-  picture: '9(13)V9(2)'
-
-informacao_sacado:
-  # Texto de observações destinado ao envio de informações do Cedente ao Sacado.
-  # Este campo só poderá ser utilizado, caso haja troca de arquivos magnéticos entre o Banco e o Sacado.
-  pos: [90, 99]
-  picture: 'X(10)'
-  default: ''
-
-mensagem_3:
-  # Texto de observações destinado ao envio de mensagens livres, a serem impressas no campo de
-  # instruções da ficha de compensação do bloqueto (mensagem 3 e 4) e Recibo do Sacado (mensagem 5 a 8).
-  # As mensagens 3 e 4 prevalecem sobre as mensagens 1 e 2.
-  pos: [100, 139]
-  picture: 'X(40)'
-  default: ''
-
-mensagem_4:
-  # Texto de observações destinado ao envio de mensagens livres, a serem impressas no campo de
-  # instruções da ficha de compensação do bloqueto (mensagem 3 e 4) e Recibo do Sacado (mensagem 5 a 8).
-  # As mensagens 3 e 4 prevalecem sobre as mensagens 1 e 2.
-  pos: [140, 179]
-  picture: 'X(40)'
-  default: ''
-
-uso_exclusivo_febraban_03:
-  pos: [180, 240]
-  picture: 'X(61)'
-  default: ''
+codigo_ocorrencia = {
+  # The 'codigo_ocorrencia' key contains

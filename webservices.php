@@ -1,90 +1,99 @@
 <?php
-    
-    /* Solicita o parâmetro "key"  */
+    // Check if the 'key' parameter is set and not empty
     if(isset($_GET['key']) and $_GET['key']) {
-     
-        /* Verifica */
-        $numeros = isset($_GET['limite']) ? intval($_GET['limite']) : 10; //10 é o padrão
-        $formato = (isset($_GET['formato']) and strtolower($_GET['formato']) == 'json') ? 'json' : 'xml'; //xml é o padrão
+        
+        // Set default values for 'limite' and 'formato' if they are not set
+        $numeros = isset($_GET['limite']) ? intval($_GET['limite']) : 10; //10 is the default
+        $formato = (isset($_GET['formato']) and strtolower($_GET['formato']) == 'json') ? 'json' : 'xml'; //xml is the default
         $tipo = $_GET['tipo'];	
-        /* Conexão */
+        
+        // Include the database connection file
         require_once("config/conexao.class.php");
         
-        $conexao = mysql_connect("$host","$login_db","$senha_db") or die('Não foi possível conectar ao banco de dados');
-        mysql_select_db("$database",$conexao) or die('Não foi possível selecionar o banco de dados');
+        // Connect to the database
+        $conexao = mysql_connect("$host","$login_db","$senha_db") or die('Could not connect to the database');
+        mysql_select_db("$database",$conexao) or die('Could not select the database');
         mysql_set_charset('utf8', $conexao); 
          
-        /* Seleciona */
-        
+        // Determine the table name based on the 'tipo' parameter
         if ($tipo == "1") {
-      	$tabela = 'financeiro'; 
-      	} elseif ($tipo == "2") {
- 	$tabela = 'clientes';
+            $tabela = 'financeiro'; 
+        } elseif ($tipo == "2") {
+            $tabela = 'clientes';
         } elseif ($tipo == "3") {
-	$tabela = 'planos'; 
-	} elseif ($tipo == "4") {
-	$tabela = 'ordemservicos'; 
-	} elseif ($tipo == "5") {
-	$tabela = 'notafiscal';
-	} elseif ($tipo == "6") {
-	$tabela = 'tecnicos';   
-	} elseif ($tipo == "7") {
-	$tabela = 'sici'; 
-	} elseif ($tipo == "8") {
-	$tabela = 'empresa'; 
-      	} else {
-      	$tabela = 'assinaturas';
-      	}
+            $tabela = 'planos'; 
+        } elseif ($tipo == "4") {
+            $tabela = 'ordemservicos'; 
+        } elseif ($tipo == "5") {
+            $tabela = 'notafiscal';
+        } elseif ($tipo == "6") {
+            $tabela = 'tecnicos';   
+        } elseif ($tipo == "7") {
+            $tabela = 'sici'; 
+        } elseif ($tipo == "8") {
+            $tabela = 'empresa'; 
+        } else {
+            $tabela = 'assinaturas';
+        }
 	
+	// Get the search parameters from the URL query string
 	$pesquisa = $_GET['pesquisa'];
 	$idbusca = $_GET['busca'];
 	
+	// Build the WHERE clause for the SQL query
 	if ($pesquisa <> "") {
-      	$where = "WHERE $pesquisa = '$idbusca'"; 
+            $where = "WHERE $pesquisa = '$idbusca'"; 
+        } else {
+            $where = '';
+        }
       	
-      	} else {
-      	$where = '';
-      	}
-      	
+      	// Get the ORDER BY clause for the SQL query
       	$ordem = $_GET['ordem'];
       	if ($ordem <> "") {
-      	$ordem = "ASC"; 
-      	} else {
-      	$ordem = 'DESC';
-      	}
+            $ordem = "ASC"; 
+        } else {
+            $ordem = 'DESC';
+        }
 
-	    $consulta = "SELECT * FROM $tabela $where ORDER BY id $ordem LIMIT $numeros";
+	// Build the SQL query
+	$consulta = "SELECT * FROM $tabela $where ORDER BY id $ordem LIMIT $numeros";
 	
+        // Execute the SQL query
         $resultado = mysql_query($consulta,$conexao) or die('Consulta com Problemas:  ');
          
-        /* cria um array mestre com os registros */
+        // Create an array to store the query results
         $artigos = array();
         if(mysql_num_rows($resultado)) {
             while($artigo = mysql_fetch_assoc($resultado)) {
             
-            $artigos[] = array('myrouter'=>$artigo);
+                // Add each row to the array
+                $artigos[] = array('myrouter'=>$artigo);
             
             }
         } 
         
-        
          
-        /* extrai os dados no formato expecificado */
+         
+        // Output the query results in the specified format
         if($formato == 'json') {
+            // Output the results as JSON
             header('Content-type: application/json');
             echo json_encode(array('myrouter'=>$artigos));
         }
         else {
+            // Output the results as XML
             header('Content-type: text/xml');
             echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
             echo '<MYROUTER>'."\n";
             foreach($artigos as $indice => $artigo) {
                 if(is_array($artigo)) {
                     foreach($artigo as $chave => $valor) {
+                        // Output each array element as an XML tag
                         echo "\t<",$chave,'>'."\n";
                         if(is_array($valor)) {
                             foreach($valor as $tag => $val) {
-                                echo "\t\t".'<',str_replace('pedido', 'pedido', $tag) ,'><![CDATA[',$val,']]></',str_replace('pedido', 'pedido', $tag) ,'>'."\n";
+                                // Replace 'pedido' with 'pedidos' in the tag name
+                                echo "\t\t".'<',str_replace('pedido', 'pedidos', $tag) ,'><![CDATA[',$val,']]></',str_replace('pedido', 'pedidos', $tag) ,'>'."\n";
                             }
                         }
                         echo "\t".'</',$chave,'>'."\n";
@@ -94,7 +103,7 @@
             echo '</MYROUTER>'."\n";
         }
          
-        /* desconecta do banco de dados */
+        // Close the database connection
         @mysql_close($conexao);
     }
  

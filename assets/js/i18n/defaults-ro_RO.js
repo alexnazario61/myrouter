@@ -10,13 +10,13 @@
   // Set the default options for the jQuery selectpicker plugin
   $.fn.selectpicker.defaults = {
     // The text to display when no options are selected
-    noneSelectedText: 'Nu a fost selectat nimic',
+    noSelectionText: 'Nu a fost selectat nimic',
 
     // The text to display when there are no results found
-    noneResultsText: 'Nu exista niciun rezultat',
+    noResultsText: 'Nu exista niciun rezultat',
 
     // The text to display when some options are selected
-    countSelectedText: '{0} din {1} selectat(e)',
+    selectionCountText: 'Am selectat {0} din {1}',
 
     // The text to display when the maximum number of options has been reached
     maxOptionsText: [

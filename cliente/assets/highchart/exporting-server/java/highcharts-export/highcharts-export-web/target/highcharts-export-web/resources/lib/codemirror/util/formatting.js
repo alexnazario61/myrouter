@@ -1,193 +1,160 @@
-// ============== Formatting extensions ============================
-(function() {
-  // Define extensions for a few modes
-  CodeMirror.extendMode("css", {
-    commentStart: "/*",
-    commentEnd: "*/",
-    wordWrapChars: [";", "\\{", "\\}"],
-    autoFormatLineBreaks: function (text) {
-      return text.replace(new RegExp("(;|\\{|\\})([^\r\n])", "g"), "$1\n$2");
-    }
-  });
+(() => {
+  const commentStarts = {
+    css: "/*",
+    javascript: "/*",
+    xml: "<!--"
+  };
 
-  function jsNonBreakableBlocks(text) {
-    var nonBreakableRegexes = [/for\s*?\((.*?)\)/,
-                               /\"(.*?)(\"|$)/,
-                               /\'(.*?)(\'|$)/,
-                               /\/\*(.*?)(\*\/|$)/,
-                               /\/\/.*/];
-    var nonBreakableBlocks = [];
-    for (var i = 0; i < nonBreakableRegexes.length; i++) {
-      var curPos = 0;
+  const commentEnds = {
+    css: "*/",
+    javascript: "*/",
+    xml: "-->"
+  };
+
+  const wordWrapChars = {
+    css: [";", "{", "}"],
+    javascript: [";", "{", "}"],
+    xml: [">"]
+  };
+
+  const nonBreakableRegexes = [
+    /for\s*?\((.*?)\)/,
+    /"(.*?)("|$)/,
+    /'(.*?)('|$)/,
+    /\/\*(.*?)(\*\/|$)/,
+    /\/\/.*/
+  ];
+
+  const reLinesSplitter = /(;|\{|\})([^\r\n;])/g;
+  const reProcessedPortion = /(^\\s*?<|^[^<]*?)(.+)(>\\s*?$|[^>]*?$)/;
+  const reOpenBrackets = /< /g;
+  const reCloseBrackets = /(>)([^\r\n])/g;
+
+  const extendMode = (modeName, extensions) => {
+    const mode = CodeMirror.getMode(null, modeName);
+    const extendedMode = CodeMirror.extendMode(mode, extensions);
+    CodeMirror.defineMode(modeName, extendedMode);
+  };
+
+  const jsNonBreakableBlocks = text => {
+    const nonBreakableBlocks = [];
+    let curPos = 0;
+
+    for (const regex of nonBreakableRegexes) {
       while (curPos < text.length) {
-        var m = text.substr(curPos).match(nonBreakableRegexes[i]);
-        if (m != null) {
+        const m = text.substr(curPos).match(regex);
+        if (m) {
           nonBreakableBlocks.push({
             start: curPos + m.index,
             end: curPos + m.index + m[0].length
           });
           curPos += m.index + Math.max(1, m[0].length);
-        }
-        else { // No more matches
+        } else {
           break;
         }
       }
     }
-    nonBreakableBlocks.sort(function (a, b) {
-      return a.start - b.start;
-    });
 
+    nonBreakableBlocks.sort((a, b) => a.start - b.start);
     return nonBreakableBlocks;
-  }
+  };
 
-  CodeMirror.extendMode("javascript", {
-    commentStart: "/*",
-    commentEnd: "*/",
-    wordWrapChars: [";", "\\{", "\\}"],
-
+  extendMode("css", {
+    commentStart: commentStarts.css,
+    commentEnd: commentEnds.css,
+    wordWrapChars: wordWrapChars.css,
     autoFormatLineBreaks: function (text) {
-      var curPos = 0;
-      var reLinesSplitter = /(;|\{|\})([^\r\n;])/g;
-      var nonBreakableBlocks = jsNonBreakableBlocks(text);
-      if (nonBreakableBlocks != null) {
-        var res = "";
-        for (var i = 0; i < nonBreakableBlocks.length; i++) {
-          if (nonBreakableBlocks[i].start > curPos) { // Break lines till the block
-            res += text.substring(curPos, nonBreakableBlocks[i].start).replace(reLinesSplitter, "$1\n$2");
-            curPos = nonBreakableBlocks[i].start;
-          }
-          if (nonBreakableBlocks[i].start <= curPos
-              && nonBreakableBlocks[i].end >= curPos) { // Skip non-breakable block
-            res += text.substring(curPos, nonBreakableBlocks[i].end);
-            curPos = nonBreakableBlocks[i].end;
-          }
-        }
-        if (curPos < text.length)
-          res += text.substr(curPos).replace(reLinesSplitter, "$1\n$2");
-        return res;
-      } else {
-        return text.replace(reLinesSplitter, "$1\n$2");
-      }
+      return text.replace(reLinesSplitter, "$1\n$2");
     }
   });
 
-  CodeMirror.extendMode("xml", {
-    commentStart: "<!--",
-    commentEnd: "-->",
-    wordWrapChars: [">"],
-
+  extendMode("javascript", {
+    commentStart: commentStarts.javascript,
+    commentEnd: commentEnds.javascript,
+    wordWrapChars: wordWrapChars.javascript,
     autoFormatLineBreaks: function (text) {
-      var lines = text.split("\n");
-      var reProcessedPortion = new RegExp("(^\\s*?<|^[^<]*?)(.+)(>\\s*?$|[^>]*?$)");
-      var reOpenBrackets = new RegExp("<", "g");
-      var reCloseBrackets = new RegExp("(>)([^\r\n])", "g");
-      for (var i = 0; i < lines.length; i++) {
-        var mToProcess = lines[i].match(reProcessedPortion);
-        if (mToProcess != null && mToProcess.length > 3) { // The line starts with whitespaces and ends with whitespaces
-          lines[i] = mToProcess[1]
-            + mToProcess[2].replace(reOpenBrackets, "\n$&").replace(reCloseBrackets, "$1\n$2")
-            + mToProcess[3];
-          continue;
+      const nonBreakableBlocks = jsNonBreakableBlocks(text);
+      let curPos = 0;
+      let res = "";
+
+      for (const block of nonBreakableBlocks) {
+        if (block.start > curPos) {
+          res += text.substring(curPos, block.start).replace(reLinesSplitter, "$1\n$2");
+          curPos = block.start;
+        }
+
+        if (block.start <= curPos && block.end >= curPos) {
+          res += text.substring(curPos, block.end);
+          curPos = block.end;
         }
       }
+
+      if (curPos < text.length) {
+        res += text.substr(curPos).replace(reLinesSplitter, "$1\n$2");
+      }
+
+      return res;
+    }
+  });
+
+  extendMode("xml", {
+    commentStart: commentStarts.xml,
+    commentEnd: commentEnds.xml,
+    wordWrapChars: wordWrapChars.xml,
+    autoFormatLineBreaks: function (text) {
+      const lines = text.split("\n");
+
+      for (let i = 0; i < lines.length; i++) {
+        const mToProcess = lines[i].match(reProcessedPortion);
+
+        if (mToProcess && mToProcess.length > 3) {
+          lines[i] =
+            mToProcess[1] +
+            mToProcess[2].replace(reOpenBrackets, "\n$&").replace(reCloseBrackets, "$1\n$2") +
+            mToProcess[3];
+        }
+      }
+
       return lines.join("\n");
     }
   });
 
-  function localModeAt(cm, pos) {
-    return CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(pos).state).mode;
-  }
+  const localModeAt = (cm, pos) =>
+    CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(pos).state).mode;
 
-  function enumerateModesBetween(cm, line, start, end) {
-    var outer = cm.getMode(), text = cm.getLine(line);
+  const enumerateModesBetween = (cm, line, start, end) => {
+    const outer = cm.getMode();
+    let text = cm.getLine(line);
+
     if (end == null) end = text.length;
-    if (!outer.innerMode) return [{from: start, to: end, mode: outer}];
-    var state = cm.getTokenAt({line: line, ch: start}).state;
-    var mode = CodeMirror.innerMode(outer, state).mode;
-    var found = [], stream = new CodeMirror.StringStream(text);
+
+    if (!outer.innerMode)
+      return [{ from: start, to: end, mode: outer }];
+
+    const state = cm.getTokenAt({ line: line, ch: start }).state;
+    const mode = CodeMirror.innerMode(outer, state).mode;
+
+    const found = [];
+    let stream = new CodeMirror.StringStream(text);
     stream.pos = stream.start = start;
+
     for (;;) {
       outer.token(stream, state);
-      var curMode = CodeMirror.innerMode(outer, state).mode;
+      const curMode = CodeMirror.innerMode(outer, state).mode;
+
       if (curMode != mode) {
-        var cut = stream.start;
-        // Crappy heuristic to deal with the fact that a change in
-        // mode can occur both at the end and the start of a token,
-        // and we don't know which it was.
+        const cut = stream.start;
+
         if (mode.name == "xml" && text.charAt(stream.pos - 1) == ">") cut = stream.pos;
-        found.push({from: start, to: cut, mode: mode});
+
+        found.push({ from: start, to: cut, mode: mode });
         start = cut;
         mode = curMode;
       }
+
       if (stream.pos >= end) break;
       stream.start = stream.pos;
     }
-    if (start < end) found.push({from: start, to: end, mode: mode});
-    return found;
-  }
 
-  // Comment/uncomment the specified range
-  CodeMirror.defineExtension("commentRange", function (isComment, from, to) {
-    var curMode = localModeAt(this, from), cm = this;
-    this.operation(function() {
-      if (isComment) { // Comment range
-        cm.replaceRange(curMode.commentEnd, to);
-        cm.replaceRange(curMode.commentStart, from);
-        if (from.line == to.line && from.ch == to.ch) // An empty comment inserted - put cursor inside
-          cm.setCursor(from.line, from.ch + curMode.commentStart.length);
-      } else { // Uncomment range
-        var selText = cm.getRange(from, to);
-        var startIndex = selText.indexOf(curMode.commentStart);
-        var endIndex = selText.lastIndexOf(curMode.commentEnd);
-        if (startIndex > -1 && endIndex > -1 && endIndex > startIndex) {
-          // Take string till comment start
-          selText = selText.substr(0, startIndex)
-          // From comment start till comment end
-            + selText.substring(startIndex + curMode.commentStart.length, endIndex)
-          // From comment end till string end
-            + selText.substr(endIndex + curMode.commentEnd.length);
-        }
-        cm.replaceRange(selText, from, to);
-      }
-    });
-  });
-
-  // Applies automatic mode-aware indentation to the specified range
-  CodeMirror.defineExtension("autoIndentRange", function (from, to) {
-    var cmInstance = this;
-    this.operation(function () {
-      for (var i = from.line; i <= to.line; i++) {
-        cmInstance.indentLine(i, "smart");
-      }
-    });
-  });
-
-  // Applies automatic formatting to the specified range
-  CodeMirror.defineExtension("autoFormatRange", function (from, to) {
-    var cm = this;
-    cm.operation(function () {
-      for (var cur = from.line, end = to.line; cur <= end; ++cur) {
-        var f = {line: cur, ch: cur == from.line ? from.ch : 0};
-        var t = {line: cur, ch: cur == end ? to.ch : null};
-        var modes = enumerateModesBetween(cm, cur, f.ch, t.ch), mangled = "";
-        var text = cm.getRange(f, t);
-        for (var i = 0; i < modes.length; ++i) {
-          var part = modes.length > 1 ? text.slice(modes[i].from, modes[i].to) : text;
-          if (mangled) mangled += "\n";
-          if (modes[i].mode.autoFormatLineBreaks) {
-            mangled += modes[i].mode.autoFormatLineBreaks(part);
-          } else mangled += text;
-        }
-        if (mangled != text) {
-          for (var count = 0, pos = mangled.indexOf("\n"); pos != -1; pos = mangled.indexOf("\n", pos + 1), ++count) {}
-          cm.replaceRange(mangled, f, t);
-          cur += count;
-          end += count;
-        }
-      }
-      for (var cur = from.line + 1; cur <= end; ++cur)
-        cm.indentLine(cur, "smart");
-      cm.setSelection(from, cm.getCursor(false));
-    });
-  });
-})();
+    if (start < end)
+      found.push({ from: start, to: end, mode

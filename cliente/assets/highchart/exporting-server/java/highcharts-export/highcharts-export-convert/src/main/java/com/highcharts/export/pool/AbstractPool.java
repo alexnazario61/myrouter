@@ -6,21 +6,38 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 
+/**
+ * AbstractPool is an abstract class that implements the ObjectPool interface.
+ * It provides a basic framework for managing a pool of objects, including creating,
+ * destroying, borrowing, and returning objects. The class also includes a pool cleaning
+ * mechanism that runs every minute to remove invalid objects from the pool.
+ */
 public abstract class AbstractPool<T> implements ObjectPool<T> {
 
-	final ObjectFactory<T> objectFactory;
-	Queue<T> queue;
-	final AtomicInteger poolSize = new AtomicInteger(0);
-	int maxWait;
-	final int capacity;
-	protected static Logger logger = Logger.getLogger("pool");
+	final ObjectFactory<T> objectFactory; // ObjectFactory to create and destroy objects
+	Queue<T> queue; // Queue to hold the objects in the pool
+	final AtomicInteger poolSize = new AtomicInteger(0); // AtomicInteger to keep track of the number of objects in the pool
+	int maxWait; // Maximum time to wait for an object to become available
+	final int capacity; // Maximum capacity of the pool
+	protected static Logger logger = Logger.getLogger("pool"); // Logger for debugging and logging
 
+	/**
+	 * Constructor for AbstractPool that takes an ObjectFactory, number of objects, and max wait time.
+	 *
+	 * @param objectFactory ObjectFactory to create and destroy objects
+	 * @param number Maximum number of objects in the pool
+	 * @param maxWait Maximum time to wait for an object to become available
+	 * @throws PoolException If there is an error creating the pool
+	 */
 	public AbstractPool(ObjectFactory<T> objectFactory, int number, int maxWait) throws PoolException {
 		this.objectFactory = objectFactory;
 		this.capacity = number;
 		this.maxWait = maxWait;
 	}
 
+	/**
+	 * Creates a new object and adds it to the pool.
+	 */
 	@Override
 	public void createObject() {
 		T object = objectFactory.create();
@@ -28,11 +45,23 @@ public abstract class AbstractPool<T> implements ObjectPool<T> {
 		poolSize.getAndIncrement();
 	}
 
+	/**
+	 * Destroys an object and removes it from the pool.
+	 *
+	 * @param object Object to destroy and remove from the pool
+	 */
 	@Override
 	public void destroyObject(T object) {
 		objectFactory.destroy(object);
 	}
 
+	/**
+	 * Cleans the pool by removing invalid objects and adjusting the pool size as necessary.
+	 * This method is scheduled to run every minute.
+	 *
+	 * @throws InterruptedException If the thread is interrupted
+	 * @throws PoolException If there is an error cleaning the pool
+	 */
 	@Override
 	@Scheduled(initialDelay = 10000, fixedRate = 60000)
 	public void poolCleaner() throws InterruptedException, PoolException {
@@ -48,36 +77,4 @@ public abstract class AbstractPool<T> implements ObjectPool<T> {
 				continue;
 			} else {
 				logger.debug("HC: validating " + object.toString());
-				if (!objectFactory.validate(object)) {
-					logger.debug("HC: destroying " + object.toString());
-					destroyObject(object);
-				} else {
-					returnObject(object, false);
-				}
-			}
-		}
-
-		int number = poolSize.get() - capacity;
-		logger.debug("in cleanpool, the surplus or shortage is: " + number);
-		synchronized (this) {
-				int iterations = Math.abs(number);
-				for (int i = 0; i < iterations; i++) {
-					if (number < 1) {
-						this.createObject();
-					} else {
-						T object = borrowObject();
-						this.destroyObject(object);
-					}
-				}
-		}
-	}
-
-	/*Getter and Setters*/
-	public int getMaxWait() {
-		return maxWait;
-	}
-
-	public void setMaxWait(int maxWait) {
-		this.maxWait = maxWait;
-	}
-}
+				if (!objectFactory.validate(object))

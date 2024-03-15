@@ -1,24 +1,34 @@
 <?php
+// Setting the content type to text/html and charset to ISO-8859-1
 header("Content-Type: text/html; charset=ISO-8859-1", true);
+
+// Including the database connection class
 include("../config/conexao.class.php");
 
+// Assigning the values received from GET request to variables
 $campo = $_GET['campo'];
 $valor = $_GET['valor'];
 
-$ok=''; // imagem de confirmaÁ„o
-$erro='<font color=red>ERRO</font>'; // imagem de negaÁ„o
+// Initializing the success and error messages
+$ok=''; // represents the image of confirmation
+$erro='<font color=red>ERRO</font>'; // represents the image of negation
 
-// Verificando o campo codigo
+// Checking if the field is 'ip'
 if ($campo == "ip") {
 
+    // Querying the database for the user with the given IP address
     $sql = $mysqli->query("SELECT * FROM assinaturas WHERE ip = '$valor'");
+    
+    // Fetching the result of the query into an associative array
     $job = mysqli_fetch_array($sql);
 
-
+    // Checking if the fetched IP address matches the given IP address
     if ($job['ip'] == $valor) {
+        // Displaying the error message and the reason for the error
         echo $erro;
-        echo " EndereÁo de IP j· Ultilzado por outro Usu·rio";
+        echo " Endere√ßo de IP j√° Ultilzado por outro Usu√°rio";
     } else {
+        // Displaying the success message
         echo $ok;
     }
 

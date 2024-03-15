@@ -1,11 +1,16 @@
 <?php
+
 namespace Cnab\Retorno\Cnab240;
 
-class TrailerArquivo extends \Cnab\Format\Linha
+use Cnab\Format\Linha;
+use Cnab\Format\YamlLoad;
+use Cnab\Retorno\IArquivo;
+
+class TrailerArquivo extends Linha
 {
-	public function __construct(\Cnab\Retorno\IArquivo $arquivo)
+    public function __construct(IArquivo $arquivo)
     {
-        $yamlLoad = new \Cnab\Format\YamlLoad($arquivo->codigo_banco, $arquivo->layoutVersao);
-        $yamlLoad->load($this, 'cnab240', 'trailer_arquivo');
-	}
+        $yamlLoader = new YamlLoad($arquivo->getCodigoBanco(), $arquivo->getLayoutVersao());
+        $yamlLoader->load($this, 'cnab240', 'trailer_arquivo');
+    }
 }

@@ -1,4 +1,5 @@
 #!/usr/bin/php -q
+
 <?php
 
 // Import the database connection file
@@ -13,29 +14,39 @@ $data2 = date("d/m/Y");
 $chave = md5($data);
 
 // Set the directory path for storing backups
-$dir_backup ="/var/www/myrouter/backups";
+$dir_backup = "/var/www/myrouter/backups";
+
+// Check if the backup directory exists, and create it if it doesn't
+if (!file_exists($dir_backup)) {
+    mkdir($dir_backup, 0777, true);
+}
 
 // Execute the mysqldump command to create a backup of the database
-passthru("/usr/bin/mysqldump --opt --host=$host --user=$usuario --password=$senha $banco > $dumpfile");
+$mysqldump_command = "/usr/bin/mysqldump --opt --host={$host} --user={$usuario} --password={$senha} {$banco} > {$dumpfile}";
+exec($mysqldump_command, $output, $return_var);
+
+if ($return_var !== 0) {
+    // Error occurred while creating the backup
+    echo "Error: mysqldump command failed\n";
+    exit(1);
+}
 
 // Display the backup file name and the first line of the backup content
-echo "$dumpfile "; passthru("tail -1 $dumpfile");
+echo "Backup file: {$dumpfile}\n";
+passthru("tail -1 {$dumpfile}");
 
 // Define a function to execute shell commands
 function execute($command)
 {
     // Execute the command and check if there is an error
-    if(!shell_exec($command))//error, stop the script
+    if (!shell_exec($command)) {
+        // Error, stop the script
         exit;
-    else//success, display the command
+    } else {
+        // Success, display the command
         echo "{$command}\n";
+    }
 }
 
 // Define a function to insert the backup information into the 'backups' table
-function insertBackupInfo($host, $usuario, $senha, $banco, $dumpfile, $data2, $chave)
-{
-    // Connect to the database
-    $db = new mysqli($host,$usuario,$senha,$banco);
-
-    // Create an SQL query to insert the backup information
-    $sql = "INSERT INTO backups (id, servidor, arquivo, `data`, idmk, regkey) VALUES (NULL ,'MyRouterERP','$dump
+function insertBackupInfo($host, $usuario, $

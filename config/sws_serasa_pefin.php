@@ -1,175 +1,187 @@
-﻿<?php
-	
-	class SERASA extends WebService
-	{
-		/* URL de Test-Drive */
+<?php
 
-		const URI_LOCATION      = 'http://www.soawebservices.com.br/webservices/test-drive/serasa/pefin.asmx';
-		const URI_LOCATION_WSDL = 'http://www.soawebservices.com.br/webservices/test-drive/serasa/pefin.asmx?WSDL';
+/**
+ * SERASA class represents a WebService that connects to the SERASA API.
+ */
+class SERASA extends WebService
+{
+    /**
+     * Constants for the URL of the TEST-DRIVE environment.
+     */
+    const URI_LOCATION = 'http://www.soawebservices.com.br/webservices/test-drive/serasa/pefin.asmx';
+    const URI_LOCATION_WSDL = 'http://www.soawebservices.com.br/webservices/test-drive/serasa/pefin.asmx?WSDL';
 
-		/* URL de Producao */
+    /* Constants for the URL of the PRODUCTION environment (currently commented out). */
+    // const URI_LOCATION = 'http://www.soawebservices.com.br/webservices/producao/serasa/pefin.asmx';
+    // const URI_LOCATION_WSDL = 'http://www.soawebservices.com.br/webservices/producao/serasa/pefin.asmx?WSDL';
 
-	//	const URI_LOCATION      = 'http://www.soawebservices.com.br/webservices/producao/serasa/pefin.asmx';
-	//	const URI_LOCATION_WSDL = 'http://www.soawebservices.com.br/webservices/producao/serasa/pefin.asmx?WSDL';
+    /**
+     * @var int $traceEnabled Indicates whether tracing is enabled or not.
+     */
+    private $_traceEnabled = 1;
 
-		
-		private $_traceEnabled  = 1;
-		
-		public function __construct()
-		{
-			$options = array
-			(
-				'location' => SERASA::URI_LOCATION,
-		        'trace'    => $this->_traceEnabled,
-				'style'    => SOAP_RPC,
-		        'use'      => SOAP_ENCODED,
-			);
-			
-			parent::__construct(SERASA::URI_LOCATION_WSDL, $options);
-		}
-		
-		public function getSerasaPefin(Pefin $Pefin)
-		{
-			$result = $this->callMethod('Pefin', array('parameters' => Util::objectToArray($Pefin)));
-			return Util::arrayToObject($result->{$this->getLastCalledMethod() . 'Result'}, $Pefin);
-		}
-	}
+    /**
+     * SERASA constructor initializes the WebService with the WSDL location and options.
+     */
+    public function __construct()
+    {
+        $options = [
+            'location' => SERASA::URI_LOCATION,
+            'trace' => $this->_traceEnabled,
+            'style' => SOAP_RPC,
+            'use' => SOAP_ENCODED,
+        ];
 
-	class Credenciais
-	{
-		public $Email;
-		public $Senha;
-	}
-	
-	class AlertaDocumentos extends ClassMap
-	{
-		public $Mensagem;
-		public $DDD1;
-		public $Fone1;
-		public $DDD2;
-		public $Fone2;
-		public $DDD3;
-		public $Fone3;
-		public function __construct()
-		{
-			parent::__construct(array(
-				'Mensagem'  => 'string',
-				'DDD1'      => 'string',
-				'Fone1'     => 'string',
-				'DDD2'     	=> 'string',
-				'Fone2'     => 'string',
-				'DDD3'      => 'string',
-				'Fone3'     => 'string'
-			));
-		}
-	}	
+        parent::__construct(SERASA::URI_LOCATION_WSDL, $options);
+    }
 
+    /**
+     * getSerasaPefin method sends a SOAP request to the SERASA API with the provided Pefin object and returns the response.
+     *
+     * @param Pefin $Pefin The Pefin object containing the request parameters.
+     * @return Pefin The Pefin object containing the response parameters.
+     */
+    public function getSerasaPefin(Pefin $Pefin)
+    {
+        $result = $this->callMethod('Pefin', ['parameters' => Util::objectToArray($Pefin)]);
+        return Util::arrayToObject($result->{$this->getLastCalledMethod() . 'Result'}, $Pefin);
+    }
+}
 
-	class PendenciasFinanceiras extends ClassMap
-	{
-		public $DataOcorrencia;
-		public $Modalidade;
-		public $Avalista;
-		public $Valor;
-		public $Contrato;
-		public $Origem;
-		public $Sigla;
-		public function __construct()
-		{
-			parent::__construct(array(
-				'DataOcorrencia'  => 'string',
-				'Modalidade'      => 'string',
-				'Avalista'     		=> 'string',
-				'Valor'     			=> 'string',
-				'Contrato'     		=> 'string',
-				'Origem'      		=> 'string',
-				'Sigla'    				=> 'string'
-			));
-		}
-	}	
-	
-	class PendenciasVarejo extends ClassMap
-	{
-		public $CodigoCompensacaoBanco;
-		public $NumeroAgencia;
-		public $OrigemOcorrencia;
-		public $Sigla;
-		public $NumeroLojaFilial;
+/**
+ * Credenciais class represents the authentication credentials required to access the SERASA API.
+ */
+class Credenciais
+{
+    /**
+     * @var string $Email The email address used for authentication.
+     */
+    public $Email;
 
-		public function __construct()
-		{
-			parent::__construct(array(
-				'CodigoCompensacaoBanco'  => 'string',
-				'NumeroAgencia'      			=> 'string',
-				'OrigemOcorrencia'     		=> 'string',
-				'Sigla'     							=> 'string',
-				'NumeroLojaFilial'     		=> 'string'
-			));
-		}
-	}	
+    /**
+     * @var string $Senha The password used for authentication.
+     */
+    public $Senha;
+}
 
-	class PendenciasBacen extends ClassMap
-	{
-		public $TotalChequesSemFundo;
-		public $DataOcorrenciaAntiga;
-		public $DataOcorrenciaRecente;
-		public $CodigoCompensacao;
-		public $NumeroAgencia;
-		public $NomeFantasiaBanco;
+/**
+ * AlertaDocumentos class represents the alert document information returned by the SERASA API.
+ */
+class AlertaDocumentos extends ClassMap
+{
+    /**
+     * @var string $Mensagem The message associated with the alert document.
+     */
+    public $Mensagem;
 
-		public function __construct()
-		{
-			parent::__construct(array(
-				'TotalChequesSemFundo'  => 'string',
-				'DataOcorrenciaAntiga'  => 'string',
-				'DataOcorrenciaRecente' => 'string',
-				'CodigoCompensacao'     => 'string',
-				'NumeroAgencia'     		=> 'string',
-				'NomeFantasiaBanco'     => 'string'
-			));
-		}
-	}	
+    /**
+     * @var string $DDD1 The DDD of the first phone number.
+     */
+    public $DDD1;
 
+    /**
+     * @var string $Fone1 The first phone number.
+     */
+    public $Fone1;
 
-	class Pefin extends ClassMap
-	{
-		public $Documento;
-		public $Nome;
-		public $NomeMae;
-		public $NomeFantasia;
-		public $DataNascimento;
-		public $DataFundacao;
-		public $SituacaoRFB;
-		public $SituacaoDescricaoRFB;
-		public $DataSituacaoRFB;
-		public $TotalOcorrencias;
-		public $AlertaDocumentos;
-		public $PendenciasFinanceiras;
-		public $PendenciasVarejo;
-		public $PendenciasBacen;
-		public $Mensagem;
-		public $Status;
-		
-		public function __construct()
-		{
-			parent::__construct(array(
-				'Documento'             => 'string',
-				'Nome'                  => 'string',
-				'NomeMae'               => 'string',
-				'NomeFantasia'               => 'string',
-				'DataNascimento'        => 'string',
-				'DataFundacao'        => 'string',
-				'SituacaoRFB'        => 'string',
-				'SituacaoDescricaoRFB'        => 'string',
-				'DataSituacaoRFB'        => 'string',
-				'TotalOcorrencias'      => 'integer',
-				'AlertaDocumentos'			=> 'AlertaDocumentos',
-				'PendenciasFinanceiras'	=> 'PendenciasFinanceiras',
-				'PendenciasVarejo'			=> 'PendenciasVarejo',
-				'PendenciasBacen'				=> 'PendenciasBacen',
-				'Mensagem'              => 'string',
-				'Status'                => 'boolean',
-			));
-		}
-	}
-?>
+    /**
+     * @var string $DDD2 The DDD of the second phone number.
+     */
+    public $DDD2;
+
+    /**
+     * @var string $Fone2 The second phone number.
+     */
+    public $Fone2;
+
+    /**
+     * @var string $DDD3 The DDD of the third phone number.
+     */
+    public $DDD3;
+
+    /**
+     * @var string $Fone3 The third phone number.
+     */
+    public $Fone3;
+
+    /**
+     * AlertaDocumentos constructor initializes the ClassMap with the property types.
+     */
+    public function __construct()
+    {
+        parent::__construct([
+            'Mensagem' => 'string',
+            'DDD1' => 'string',
+            'Fone1' => 'string',
+            'DDD2' => 'string',
+            'Fone2' => 'string',
+            'DDD3' => 'string',
+            'Fone3' => 'string'
+        ]);
+    }
+}
+
+/**
+ * PendenciasFinanceiras class represents the financial pending information returned by the SERASA API.
+ */
+class PendenciasFinanceiras extends ClassMap
+{
+    /**
+     * @var string $DataOcorrencia The date of the occurrence.
+     */
+    public $DataOcorrencia;
+
+    /**
+     * @var string $Modalidade The modality.
+     */
+    public $Modalidade;
+
+    /**
+     * @var string $Avalista The guarantor.
+     */
+    public $Avalista;
+
+    /**
+     * @var string $Valor The value.
+     */
+    public $Valor;
+
+    /**
+     * @var string $Contrato The contract.
+     */
+    public $Contrato;
+
+    /**
+     * @var string $Origem The origin.
+     */
+    public $Origem;
+
+    /**
+     * @var string $Sigla The acronym.
+     */
+    public $Sigla;
+
+    /**
+     * PendenciasFinanceiras constructor initializes the ClassMap with the property types.
+     */
+    public function __construct()
+    {
+        parent::__construct([
+            'DataOcorrencia' => 'string',
+            'Modalidade' => 'string',
+            'Avalista' => 'string',
+            'Valor' => 'string',
+            'Contrato' => 'string',
+            'Origem' => 'string',
+            'Sigla' => 'string'
+        ]);
+    }
+}
+
+/**
+ * PendenciasVarejo class represents the retail pending information returned by the SERASA API.
+ */
+class PendenciasVarejo extends ClassMap
+{
+    /**
+     * @var string $CodigoCompens

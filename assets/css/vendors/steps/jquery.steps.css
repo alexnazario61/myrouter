@@ -1,9 +1,4 @@
-/* 
-    Common 
-*/
-
-/* This section contains CSS rules that are common to both the wizard and tabcontrol components */
-
+/* Common styles for wizard and tabcontrol components */
 .wizard,
 .tabcontrol {
 	display: block;
@@ -12,7 +7,9 @@
 }
 
 .wizard a,
-.tabcontrol a { outline: 0; }
+.tabcontrol a {
+	outline: 0;
+}
 
 .wizard ul,
 .tabcontrol ul {
@@ -27,10 +24,7 @@
 	padding: 0;
 }
 
-/* Accessibility */
-
-/* This section contains CSS rules that improve the accessibility of the wizard component */
-
+/* Accessibility styles for wizard component */
 .wizard > .steps .current-info,
 .tabcontrol > .steps .current-info {
 	position: absolute;
@@ -43,12 +37,7 @@
 	left: -999em;
 }
 
-/* 
-    Wizard
-*/
-
-/* This section contains CSS rules that are specific to the wizard component */
-
+/* Wizard-specific styles */
 .wizard > .steps {
 	position: relative;
 	display: block;
@@ -67,10 +56,14 @@
 	font-weight: 700;
 }
 
-.wizard > .steps > ul > li { width: 25%; }
+.wizard > .steps > ul > li {
+	width: 25%;
+}
 
 .wizard > .steps > ul > li,
-.wizard > .actions > ul > li { float: left; }
+.wizard > .actions > ul > li {
+	float: left;
+}
 
 .wizard.vertical > .steps > ul > li {
 	float: none;
@@ -115,8 +108,7 @@
 	color: #fff;
 }
 
-/*Hiding Tab Number*/
-
+/* Hiding Tab Number styles */
 .wizard > .steps .done a .number,
 .wizard > .steps .done a:hover .number,
 .wizard > .steps .done a:active .number,
@@ -124,11 +116,10 @@
 .wizard > .steps .error a:hover .number,
 .wizard > .steps .error a:active .number {
 	color: #fff;
-	visibility: hidden
+	visibility: hidden;
 }
 
-/*Showing Done Tab*/
-
+/* Showing Done Tab styles */
 .wizard > .steps .done a .number:after,
 .wizard > .steps .done a:hover .number:after,
 .wizard > .steps .done a:active .number:after {
@@ -136,11 +127,10 @@
 	content: "\f058";
 	display: inline-block;
 	margin-left: -20px;
-	visibility: visible
+	visibility: visible;
 }
 
-/*Showing Error Tab*/
-
+/* Showing Error Tab styles */
 .wizard > .steps .error a .number:after,
 .wizard > .steps .error a:hover .number:after,
 .wizard > .steps .error a:active .number:after {
@@ -148,7 +138,7 @@
 	content: "\f057";
 	display: inline-block;
 	margin-left: -20px;
-	visibility: visible
+	visibility: visible;
 }
 
 .wizard > .steps .error a,
@@ -164,41 +154,22 @@
 	min-height: 200px;
 	position: relative;
 	width: auto;
+	overflow: hidden;
 }
 
 .steps-container {
 	max-width: 600px;
 	margin: 0 auto;
 	padding: 0 20px;
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
 .wizard > .content > .body {
 	float: left;
 	position: absolute;
 	width: 95%;
-
 	padding: 2.5%;
 }
 
-.wizard > .actions {
-	position: relative;
-	display: block;
-	text-align: right;
-	width: 100%;
-}
-
-.wizard > .actions > ul {
-	display: inline-block;
-	text-align: right;
-}
-
-.wizard > .actions > ul > li { margin: 0 0.5em; }
-
-.wizard > .actions a,
-.wizard > .actions a:hover,
-.wizard > .actions a:active {
-	background: #2184be;
-	font-weight:600;
-	color:
+.w

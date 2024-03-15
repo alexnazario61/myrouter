@@ -1,16 +1,6 @@
+/* The .CodeMirror-completions class is used to style the dropdown menu that appears when a user types in a CodeMirror editor and receives suggestions for completions. */
+
+/* This rule sets the position of the completions menu to be absolute, so that it appears above the editor and is not affected by other elements on the page. The z-index property ensures that the menu appears on top of other elements. */
 .CodeMirror-completions {
   position: absolute;
-  z-index: 10;
-  overflow: hidden;
-  -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
-  -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
-  box-shadow: 2px 3px 5px rgba(0,0,0,.2);
-}
-.CodeMirror-completions select {
-  background: #fafafa;
-  outline: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font-family: monospace;
-}
+  z-index: 1

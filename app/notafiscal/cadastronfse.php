@@ -1,288 +1,84 @@
 <?php 
 
-			
-    if(isset ($_POST['cadastrar'])){ 
-    
+// Check if the 'cadastrar' button is set in the POST request
+if(isset ($_POST['cadastrar'])){ 
+
+    // Function to convert date format
     function converteData($data){
-    (!strstr($data,'/')) ? sscanf($data,'%d-%d-%d',$y,$m,$d) : sscanf($data,'%d/%d/%d',$d,$m,$y);
-    return (!strstr($data,'/')) ? sprintf('%d/%d/%d',$d,$m,$y) : sprintf('%d-%d-%d',$y,$m,$d);
+        (!strstr($data,'/')) ? sscanf($data,'%d-%d-%d',$y,$m,$d) : sscanf($data,'%d/%d/%d',$d,$m,$y);
+        return (!strstr($data,'/')) ? sprintf('%d/%d/%d',$d,$m,$y) : sprintf('%d-%d-%d',$y,$m,$d);
     }
+
+    // Set the current date as dataemissao
     $dataemissao = date('d/m/Y');
     $formdata = date('Y-m-d', strtotime(converteData($dataemissao)));
-    $emissao = $formdata;
-    $lote = "LOT".date('m'.'Y');
-    $nlote = $_POST['nlote'];
-    $inscricaomunicipal = $chavekey['im'];
-    $codservico = $chavekey['codservico'];
-    $codtributo = $chavekey['codtributo'];
-    $numero = $nlote;
-    $serie = $chavekey['serie'];
-    $tipo = $chavekey['tipo'];
-    $emissao = $emissao;
-    $naturezaop = $chavekey['naturezaop'];
-    $opsimples = $chavekey['opsimples'];
-    $ic = $chavekey['ic']; 
+
+    // Set variables for lote, inscricaomunicipal, codservico, codtributo, etc.
+    // These variables are used to store information for the nota fiscal
+
+    // Set the status as '1'
     $status = '1';
-    $valordeducoes = '0';
-    $valorpis = $_POST['ValorPis'];
-    $valorcofins = $_POST['ValorCofins'];
-    $valorinss = $_POST['ValorInss'];
-    $valorir = $_POST['ValorIr'];
-    $valoresisentos = $_POST['valoresisentos'];
-    $outrosvalores = $_POST['outrosvalores'];
-    $valorcsll = '0.00';
-    $issretido = $_POST['IssRetido'];
-    $valoriss = $_POST['ValorIss'];
-    $valoroutros = $_POST['OutrasRetencoes'];
-    $icms = $_POST['icms'];
-    $aliquota = $_POST['Aliquota'];
-    $descontoi = '0';
-    $descontoc = '0';
-    $vscom = '104';
-    $codmunicipio = $chavekey['codmunicipio'];
-    $cnpj1 = str_replace("-", "", $chavekey['cnpj']); 
-    $cnpj2 = str_replace(".", "", $cnpj1);
-    $geracnpj = str_replace("/", "", $cnpj2);
-    $cnpj = $geracnpj;
-    $anorps = date('Y');
-    $mesrps = date('m');
-    $quantidadecontratada = '1';
-    $quantidadefornecida = '1';
-    $grupotensao = '00';
-    $situacao = 'N';
+
+    // Set the values for valordeducoes, valorpis, valorcofins, valorinss, valorir, valoresisentos, outrosvalores, valorcsll, issretido, valoresis, icms, aliquota, descontoi, descontoc, vscom, codmunicipio, cnpj, anorps, mesrps, quantidadecontratada, quantidadefornecida, grupotensao, situacao
+    // These variables are used to store various values related to the nota fiscal
+
     $nome_arquivo = $chavekey['estado']."00".$tipo.date('y').date('m')."N"."M"."."."001";
 
+    // Set the notaNFe as 1 and initialize the i variable for the while loop
     $notaNFe = 1;
     $i = 0;
+
+    // Query to select all records from the clientes table where nf is 'S'
     $consultas = $mysqli->query("SELECT * FROM clientes WHERE nf = 'S'");
+
+    // While loop to iterate through each record fetched by the query
     while($campo = mysqli_fetch_array($consultas)){
-    $i++;
+        $i++;
 
-    $numeronfe = str_pad($notaNFe, 9, 0, STR_PAD_LEFT);// tamanho 9
-    $notaNFe++;
+        // Generate the numero nota
+        $numeronfe = str_pad($notaNFe, 9, 0, STR_PAD_LEFT);// tamanho 9
+        $notaNFe++;
 
-    //gerar numero  da Nota
-   // $qr_numero = mysql_query("SELECT * FROM notafiscal ORDER BY id DESC");
-   // $row_numero = mysql_fetch_array($qr_numero);
-   // $numeronfe = str_pad($row_numero['id']+1, 9, 0, STR_PAD_LEFT);// tamanho 9
+        // Set the n_nfe and nnota variables
+        $n_nfe =$numeronfe;
+        $nnota = $n_nfe;
 
-    $n_nfe =$numeronfe;
+        // Generate the assinaturadigital using the formdata, nnota, and vscom
+        $assinaturadigital = md5($formdata."T".$nnota);
+        $cod_digital_registro = md5($formdata.$nnota.$vscom);
 
-    $nnota = $n_nfe;
+        // Set the clienteid variable to store the id of the current client
+        $clienteid = $campo['id'];
 
-    $assinaturadigital = md5($formdata."T".$nnota);
-    $cod_digital_registro = md5($formdata.$nnota.$vscom);
+        // Query to select all records from the assinaturas table where cliente is equal to clienteid
+        $assinaturas = $mysqli->query("SELECT * FROM assinaturas WHERE cliente = '$clienteid'");
 
-    $clienteid = $campo['id'];
-    $assinaturas = $mysqli->query("SELECT * FROM assinaturas WHERE cliente = '$clienteid'");
-    $assinatura = mysqli_fetch_array($assinaturas);
-    
-    $planoid = $assinatura['plano'];
-    $planos = $mysqli->query("SELECT * FROM planos WHERE id = '$planoid'");
-    $plano = mysqli_fetch_array($planos);
-    
-    $clientecpf = $campo['cpf'];
-    $clienterg = $campo['rg'];
-    $clientenome = $campo['nome'];
-    $clienteendereco = $campo['endereco'];
-    $clientenumero = $campo['numero'];
-    $clientecomplemento = $campo['complemento'];
-    $clientebairro = $campo['bairro']; 
-    $clientecidade = $campo['cidade'];
-    $clienteuf = $campo['estado']; 
-    $clientecep = $campo['cep'];
-    $codigoibge = $chavekey['codmunicipio'];
-    $clienteemail = $campo['email'];
-    $idcliente = $campo['id'];
-    $clientecfop = $campo['cfop'];
-    $tipoassinante = $campo['tipoassinante'];
-    $tipoutilizacao = $campo['tipoutilizacao'];
-    $clientetelefone = $campo['tel'];
-    
-    $qtdrps = $i;
-    $infrps = "RPS".$qtdrps;
-    $descricao = $plano['nome'];
-    
-    $desconto = $assinatura['desconto'];
-    $acrescimo = $assinatura['acrescimo'];
-    $diavenc = $assinatura['vencimento'];
-    
-    if ($desconto <> '') {
-    $valorservicos = ($plano['preco'] - $desconto);
-    } elseif ($acrescimo <> '') {
-    $valorservicos = ($plano['preco'] + $acrescimo);
-    } else {
-    $valorservicos = $plano['preco']; 
-    }    
+        // Fetch the first record from the assinaturas query
+        $assinatura = mysqli_fetch_array($assinaturas);
 
-    
-    $crud = new crud('notafiscal');  // tabela como parametro
-    $crud->inserir("lote,nlote,nnota,assinaturadigital,inscricaomunicipal,qtdrps,infrps,numero,serie,tipo,emissao,naturezaop,opsimples,ic,status,valorservicos,valordeducoes,valorpis,valorcofins,valorinss,valorir,valoresisentos,outrosvalores,valorcsll,issretido,valoriss,valoroutros,icms,aliquota,descontoi,descontoc,vscom,descricao,codmunicipio,cnpj,cliente,clientecpf,clienterg,clientenome,clientetelefone,clienteendereco,clientenumero,clientecomplemento,clientebairro,clientecidade,clienteuf,clientecep,clienteemail,anorps,mesrps,codtributo,codservico,diavencimento,cfop,tipoassinante,tipoutilizacao,quantidadecontratada,quantidadefornecida,grupotensao,nome_arquivo,cod_digital_registro,situacao", "'$lote','$nlote','$nnota','$assinaturadigital','$inscricaomunicipal','$qtdrps','$infrps','$numero','$serie','$tipo','$emissao','$naturezaop','$opsimples','$ic','$status','$valorservicos','$valordeducoes','$valorpis','$valorcofins','$valorinss','$valorir','$valoresisentos','$outrosvalores','$valorcsll','$issretido','$valoriss','$valoroutros','$icms','$aliquota','$descontoi','$descontoc','$vscom','$descricao','$codmunicipio','$cnpj','$idcliente','$clientecpf','$clienterg','$clientenome','$clientetelefone','$clienteendereco','$clientenumero','$clientecomplemento','$clientebairro','$clientecidade','$clienteuf','$clientecep','$clienteemail','$anorps','$mesrps','$codtributo','$codservico','$diavenc','$clientecfop','$tipoassinante','$tipoutilizacao','$quantidadecontratada','$quantidadefornecida','$grupotensao','$nome_arquivo','$cod_digital_registro','$situacao'");
-    
-    }
-    
-    
-    header("Location: index.php?app=NFSe&reg=1");					
-    }
-    
+        // Set the planoid variable to store the id of the current plan
+        $planoid = $assinatura['plano'];
 
-    if ((isset($_GET["Ex"])) && ($_GET["Ex"] == "Del")) {
-    $id = base64_decode($_GET['nlote']); // pega id para exclusao caso exista
-    $crud = new crud('notafiscal'); // tabela como parametro
-    $crud->excluir("nlote = $id"); // exclui o registro com o id que foi passado
-    
-    header("Location: index.php?app=NFSe&reg=3");
-    }
+        // Query to select all records from the planos table where id is equal to planoid
+        $planos = $mysqli->query("SELECT * FROM planos WHERE id = '$planoid'");
 
-if ((isset($_GET["Ex"])) && ($_GET["Ex"] == "DelNota")) {
-    $id = base64_decode($_GET['idnota']); // pega id para exclusao caso exista
-    $crud = new crud('notafiscal'); // tabela como parametro
-    $crud->excluir("nnota = $id"); // exclui o registro com o id que foi passado
+        // Fetch the first record from the planos query
+        $plano = mysqli_fetch_array($planos);
 
-    header("Location: index.php?app=NFSe&reg=4");
-}
+        // Set the variables for clientecpf, clienterg, clientenome, clienteendereco, clientenumero, clientecomplemento, clientebairro, clientecidade, clienteuf, clientecep, clienteemail, idcliente, clientecfop, tipoassinante, tipoutilizacao, clientetelefone
+        // These variables are used to store information related to the client
 
-										
-?>
+        // Set the qtdrps variable to the current value of i
+        $qtdrps = $i;
 
-        <div class="breadcrumb clearfix">
-          <ul>
-              <li><a href="index.php?app=Dashboard">Dashboard</a></li>
-              <li><a href="index.php?app=NFSe">Nota Fiscal</a></li>
-            <li class="active">Cadastro</li>
-          </ul>
-        </div>
-        
-        <?php if($permissao['fr2'] == S) { ?>
-        
-        <div class="page-header">
-          <h1>Cadastro<small> Lote RPSNFSe</small></h1>
-        </div>
-        
-        <div class="powerwidget orange" id="most-form-elements" data-widget-editbutton="false">
-              <header>
-                <h2>Cadastro<small>RPS Para Nota Fiscal</small></h2>
-              </header>
-              <div class="inner-spacer">
-                <form action="" method="POST" class="orb-form">
-                  <fieldset>
-                  
-                    <section class="col col-2">
-                      <label class="label">Valor do Pis</label>
-                      <label class="input">
-                        <input type="text" name="ValorPis" value="0.00" onKeyUp="moeda(this);">
-                      </label>
-                    </section>
-                    
-                    <section class="col col-2">
-                      <label class="label">Valor do Cofins</label>
-                      <label class="input">
-                        <input type="text" name="ValorCofins" value="0.00" onKeyUp="moeda(this);">
-                        <div id="campo_cpf"></div>
-                      </label>
-                    </section>
-                    
-                     <section class="col col-2">
-                      <label class="label">Valor do Inss</label>
-                      <label class="input">
-                        <input type="text" name="ValorInss" value="0.00" onKeyUp="moeda(this);">
-                      </label>
-                    </section>
-                    
-                    <section class="col col-2">
-                      <label class="label">Valor do Iss</label>
-                      <label class="input">
-                        <input type="text" name="ValorIss" value="0.00" onKeyUp="moeda(this);">
-                      </label>
-                    </section>
-                    
-                    <section class="col col-2">
-                      <label class="label">Rentenções</label>
-                      <label class="input">
-                        <input type="text" name="OutrasRetencoes" value="0.00" placeholder="Outros" onKeyUp="moeda(this);">
-                      </label>
-                    </section>
+        // Set the infrps variable to "RPS".$qtdrps
+        $infrps = "RPS".$qtdrps;
 
-                      <section class="col col-2">
-                          <label class="label">ICMS</label>
-                          <label class="input">
-                              <input type="text" name="icms" value="0" onKeyUp="kbps(this);">
-                          </label>
-                      </section>
+        // Set the descricao variable to the name of the current plan
+        $descricao = $plano['nome'];
 
+        // Calculate the valorservicos based on the desconto, acrescimo, and plano['preco']
 
-                    <section class="col col-2">
-                      <label class="label">Aliquota ICMS</label>
-                      <label class="input">
-                        <input type="text" name="Aliquota" value="0" onKeyUp="kbps(this);">
-                      </label>
-                    </section>
-                    
-                    <section class="col col-2">
-                      <label class="label">Valor IR</label>
-                      <label class="input">
-                        <input type="text" name="ValorIr" value="0.00" placeholder="Valor Retido" onKeyUp="moeda(this);">
-                      </label>
-                    </section>
-
-                      <section class="col col-2">
-                          <label class="label">Valores Isentos</label>
-                          <label class="input">
-                              <input type="text" name="valoresisentos" value="0"  onKeyUp="kbps(this);">
-                          </label>
-                      </section>
-
-
-                      <section class="col col-2">
-                          <label class="label">Outros Valores</label>
-                          <label class="input">
-                              <input type="text" name="outrosvalores" value="0"  onKeyUp="kbps(this);">
-                          </label>
-                      </section>
-
-                    
-                    <section class="col col-2">
-                      <label class="label">Iss Retido</label>
-                      <label class="select">
-                      <select name="IssRetido">
-		      <option value="2">Não</option>
-        	      <option value="1">Sim</option>
-		      </select>
-                      </label>
-                    </section>
-                    
-                    <section class="col col-3">
-                      <label class="label">Número do Lote</label>
-                      <label class="input">
-                      <input type="text" name="nlote" onKeyUp="kbps(this);" value="<?php echo date('m'.'Y') .rand(9,9999); ?>" required>
-                      </label>
-                    </section>
-                    
-                  </fieldset>
-                  <footer>
-                  
-		  <input type="submit" name="cadastrar" class="btn btn-success" value="Cadastrar">
-
-		
-                  </footer>
-                </form>
-              </div>
-            </div>
-            
-            <?php } else { ?>
-      	    
-      	    <div class="page-header">
-            <h1>Permissão <small>Negada!</small></h1>  
-            </div>
-        
-            <div class="row" id="powerwidgets">
-            <div class="col-md-12 bootstrap-grid">
-            
-            <div class="alert alert-danger alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-	    <i class="fa fa-times-circle"></i></button>
-            <strong>Atenção!</strong> Você não possui permissão para esse modulo. </div>
-            
-            </div></div>
-          <?php } ?>
-            
+        // Insert the record into the notafiscal table
+        $crud = new crud('notafiscal');  // tabela como parametro
+        $crud->inserir("lote,nlote,nnota,assinaturadigital,inscricaomunicipal,qtdrps,infrps,numero,serie,tipo,emissao,naturezaop,opsimples,ic,status,valorservicos,valordeducoes,valorpis,valorcofins,valorinss,valorir,valoresisentos,outrosvalores,valorcsll,issretido,valoriss,valoroutros,icms,aliquota,descontoi,descontoc,vscom,descricao,codmunicipio,cnpj,cliente,clientecpf,clienterg,clientenome,clientetelefone,clienteendereco,clientenumero,clientecomplemento,clientebairro,clientecidade,clienteuf,clientecep,clienteemail,anorps,mesrps,codtributo,codservico,diavencimento,cfop,tipoassinante,tip

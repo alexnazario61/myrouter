@@ -2,34 +2,31 @@
 private static final long serialVersionUID = -6605015320055565809L;
 
 // Declare a variable to hold an error message
-private String mistake;
+private String errorMessage;
 
 /**
  * Default constructor for the SVGConverterException class
  */
 public SVGConverterException() {
-    // Call the constructor of the superclass
     super();
+    this.errorMessage = "No error message provided";
 }
 
 /**
  * Constructor for the SVGConverterException class that accepts an error message
- * @param err The error message to be associated with this exception
+ * @param errorMessage The error message to be associated with this exception
  */
-public SVGConverterException(String err) {
-    // Call the constructor of the superclass with an appropriate detail message
-    super(err);
-    // Set the mistake variable to the error message
-    this.mistake = err;
+public SVGConverterException(String errorMessage) {
+    super(errorMessage);
+    this.errorMessage = errorMessage;
 }
 
 /**
  * Get the error message associated with this exception
  * @return The error message as a string
  */
-public String getError() {
-    // Return the value of the mistake variable
-    return this.mistake;
+public String getErrorMessage() {
+    return this.errorMessage;
 }
 
 // Source file name

@@ -3,10 +3,10 @@
 namespace Cnab\Tests\Remessa\Cnab240;
 
 // Importing PHPUnit's TestCase class for creating test methods
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 // Our class, ArquivoTest, extends PHPUnit's TestCase class
-class ArquivoTest extends \PHPUnit_Framework_TestCase 
+class ArquivoTest extends TestCase 
 {
     // This test method checks if a Cnab240 SIGCB remessa file can be created for Caixa bank
     public function testArquivoCaixaCnab240SigcbPodeSerCriado()
@@ -22,12 +22,58 @@ class ArquivoTest extends \PHPUnit_Framework_TestCase
 
         // Configure the remessa file with required data
         $arquivo->configure(array(
-            // ... (configuration data)
+            'codigo_banco' => '104',
+            'lote_servico' => '0000',
+            'servico' => '01',
+            'forma_grava' => '0',
+            'versao_layout' => '001',
+            'tipo_inscricao' => '1',
+            'numero_inscricao' => '12345678901',
+            'convenio' => '123456',
+            'agencia' => '1234',
+            'agencia_dv' => '5',
+            'conta' => '123456',
+            'conta_dv' => '7',
+            'nome' => 'Test Company',
+            'data_geracao' => '2022-01-01',
+            'hora_geracao' => '10:00:00',
         ));
 
         // Add a detalhe record to the remessa file
         $arquivo->insertDetalhe(array(
-            // ... (detalhe data)
+            'codigo_banco' => '104',
+            'lote_servico' => '0001',
+            'registro_sequencial' => '1',
+            'nome_empresa' => 'Test Company',
+            'numero_inscricao' => '12345678901',
+            'convenio' => '123456',
+            'agencia' => '1234',
+            'agencia_dv' => '5',
+            'conta' => '123456',
+            'conta_dv' => '7',
+            'nome' => 'Test Client',
+            'data_vencimento' => '2022-02-01',
+            'valor' => '100.50',
+            'nosso_numero' => '123',
+            'numero_documento' => '456',
+            'sacado_nome' => 'Test Client',
+            'sacado_tipo_inscricao' => '1',
+            'sacado_numero_inscricao' => '98765432100',
+            'sacado_endereco' => 'Test Street 123',
+            'sacado_cep' => '12345-678',
+            'sacado_cidade_uf' => 'Test City/State',
+            'sacado_agencia' => '5432',
+            'sacado_agencia_dv' => '1',
+            'sacado_conta' => '654321',
+            'sacado_conta_dv' => '2',
+            'sacado_carteira' => '12',
+            'sacado_carteira_dv' => '3',
+            'sacado_cedente_nome' => 'Test Company',
+            'sacado_cedente_tipo_inscricao' => '1',
+            'sacado_cedente_numero_inscricao' => '12345678901',
+            'sacado_cedente_endereco' => 'Test Street 123',
+            'sacado_cedente_cep' => '12345-678',
+            'sacado_cedente_cidade_uf' => 'Test City/State',
         ));
 
         // Generate the remessa file's textual representation
@@ -42,77 +88,12 @@ class ArquivoTest extends \PHPUnit_Framework_TestCase
         // Commented lines below are the expected content of each line in the remessa file
 
         // HeaderArquivo line
-        // $headerArquivoText = $lines[0];
-        // $asserts['headerArquivo'] = array(
-        //     '1:3' => '104', // codigo_banco 
-        //     '4:7' => '0000', // lote_servico 
-        //     '8:8' => '0', // tipo_registro 
-        //     // ... (other fields)
-        // );
-
-        // HeaderLote line
-        // $headerLoteText = $lines[1];
-        // $asserts['headerLote'] = array(
-        //     '1:3' => '104', // codigo_banco 
-        //     '4:7' => '0001', // lote_servico 
-        //     '8:8' => '1', // tipo_registro 
-        //     // ... (other fields)
-        // );
-
-        // SegmentoP line
-        // $segmentoPText = $lines[2];
-        // $asserts['segmentoP'] = array(
-        //     '1:3' => '104', // codigo_banco 
-        //     '4:7' => '0001', // lote_servico 
-        //     '8:8' => '3', // tipo_registro 
-        //     // ... (other fields)
-        // );
-
-        // SegmentoQ line
-        // $segmentoQText = $lines[3];
-        // $asserts['segmentoQ'] = array(
-        //     '1:3' => '104', // codigo_banco 
-        //     '4:7' => '0001', // lote_servico 
-        //     '8:8' => '3', // tipo_registro 
-        //     // ... (other fields)
-        // );
-
-        // SegmentoR line
-        // $segmentoRText = $lines[4];
-        // $asserts['segmentoR'] = array(
-        //     '1:3' => '104', // codigo_banco 
-        //     '4:7' => '0001', // lote_servico 
-        //     '8:8' => '3', // tipo_registro 
-        //     // ... (other fields)
-        // );
-
-        // TrailerLote line
-        // $trailerLoteText = $lines[5];
-        // $asserts['trailerLote'] = array(
-        //     '1:3' => '104', // codigo_banco 
-        //     '4:7' => '0001', // lote_servico 
-        //     '8:8' => '5', // tipo_registro 
-        //     // ... (other fields)
-        // );
-
-        // TrailerArquivo line
-        // $trailerArquivoText = $lines[6];
-        // $asserts['trailerArquivo'] = array(
-        //     '1:3' => '104', // codigo_banco 
-        //     '4:7' => '9999', // lote_servico 
-        //     '8:8' => '9', // tipo_registro 
-        //     // ... (other fields)
-        // );
-
-        // Assert each line's content based on the expected values
-        foreach($asserts as $tipo => $campos) {
-            $vname = "{$tipo}Text";
-            foreach($campos as $pos => $value) {
-                $aux = explode(':', $pos);
-                $start = $aux[0] - 1;
-                $end = ($aux[1] - $aux[0]) + 1;
-                $this->assertEquals($value, substr($$vname, $start, $end), "[ ] Campo $pos do $tipo");
-            }
-        }
-    }
-}
+        $headerArquivoText = $lines[0];
+        $asserts['headerArquivo'] = array(
+            '1:3' => '104', // codigo_banco 
+            '4:7' => '0000', // lote_servico 
+            '8:8' => '0', // tipo_registro 
+            '9:13' => '00001', // numero_registro 
+            '14:17' => '0', // tipo_inscricao 
+            '18:32' => '12345678901', // numero_inscricao 
+            '33:37' => '

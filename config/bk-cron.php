@@ -1,151 +1,118 @@
-
 <?php
 
-// Otimizado.
-// Trava.
+// Set error reporting.
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ERROR | E_PARSE | E_WARNING);
 
-ini_set('display_errors',1);
-ini_set('display_startup_errors',1);
-error_reporting(E_ERROR | E_PARSE | E_WARNING );
-
-
+// Required files.
 require_once 'conexao.class.php';
 require_once 'conexao.php';
 require_once 'crud.class.php';
 require_once 'mikrotik.class.php';
 
-$con = new conexao(); // instancia classe de conxao
-$con->connect(); // abre conexao com o banco
+// Create a new connection object.
+$pdo = new conexao();
 
-$diavc = date('d');
-$mesvc = date('m');
-$anovc = date('Y');
+// Connect to the database.
+$pdo->connect();
 
-$prddata = mysql_query("SELECT * FROM financeiro WHERE situacao = 'N' AND mes = '$mesvc' AND ano = '$anovc'");
-$opdata = mysql_fetch_array($prddata);
+// Get the current date.
+$currentDate = date('Y-m-d');
 
-//echo '<pre>';
-//print_r($opdata);
+// Get the invoices that need to be processed.
+$stmt = $pdo->prepare("SELECT * FROM financeiro WHERE situacao = 'N' AND mes = :mes AND ano = :ano");
+$stmt->bindParam(':mes', date('m'));
+$stmt->bindParam(':ano', date('Y'));
+$stmt->execute();
+$invoices = $stmt->fetchAll();
 
-//$prddata = mysql_query("update financeiro set  situacao = 'B' where  date_add(vencimento, interval 5 day) < now() and   situacao = 'N'");
-//$opdata = mysql_fetch_array($prddata);
+// Loop through the invoices.
+foreach ($invoices as $invoice) {
+    // Calculate the due date.
+    $dueDate = date("Y-m-d", strtotime("+5 days", strtotime($invoice['vencimento'])));
 
-$datas = $opdata['vencimento']; 
-$credata = date('Y-m-d');
-$vendata = date("Y-m-d", strtotime("+5 days", strtotime($datas)));  // 10 dias corte
+    // Check if the due date has passed.
+    if ($dueDate < $currentDate) {
+        // Update the invoice status to 'B'.
+        $stmt = $pdo->prepare("UPDATE financeiro SET situacao = 'B' WHERE id = :id");
+        $stmt->bindParam(':id', $invoice['id']);
+        $stmt->execute();
 
-if($vendata < $credata) {
- //   echo 'entro no if';
-$sxd = mysql_query("SELECT * FROM financeiro WHERE situacao = 'N' AND (vencimento < '$diavc') AND mes = '$mesvc' AND ano = '$anovc'");
-while($daa = mysql_fetch_array($sxd)){ 
+        // Get the customer details.
+        $customerStmt = $pdo->prepare("SELECT * FROM assinaturas WHERE pedido = :pedido");
+        $customerStmt->bindParam(':pedido', $invoice['pedido']);
+        $customerStmt->execute();
+        $customer = $customerStmt->fetch();
 
-$verificazeros = mysql_num_rows($sxd);
+        // Get the plan details.
+        $planStmt = $pdo->prepare("SELECT * FROM planos WHERE id = :id");
+        $planStmt->bindParam(':id', $customer['plano']);
+        $planStmt->execute();
+        $plan = $planStmt->fetch();
 
-if($verificazeros > 0) {
-$data = date("Y-m-d");
+        // Get the server details.
+        $serverStmt = $pdo->prepare("SELECT * FROM servidores WHERE id = :id");
+        $serverStmt->bindParam(':id', $plan['servidor']);
+        $serverStmt->execute();
+        $server = $serverStmt->fetch();
 
-$idprd = $daa['id'];
-$crud = new crud('financeiro'); // instancia classe com as operações crud, passando o nome da tabela como parametro
-$crud->atualizar("situacao='B'", "id='$idprd'"); 
-
-$codass = $daa['pedido'];
-$ccss = mysql_query("SELECT * FROM assinaturas WHERE pedido = '$codass'");
-$cliente = mysql_fetch_array($ccss);
-
-$ccvbv = $cliente['cliente'];
-$ccsscv = mysql_query("SELECT * FROM clientes WHERE id = '$ccvbv'");
-$vcsms = mysql_fetch_array($ccsscv);
-
-$plano = $cliente['plano'];
-$ppss = mysql_query("SELECT * FROM planos WHERE id = '$plano'");
-$plano = mysql_fetch_array($ppss);
-
-$servidor = $plano['servidor'];
-$ssrv = mysql_query("SELECT * FROM servidores WHERE id = '$servidor'");
-$servidor = mysql_fetch_array($ssrv);
-
-
-
-
-/* --------------------------------------------------------------------------------------------------- */
-
-
-
-if($cliente['autobloqueio'] == 'S') {
-
-if($cliente['tipo'] == 'HOTSPOT') { 
-$API = new routeros_api();
-$API->debug = false;
-if ($API->connect(''.$servidor['ip'].'', ''.$servidor['login'].'', ''.$servidor['senha'].''))
-{
-
-    $username = $cliente['login'];
-
-    $API->write('/ip/hotspot/active/print', false);
-    $API->write('?=user='.$username.'');
-    $res = $API->read($res);
-
-
-    echo $user_login = $res['1'];
-
-    if(empty($user_login)){
-
-    }else{
-        $API->write('/ip/hotspot/active/remove', false);
-        $API->write($user_login);
-        $res = $API->read($res);
+        // Disable the customer's internet access.
+        disableInternetAccess($server, $customer);
     }
-
-//$API->write('/ip/hotspot/user/disable',false);
-//$API->write('=.id='.$cliente['login'].'' );
-//$ARRAY = $API->read();
-$API->disconnect();
-} // FIM
 }
 
-if($cliente['tipo'] == 'PPPoE') { 
-$API = new routeros_api();
-$API->debug = false;
-if ($API->connect(''.$servidor['ip'].'', ''.$servidor['login'].'', ''.$servidor['senha'].''))
+// Function to disable the customer's internet access.
+function disableInternetAccess($server, $customer)
 {
-    $username = $cliente['login'];
-    $API->write('/ppp/active/print',false);
-    $API->write('?=name='.$username.'');
-    $res = $API->read($res);
+    // Create a new Mikrotik API object.
+    $API = new routeros_api();
+    $API->debug = false;
 
+    // Connect to the Mikrotik router.
+    if ($API->connect($server['ip'], $server['login'], $server['senha'])) {
+        // Disable the customer's internet access based on their type.
+        switch ($customer['tipo']) {
+            case 'HOTSPOT':
+                // Remove the active hotspot user.
+                $API->write('/ip/hotspot/active/print', false);
+                $API->write('?=user=' . $customer['login'] . '');
+                $res = $API->read();
 
-    echo $user_login = $res['1'];
+                $user_login = $res[1];
 
-    if(empty($user_login)){
+                if (!empty($user_login)) {
+                    $API->write('/ip/hotspot/active/remove', false);
+                    $API->write($user_login);
+                    $res = $API->read();
+                }
 
-    }else{
-        $API->write('/ppp/active/remove',false);
-        $API->write($user_login);
-        $res = $API->read($res);
+                break;
+            case 'PPPoE':
+                // Remove the active PPPoE user.
+                $API->write('/ppp/active/print', false);
+                $API->write('?=name=' . $customer['login'] . '');
+                $res = $API->read();
+
+                $user_login = $res[1];
+
+                if (!empty($user_login)) {
+                    $API->write('/ppp/active/remove', false);
+                    $API->write($user_login);
+                    $res = $API->read();
+                }
+
+                break;
+            case 'IPARP':
+                // Disable the ARP entry.
+                $API->write('/ip/arp/disable', false);
+                $API->write('=.id=' . $customer['ip'] . '');
+                $ARRAY = $API->read();
+
+                break;
+        }
+
+        // Disconnect from the Mikrotik router.
+        $API->disconnect();
     }
-
-//$API->write('/ppp/secret/disable',false);
-//$API->write('=.id='.$cliente['login'].'' );
-//$ARRAY = $API->read();
-$API->disconnect();
-} // FIM
 }
-
-if($cliente['tipo'] == 'IPARP') { 
-$API = new routeros_api();
-$API->debug = false;
-if ($API->connect(''.$servidor['ip'].'', ''.$servidor['login'].'', ''.$servidor['senha'].''))
-{
-$API->write('/ip/arp/disable',false);
-$API->write('=.id='.$cliente['ip'].'' );
-$ARRAY = $API->read();
-$API->disconnect();
-} // FIM
-}
-
-} // FIM AUTO BLOQUEIO
-/* --------------------------------------------------------------------------------------------------- */
-} // Verifica 0 Registros
-} 
-}
-?>

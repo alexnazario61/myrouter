@@ -1,144 +1,107 @@
 <?php
+
 namespace Cnab\Tests\Format;
 
 use Cnab\Format\YamlLoad;
 use Cnab\Format\Linha;
+use Cnab\Format\Field;
 
-define('CNAB_FIXTURE_PATH', dirname(__FILE__).'/../../fixtures/yaml');
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-class YamlLoadTest extends \PHPUnit_Framework_TestCase
+class YamlLoadTest
 {
-
     /**
-     * @expectedException DomainException
-     * @expectedExceptionMessage O campo codigo_banco colide com o campo tipo_registro
+     * Test YamlLoad class.
      */
-    public function testEmiteExceptionEmCamposComColisao()
+
+    public function testValidateCollisionWithOverlappingFields(): void
     {
         $yamlLoad = new YamlLoad(0);
 
-        $fields = array(
-            'codigo_banco' => array(
-                'pos' => array(1, 3),
-            ),
-            'tipo_registro' => array(
-                'pos' => array(1, 4)
-            ),
-        );
+        $fields = [
+            'codigo_banco' => new Field(['pos' => [1, 3]]),
+            'tipo_registro' => new Field(['pos' => [1, 4]]),
+        ];
 
-        $yamlLoad->validateCollision($fields);
+        $this->assertFalse($yamlLoad->validateCollision($fields));
     }
 
-    public function testNaoEmiteExceptionEmCamposSemColisao()
+    public function testValidateCollisionWithNonOverlappingFields(): void
     {
         $yamlLoad = new YamlLoad(0);
 
-        $fields1 = array(
-            'codigo_banco' => array(
-                'pos' => array(1, 3),
-            ),
-            'tipo_registro' => array(
-                'pos' => array(4, 4)
-            ),
-        );
+        $fields1 = [
+            'codigo_banco' => new Field(['pos' => [1, 3]]),
+            'tipo_registro' => new Field(['pos' => [4, 4]]),
+        ];
 
-        $fields2 = array(
-            'codigo_banco' => array(
-                'pos' => array(1, 3),
-            )
-        );
+        $fields2 = [
+            'codigo_banco' => new Field(['pos' => [1, 3]]),
+        ];
 
         $this->assertTrue($yamlLoad->validateCollision($fields1));
         $this->assertTrue($yamlLoad->validateCollision($fields2));
     }
 
-    /**
-     * @expectedException DomainException
-     */
-    public function testEmiteExceptionEmArrayMalformado()
+    public function testValidateArrayWithMalformedArray(): void
     {
-        $array = array(
-            'generic' => array(
-                'codigo_banco' => array(
-                    'pos' => array(1, 3),
-                    'picture' => ''
-                ),
-                'tipo_registro' => array(
-                    'pos' => array(4, 4),
-                    'picture' => ''
-                ),
-            ),
-            '033' => array(
-                'nome_empresa' => array(
-                    'pos' => array(40, 80),
-                    'picture' => ''
-                ),
-                'numero_inscricao' => array(
-                    'pos' => array(79, 80),
-                    'picture' => ''
-                ),
-            ),
-        );
+        $array = [
+            'generic' => [
+                'codigo_banco' => new Field(['pos' => [1, 3]]),
+                'tipo_registro' => new Field(['pos' => [4, 4]]),
+            ],
+            '033' => [
+                'nome_empresa' => new Field(['pos' => [40, 80]]),
+                'numero_inscricao' => new Field(['pos' => [79, 80]]),
+            ],
+        ];
 
         $yamlLoad = new YamlLoad(0);
+        $this->expectException(\DomainException::class);
         $yamlLoad->validateArray($array);
     }
 
-    public function testNaoEmiteExceptionEmArrayValido()
+    public function testValidateArrayWithValidArray(): void
     {
-        $array = array(
-            'generic' => array(
-                'codigo_banco' => array(
-                    'pos' => array(1, 3),
-                    'picture' => ''
-                ),
-                'tipo_registro' => array(
-                    'pos' => array(4, 4),
-                    'picture' => ''
-                ),
-            ),
-            '033' => array(
-                'nome_empresa' => array(
-                    'pos' => array(40, 80),
-                    'picture' => ''
-                ),
-                'numero_inscricao' => array(
-                    'pos' => array(81, 81),
-                    'picture' => ''
-                ),
-            ),
-        );
+        $array = [
+            'generic' => [
+                'codigo_banco' => new Field(['pos' => [1, 3]]),
+                'tipo_registro' => new Field(['pos' => [4, 4]]),
+            ],
+            '033' => [
+                'nome_empresa' => new Field(['pos' => [40, 80]]),
+                'numero_inscricao' => new Field(['pos' => [81, 81]]),
+            ],
+        ];
 
         $yamlLoad = new YamlLoad(0);
         $this->assertTrue($yamlLoad->validateArray($array));
     }
 
-    public function testBuscaFormatoGenericoEEspecifico() {
-        $yamlLoad = $this->getMockBuilder('\Cnab\Format\YamlLoad')
-                         ->setMethods(array('loadYaml'))
-                         ->setConstructorArgs(array(33))
-                         ->getMock();
+    public function testLoadGenericAndSpecificFormats(): void
+    {
+        $yamlLoad = $this->getMockBuilder(YamlLoad::class)
+            ->setMethods(['loadYaml'])
+            ->setConstructorArgs([33])
+            ->getMock();
 
-        $testFormat = array(
-            'codigo_banco' => array(
-                'pos' => array(1, 3),
-                'picture' => '9(3)',
-            )
-        );
+        $testFormat = [
+            'codigo_banco' => new Field(['pos' => [1, 3]]),
+        ];
 
         $yamlLoad->expects($this->at(0))
-                 ->method('loadYaml')
-                 ->with(
-                    $this->equalTo($yamlLoad->formatPath.'/cnab240/generic/header_lote.yml')
-                )
-                ->will($this->returnValue($testFormat));
+            ->method('loadYaml')
+            ->with(
+                $this->equalTo($yamlLoad->formatPath . '/cnab240/generic/header_lote.yml')
+            )
+            ->will($this->returnValue($testFormat));
 
         $yamlLoad->expects($this->at(1))
-                 ->method('loadYaml')
-                 ->with(
-                    $this->equalTo($yamlLoad->formatPath.'/cnab240/033/header_lote.yml')
-                )
-                ->will($this->returnValue($testFormat));
+            ->method('loadYaml')
+            ->with(
+                $this->equalTo($yamlLoad->formatPath . '/cnab240/033/header_lote.yml')
+            )
+            ->will($this->returnValue($testFormat));
 
         $linha = new Linha;
         $yamlLoad->load($linha, 'cnab240', 'header_lote');

@@ -1,13 +1,18 @@
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+
 /**
  * This class represents a PhantomJS server instance for image generation.
  */
-public class Server {
+public final class Server {
 
     /** The port number for the PhantomJS server. */
-    private int port;
+    private final int port;
 
     /** The host for the PhantomJS server. */
-    private String host;
+    private final String host;
 
     /** The state of the PhantomJS server. */
     private ServerState state;
@@ -25,16 +30,33 @@ public class Server {
      * @param connectTimeout The connect timeout for the server.
      * @param maxTimeout The maximum timeout for the server.
      */
-    public Server(String host, int port, ArrayList<String> commands, int readTimeout, int connectTimeout, int maxTimeout) {
-        // ...
+    public Server(String host, int port, String... commands) {
+        this.host = host;
+        this.port = port;
+        this.state = ServerState.STOPPED;
+        // Initialize the logger
+        this.logger = Logger.getLogger(Server.class.getName());
+        // Start the server
+        startServer(commands);
+    }
+
+    /**
+     * Private no-args constructor to enforce the use of the provided constructor.
+     */
+    private Server() {
+        this.host = null;
+        this.port = -1;
+        this.state = ServerState.STOPPED;
+        this.logger = null;
     }
 
     /**
      * Initializes the PhantomJS server.
      *
-     * @throws Exception If there is an error starting the server.
+     * @throws IOException If there is an error starting the server.
      */
-    public void initialize() throws Exception {
+    private void startServer(String... commands) throws IOException {
+        // Implement the logic to start the server
         // ...
     }
 
@@ -43,9 +65,11 @@ public class Server {
      *
      * @param url The URL to request the image from.
      * @return The generated image as a base64 encoded string.
-     * @throws Exception If there is an error requesting the image.
+     * @throws URISyntaxException If there is an error with the URL.
+     * @throws IOException If there is an error requesting the image.
      */
-    public String request(String url) throws Exception {
+    public String request(String url) throws URISyntaxException, IOException {
+        // Implement the logic to request the image
         // ...
     }
 
@@ -55,7 +79,7 @@ public class Server {
      * @return The port number for the PhantomJS server.
      */
     public int getPort() {
-        // ...
+        return this.port;
     }
 
     /**
@@ -64,7 +88,7 @@ public class Server {
      * @return The host for the PhantomJS server.
      */
     public String getHost() {
-        // ...
+        return this.host;
     }
 
     /**
@@ -72,8 +96,8 @@ public class Server {
      *
      * @return The state of the PhantomJS server.
      */
-    public ServerState getState() {
-        // ...
+    public boolean isRunning() {
+        return this.state == ServerState.RUNNING;
     }
 
     /**
@@ -81,23 +105,4 @@ public class Server {
      *
      * @param state The new state of the PhantomJS server.
      */
-    public void setState(ServerState state) {
-        // ...
-    }
-
-    /**
-     * Returns a string representation of the PhantomJS server.
-     *
-     * @return A string representation of the PhantomJS server.
-     */
-    public String toString() {
-        // ...
-    }
-
-    /**
-     * Static block for initializing the Server class.
-     */
-    static {
-        // ...
-    }
-}
+    public void

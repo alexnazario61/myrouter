@@ -1,7 +1,9 @@
+/* The .CodeMirror-dialog class is used to position a dialog box relative to its parent element. */
 .CodeMirror-dialog {
   position: relative;
 }
 
+/* The .CodeMirror-dialog > div rule styles the contents of the dialog box. The top, left, right, and background properties position the div and give it a white background color. The border-bottom property adds a bottom border to the div. The z-index property ensures that the dialog box appears above other elements on the page. The padding property adds some space around the contents of the div. The overflow property ensures that any content that overflows the div is hidden. The color property sets the text color. */
 .CodeMirror-dialog > div {
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -13,6 +15,7 @@
   color: #333;
 }
 
+/* The .CodeMirror-dialog input rule styles the input element inside the dialog box. The border, outline, and background properties are set to none to remove any default styling. The width property sets the width of the input element. The color property sets the text color. */
 .CodeMirror-dialog input {
   border: none;
   outline: none;
@@ -22,6 +25,7 @@
   font-family: monospace;
 }
 
+/* The .CodeMirror-dialog button rule styles the button element inside the dialog box. The font-size property sets the font size of the button text. */
 .CodeMirror-dialog button {
   font-size: 70%;
 }

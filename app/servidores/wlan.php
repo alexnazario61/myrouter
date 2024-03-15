@@ -1,24 +1,52 @@
 <?php
+// Decode the id from GET request
 $idmk = base64_decode($_GET['id']);
+
+// Query the database for the server details based on the id
 $conexaomk = $mysqli->query("SELECT * FROM servidores WHERE id = '$idmk'");
+
+// Fetch the server details into an associative array
 $mk = mysqli_fetch_array($conexaomk);
 
-if($_GET['rmid'] == "Ok") { 
+// Check if the rmid parameter in the GET request is equal to "Ok"
+if ($_GET['rmid'] == "Ok") {
 
-$idmk = base64_decode($_GET['id']);
-$conexaomk = $mysqli->query("SELECT * FROM servidores WHERE id = '$idmk'");
-$mk = mysqli_fetch_array($conexaomk);
+    // Decode the id from GET request
+    $idmk = base64_decode($_GET['id']);
 
-$user = base64_decode($_GET['user']);
-$API = new routeros_api();
-$API->debug = false;
-if ($API->connect(''.$mk[ip].'', ''.$mk[login].'', ''.$mk[senha].'')) {
-$API->write('/ip/hotspot/active/remove',false);
-$API->write('=.id='.$user.'' );
-$ARRAY = $API->read();
-$ref = $_GET['id'];
-}
-header("Location: index.php?app=Wireless&id=$ref&reg=1");	
+    // Query the database for the server details based on the id
+    $conexaomk = $mysqli->query("SELECT * FROM servidores WHERE id = '$idmk'");
+
+    // Fetch the server details into an associative array
+    $mk = mysqli_fetch_array($conexaomk);
+
+    // Decode the user from GET request
+    $user = base64_decode($_GET['user']);
+
+    // Initialize the routeros_api class
+    $API = new routeros_api();
+
+    // Set debug mode to false
+    $API->debug = false;
+
+    // Connect to the Mikrotik router
+    if ($API->connect(''.$mk[ip].'', ''.$mk[login].'', ''.$mk[senha].'')) {
+
+        // Write the command to remove the active hotspot user
+        $API->write('/ip/hotspot/active/remove',false);
+
+        // Write the user id to be removed
+        $API->write('=.id='.$user.'' );
+
+        // Read the response from the router
+        $ARRAY = $API->read();
+
+        // Get the reference id from GET request
+        $ref = $_GET['id'];
+    }
+
+    // Redirect to the index page with the specified query parameters
+    header("Location: index.php?app=Wireless&id=$ref&reg=1");	
 }
 
 ?>
@@ -36,7 +64,7 @@ header("Location: index.php?app=Wireless&id=$ref&reg=1");
 	<div class="alert alert-success alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
 	<i class="fa fa-times-circle"></i></button>
-        <strong>Atenção!</strong> Usuário derrubado do HotSpot. </div>
+        <strong>AtenÃ§Ã£o!</strong> UsuÃ¡rio derrubado do HotSpot. </div>
 	<?php } ?>
         
         <div class="page-header">
@@ -48,10 +76,11 @@ header("Location: index.php?app=Wireless&id=$ref&reg=1");
             
             <div class="powerwidget" id="" data-widget-editbutton="false">
               <header>
-                <h2>Tabela Usuários Conectados </h2>
+                <h2>Tabela UsuÃ¡rios Conectados </h2>
               </header>
               <div class="inner-spacer">
               
+                // Export button with various options
                 <div class="btn-group">
 	<button class="btn btn-warning btn-sm dropdown-toggle" data-toggle="dropdown">
 	<i class="fa fa-bars"></i> EXPORTAR </button>
@@ -69,133 +98,4 @@ header("Location: index.php?app=Wireless&id=$ref&reg=1");
 	<li><a href="#" onClick ="$('#table-1').tableExport({type:'doc',escape:'false'});"> <img src='assets/images/word.png' width='24px'> Word</a></li>
 	<li><a href="#" onClick ="$('#table-1').tableExport({type:'powerpoint',escape:'false'});"> <img src='assets/images/ppt.png' width='24px'> PowerPoint</a></li>
 	<li class="divider"></li>
-	<li><a href="#" onClick ="$('#table-1').tableExport({type:'png',escape:'false'});"> <img src='assets/images/png.png' width='24px'> PNG</a></li>
-	<li><a href="#" onClick ="$('#table-1').tableExport({type:'pdf',pdfFontSize:'7',escape:'false'});"> <img src='assets/images/pdf.png' width='24px'> PDF</a></li>
-		</ul>
-		</div>	<br>
-	      <br>
-              
-                <table class="table table-striped table-hover" id="table-1">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Interface</th>
-                      <th>MAC</th>
-                      <th>TX</th>
-                      <th>RX</th>
-                      <th>Sinal</th>
-                      <th>UpTime</th>
-                      <th>Ação</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-<?php
-$API = new routeros_api();
-$API->debug = false;
-if ($API->connect(''.$mk['ip'].'', ''.$mk['login'].'', ''.$mk['senha'].'')) {
-$ARRAY = $API->comm("/interface/wireless/registration-table/print");
-
-
-for ($i = 0; $i < count($ARRAY); ++$i)
-{
-$first = $ARRAY[$i];
-?>
-		     <tr>
-                      <td><?php echo $first['.id']; ?></td>
-                      <td><?php echo $first['interface']; ?></td>
-                      <td><?php echo $first['mac-address']; ?></td>
-                      <td><?php echo $first['rx-rate']; ?></td>
-                      <td><?php echo $first['tx-rate']; ?></td>
-                      
-		      <td><script type='text/javascript'>
-		      $(document).ready(function() {
- 	 	      $("#sinal<?php echo $i; ?>").load("app/uptimewlansinal.php?ip=<?php echo $mk['ip']; ?>&login=<?php echo $mk['login']; ?>&senha=<?php echo $mk['senha']; ?>");
-   		      var refreshId = setInterval(function() {
-      		      $("#sinal<?php echo $i; ?>").load("app/uptimewlansinal.php?ip=<?php echo $mk['ip']; ?>&login=<?php echo $mk['login']; ?>&senha=<?php echo $mk['senha']; ?>");
-   		      }, 1000);
-   		      $.ajaxSetup({ cache: false });
-   		      });
-   		      </script>
-		      <div id="sinal<?php echo $i; ?>"></div></td>
-                      
-		      <td><script type='text/javascript'>
-		      $(document).ready(function() {
- 	 	      $("#up<?php echo $i; ?>").load("app/uptimewlan.php?ip=<?php echo $mk['ip']; ?>&login=<?php echo $mk['login']; ?>&senha=<?php echo $mk['senha']; ?>");
-   		      var refreshId = setInterval(function() {
-      		      $("#up<?php echo $i; ?>").load("app/uptimewlan.php?ip=<?php echo $mk['ip']; ?>&login=<?php echo $mk['login']; ?>&senha=<?php echo $mk['senha']; ?>");
-   		      }, 1000);
-   		      $.ajaxSetup({ cache: false });
-   		      });
-   		      </script>
-		      <div id="up<?php echo $i; ?>"></div></td>
-                      
-                
-                      <td>
-		      <button class="btn btn-info"  title="PING" data-toggle="modal" data-target="#myModal<?php echo $i+1; ?>"><i class="fa fa-gear"></i></button>
-		      
-		       <div class="modal" id="myModal<?php echo $i+1; ?>" tabindex="-1" aria-labelledby="myModalLabel">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                          <div class="modal-header">
-                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                             <h4 class="modal-title" id="myModalLabel">Ping <?php echo $first['last-ip']; ?></h4>
-                                          </div>
-                                            <div class="modal-body">
-                             <iframe src="ping.php?ip=<?php echo base64_encode($mk['ip']); ?>&login=<?php echo base64_encode($mk['login']); ?>&senha=<?php echo base64_encode($mk['senha']); ?>&ping=<?php echo base64_encode($first['last-ip']); ?>" width="100%" frameborder="0" height="150"></iframe>
-                             
-                                            </div>
-                                            <div class="modal-footer">
-                                         <button type="button" class="btn btn-info" data-dismiss="modal">Fechar</button>
-                                        
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-		      
-		      </td>
-                    </tr>
-<?php 
-//print_r($ARRAY);
-}
-   $API->disconnect();
-}
-
-?>     
-                    
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <th>ID</th>
-                      <th>Interface</th>
-                      <th>MAC</th>
-                      <th>TX</th>
-                      <th>RX</th>
-                      <th>Sinal</th>
-                      <th>UpTime</th>
-                      <th>Ação</th>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </div>
-        	
-          </div>
-        </div> 
-      </div>
-      
-      <?php } else { ?>
-      	    
-      	    <div class="page-header">
-            <h1>Permissão <small>Negada!</small></h1>  
-            </div>
-        
-            <div class="row" id="powerwidgets">
-            <div class="col-md-12 bootstrap-grid">
-            
-            <div class="alert alert-danger alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-	    <i class="fa fa-times-circle"></i></button>
-            <strong>Atenção!</strong> Você não possui permissão para esse modulo. </div>
-            
-            </div></div>
-          <?php } ?>
+	<li><a href="#" onClick ="$('#table-1').tableExport({type:'png',escape:'false'});"> <img src='assets/images/png.png' width='24px'> PNG

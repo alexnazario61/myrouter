@@ -1,81 +1,35 @@
+# This code defines a series of field descriptions for a data record.
+# Each field has a name, a description, a position range in the record,
+# and a data type/format specification.
+
 # 341 = Itaú
 
-brancos01:
-  #Complemento De Registro
-  pos: [8, 17]
-  picture: 'X(10)'
+# Complemento De Registro: Blank field for record complementation.
+brancos01:    # Field name
+  # Complemento De Registro: Description of the field.
+  pos: [8, 17]  # Position range of the field in the record.
+  picture: 'X(10)'  # Data type/format specification: 10 alphanumeric characters.
 
-qtdede_titulos:
-  #Nota 21 - Qtde. De Títulos Em Cobr. Simples
-  pos: [18, 25]
-  picture: '9(08)'
+# Nota 21 - Qtde. De Títulos Em Cobr. Simples: Field for the number of simple collection titles.
+qtdede_titulos:    # Field name
+  # Nota 21 - Qtde. De Títulos Em Cobr. Simples: Description of the field.
+  pos: [18, 25]  # Position range of the field in the record.
+  picture: '9(08)'  # Data type/format specification: 8 numeric characters.
 
-valor_total:
-  #Nota 21 - Vr Total Dos Títulos Em Cobrança Simples
-  pos: [26, 39]
-  picture: '9(12)V9(2)'
+# Nota 21 - Vr Total Dos Títulos Em Cobrança Simples: Field for the total value of simple collection titles.
+valor_total:    # Field name
+  # Nota 21 - Vr Total Dos Títulos Em Cobrança Simples: Description of the field.
+  pos: [26, 39]  # Position range of the field in the record.
+  picture: '9(12)V9(2)'  # Data type/format specification: up to 12 numeric characters, followed by a decimal point and 2 fractional digits.
 
-aviso_bancario:
-  #Nota 22 - Referência Do Aviso Bancário
-  pos: [40, 47]
-  picture: 'X(08)'
+# Nota 22 - Referência Do Aviso Bancário: Field for the reference of the bank notice.
+aviso_bancario:    # Field name
+  # Nota 22 - Referência Do Aviso Bancário: Description of the field.
+  pos: [40, 47]  # Position range of the field in the record.
+  picture: 'X(08)'  # Data type/format specification: 8 alphanumeric characters.
 
-brancos02:
-  #Complemento Do Registro
-  pos: [48, 57]
-  picture: 'X(10)'
-
-qtdede_titulos_dup:
-  #Nota 21 - Qtde De Títulos Em Cobrança/vinculada
-  pos: [58, 65]
-  picture: '9(08)'
-
-valor_total_dup:
-  #Nota 21 - Vr Total Dos Títulos Em Cobrança/vinculada
-  pos: [66, 79]
-  picture: '9(12)V9(2)'
-
-aviso_bancario_dup:
-  #Nota 22 - Referência Do Aviso Bancário
-  pos: [80, 87]
-  picture: 'X(08)'
-
-brancos03:
-  #Complemento Do Registro
-  pos: [88, 177]
-  picture: 'X(90)'
-
-qtdede_titulos_dup2:
-  #Nota 21 - Qtde. De Títulos Em Cobr. Direta./escritural
-  pos: [178, 185]
-  picture: '9(08)'
-
-valor_total_dup2:
-  #Vr Total Dos Títulos Em Cobr. Direta/escrit.
-  pos: [186, 199]
-  picture: '9(12)V9(2) NOTA 21'
-
-aviso_bancario_dup2:
-  #Nota 22 - Referência Do Aviso Bancário
-  pos: [200, 207]
-  picture: 'X(08)'
-
-controle_do_arquivo:
-  #Número Seqüencial Do Arquivo Retorno
-  pos: [208, 212]
-  picture: '9(05)'
-
-qtde_de_detalhes:
-  #Quantidade De Registros De Transação
-  pos: [213, 220]
-  picture: '9(08)'
-
-vlr_total_informado:
-  #Valor Dos Títulos Informados No Arquivo
-  pos: [221, 234]
-  picture: '9(12)V9(2)'
-
-brancos04:
-  #Complemento Do Registro
-  pos: [235, 394]
-  picture: 'X(160)'
+# Complemento Do Registro: Blank field for record complementation.
+brancos02:    # Field name
+  # Complemento Do Registro: Description of the field.
+  pos: [48, 57]  # Position range of the field in the record.
+  picture: 'X(10)'  # Data type/format specification: 10 alphan

@@ -1,5 +1,5 @@
 /**
- * Highcharts PhantomJS converter
+ * Highcharts PhantomJS Converter
  * This script converts Highcharts data into various formats such as SVG, PNG, or JPEG.
  * It can be used as a standalone script or as a server to convert data on-the-fly.
  */
@@ -10,14 +10,7 @@ const CONFIG = {
 };
 
 // Utility functions
-function pick(...args) { // Function to pick the first non-null/non-empty value from a list of arguments
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-    if (arg !== null && arg !== undefined && arg !== 'null' && arg !== '0') {
-      return arg;
-    }
-  }
-}
+const pick = (...args) => args.find(arg => arg !== null && arg !== undefined && arg !== 'null' && arg !== '0');
 
 // Main functions
 // ... (rest of the code remains the same)
@@ -25,11 +18,11 @@ function pick(...args) { // Function to pick the first non-null/non-empty value 
 // Process command-line arguments and start the conversion or server
 const args = mapCLArguments();
 
-if (args.port !== undefined) {
+if (args.port) {
   startServer(args.host, args.port);
 } else {
-  render(args, false, function (msg) {
-    console.log(msg);
+  render(args, false, message => {
+    console.log(message);
     phantom.exit();
   });
 }

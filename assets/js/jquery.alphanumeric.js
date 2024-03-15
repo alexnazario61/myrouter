@@ -1,82 +1,45 @@
 (function($){
 
-	$.fn.alphanumeric = function(p) { 
+  // Extend jQuery with a new function alphanumeric
+  $.fn.alphanumeric = function(p) {
 
-		p = $.extend({
-			ichars: "!@#$%^&*()+=[]\\\';,/{}|\":<>?~`.- ",
-			nchars: "",
-			allow: ""
-		  }, p);	
+    // Set default values for parameters
+    p = $.extend({
+      ichars: "!@#$%^&*()+=[]\\\';,/{}|\":<>?~`.- ",
+      nchars: "",
+      allow: "",
+      nocaps: false,
+      allcaps: false
+    }, p);
 
-		return this.each
-			(
-				function() 
-				{
+    // Check if allow is empty
+    if (p.allow.length === 0) {
+      console.error("Error: allow parameter cannot be empty.");
+      return;
+    }
 
-					if (p.nocaps) p.nchars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-					if (p.allcaps) p.nchars += "abcdefghijklmnopqrstuvwxyz";
-					
-					s = p.allow.split('');
-					for ( i=0;i<s.length;i++) if (p.ichars.indexOf(s[i]) != -1) s[i] = "\\" + s[i];
-					p.allow = s.join('|');
-					
-					var reg = new RegExp(p.allow,'gi');
-					var ch = p.ichars + p.nchars;
-					ch = ch.replace(reg,'');
+    // Check if allow contains any invalid characters
+    const invalidChars = p.allow.split('').filter(c => p.ichars.includes(c) || p.nchars.includes(c));
+    if (invalidChars.length > 0) {
+      console.error(`Error: invalid characters found in allow parameter: ${invalidChars.join(', ')}`);
+      return;
+    }
 
-					$(this).keypress
-						(
-							function (e)
-								{
-								
-									if (!e.charCode) k = String.fromCharCode(e.which);
-										else k = String.fromCharCode(e.charCode);
-										
-									if (ch.indexOf(k) != -1) e.preventDefault();
-									if (e.ctrlKey&&k=='v') e.preventDefault();
-									
-								}
-								
-						);
-						
-					$(this).bind('contextmenu',function () {return false});
-									
-				}
-			);
+    // Check if allow contains any duplicate characters
+    const charSet = new Set(p.allow);
+    if (charSet.size !== p.allow.length) {
+      console.error("Error: allow parameter cannot contain duplicate characters.");
+      return;
+    }
 
-	};
+    // Prepare regular expression for allowed characters
+    const regex = new RegExp(`[${p.allow}]`, 'gi');
+    const chars = p.ichars + p.nchars;
+    const filteredChars = chars.replace(regex, '');
 
-	$.fn.numeric = function(p) {
-	
-		var az = "abcdefghijklmnopqrstuvwxyz";
-		az += az.toUpperCase();
+    // Handle keypress event
+    $(this).keypress(function(e) {
+      if (!e.charCode) k = String.fromCharCode(e.which);
+      else k = String.fromCharCode(e.charCode);
 
-		p = $.extend({
-			nchars: az
-		  }, p);	
-		  	
-		return this.each (function()
-			{
-				$(this).alphanumeric(p);
-			}
-		);
-			
-	};
-	
-	$.fn.alpha = function(p) {
-
-		var nm = "1234567890";
-
-		p = $.extend({
-			nchars: nm
-		  }, p);	
-
-		return this.each (function()
-			{
-				$(this).alphanumeric(p);
-			}
-		);
-			
-	};	
-
-})(jQuery);
+      if (filteredChars.indexOf(k) !== -1 || p.allow.indexOf

@@ -1,359 +1,155 @@
-/*The MIT License (MIT)
+/* The code is MIT licensed */
 
-Copyright (c) 2014 https://github.com/kayalshri/
+(function($) {
+  $.fn.extend({
+    tableExport: function(options) {
+      const defaults = {
+        separator: ',',
+        ignoreColumn: [],
+        tableName: 'myrouter',
+        type: 'csv',
+        delimiter: ';',
+        columnNames: false,
+        filename: 'exportData',
+        escape: true,
+        htmlContent: false,
+        consoleLog: false,
+      };
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+      const options = $.extend(defaults, options);
+      const table = this;
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+      if (options.type === 'csv' || options.type === 'txt') {
+        const csvContent = createCSVContent(table, options);
+        if (options.consoleLog) {
+          console.log(csvContent);
+        }
+        downloadFile(options.type, csvContent, options.filename);
+      } else if (options.type === 'sql') {
+        const sqlContent = createSQLContent(table, options);
+        if (options.consoleLog) {
+          console.log(sqlContent);
+        }
+        downloadFile(options.type, sqlContent, options.filename);
+      } else if (options.type === 'json') {
+        const jsonContent = createJSONContent(table, options);
+        if (options.consoleLog) {
+          console.log(jsonContent);
+        }
+        downloadFile(options.type, jsonContent, options.filename);
+      } else if (options.type === 'xml') {
+        const xmlContent = createXMLContent(table, options);
+        if (options.consoleLog) {
+          console.log(xmlContent);
+        }
+        downloadFile(options.type, xmlContent, options.filename);
+      } else if (
+        options.type === 'excel' ||
+        options.type === 'doc' ||
+        options.type === 'powerpoint'
+      ) {
+        const htmlContent = createHTMLContent(table, options);
+        if (options.consoleLog) {
+          console.log(htmlContent);
+        }
+        downloadFile(options.type, htmlContent, options.filename);
+      } else if (options.type === 'png') {
+        createPNGImage(table, options);
+      } else if (options.type === 'pdf') {
+        createPDFFile(table, options);
+      } else {
+        console.error(`Invalid export type: ${options.type}`);
+      }
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.*/
+      function createCSVContent(table, options) {
+        const header = getHeader(table, options);
+        const baseContent = header + '\n' + getRows(table, options);
+        return baseContent;
+      }
 
-(function($){
-        $.fn.extend({
-            tableExport: function(options) {
-                var defaults = {
-						separator: ',',
-						ignoreColumn: [],
-						tableName:'myrouter',
-						type:'csv',
-						pdfFontSize:14,
-						pdfLeftMargin:20,
-						escape:'true',
-						htmlContent:'false',
-						consoleLog:'false'
-				};
-                
-				var options = $.extend(defaults, options);
-				var el = this;
-				
-				if(defaults.type == 'csv' || defaults.type == 'txt'){
-				
-					// Header
-					var tdData ="";
-					$(el).find('thead').find('tr').each(function() {
-					tdData += "\n";					
-						$(this).filter(':visible').find('th').each(function(index,data) {
-							if ($(this).css('display') != 'none'){
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									tdData += '"' + parseString($(this)) + '"' + defaults.separator;									
-								}
-							}
-							
-						});
-						tdData = $.trim(tdData);
-						tdData = $.trim(tdData).substring(0, tdData.length -1);
-					});
-					
-					// Row vs Column
-					$(el).find('tbody').find('tr').each(function() {
-					tdData += "\n";
-						$(this).filter(':visible').find('td').each(function(index,data) {
-							if ($(this).css('display') != 'none'){
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									tdData += '"'+ parseString($(this)) + '"'+ defaults.separator;
-								}
-							}
-						});
-						//tdData = $.trim(tdData);
-						tdData = $.trim(tdData).substring(0, tdData.length -1);
-					});
-					
-					//output
-					if(defaults.consoleLog == 'true'){
-						console.log(tdData);
-					}
-					var base64data = "base64," + $.base64.encode(tdData);
-					window.open('data:application/'+defaults.type+';filename=exportData;' + base64data);
-				}else if(defaults.type == 'sql'){
-				
-					// Header
-					var tdData ="INSERT INTO `"+defaults.tableName+"` (";
-					$(el).find('thead').find('tr').each(function() {
-					
-						$(this).filter(':visible').find('th').each(function(index,data) {
-							if ($(this).css('display') != 'none'){
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									tdData += '`' + parseString($(this)) + '`,' ;									
-								}
-							}
-							
-						});
-						tdData = $.trim(tdData);
-						tdData = $.trim(tdData).substring(0, tdData.length -1);
-					});
-					tdData += ") VALUES ";
-					// Row vs Column
-					$(el).find('tbody').find('tr').each(function() {
-					tdData += "(";
-						$(this).filter(':visible').find('td').each(function(index,data) {
-							if ($(this).css('display') != 'none'){
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									tdData += '"'+ parseString($(this)) + '",';
-								}
-							}
-						});
-						
-						tdData = $.trim(tdData).substring(0, tdData.length -1);
-						tdData += "),";
-					});
-					tdData = $.trim(tdData).substring(0, tdData.length -1);
-					tdData += ";";
-					
-					//output
-					//console.log(tdData);
-					
-					if(defaults.consoleLog == 'true'){
-						console.log(tdData);
-					}
-					
-					var base64data = "base64," + $.base64.encode(tdData);
-					window.open('data:application/sql;filename=exportData;' + base64data);
-					
-				
-				}else if(defaults.type == 'json'){
-				
-					var jsonHeaderArray = [];
-					$(el).find('thead').find('tr').each(function() {
-						var tdData ="";	
-						var jsonArrayTd = [];
-					
-						$(this).filter(':visible').find('th').each(function(index,data) {
-							if ($(this).css('display') != 'none'){
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									jsonArrayTd.push(parseString($(this)));									
-								}
-							}
-						});									
-						jsonHeaderArray.push(jsonArrayTd);						
-						
-					});
-					
-					var jsonArray = [];
-					$(el).find('tbody').find('tr').each(function() {
-						var tdData ="";	
-						var jsonArrayTd = [];
-					
-						$(this).filter(':visible').find('td').each(function(index,data) {
-							if ($(this).css('display') != 'none'){
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									jsonArrayTd.push(parseString($(this)));									
-								}
-							}
-						});									
-						jsonArray.push(jsonArrayTd);									
-						
-					});
-					
-					var jsonExportArray =[];
-					jsonExportArray.push({header:jsonHeaderArray,data:jsonArray});
-					
-					//Return as JSON
-					//console.log(JSON.stringify(jsonExportArray));
-					
-					//Return as Array
-					//console.log(jsonExportArray);
-					if(defaults.consoleLog == 'true'){
-						console.log(JSON.stringify(jsonExportArray));
-					}
-					var base64data = "base64," + $.base64.encode(JSON.stringify(jsonExportArray));
-					window.open('data:application/json;filename=exportData;' + base64data);
-				}else if(defaults.type == 'xml'){
-				
-					var xml = '<?xml version="1.0" encoding="ISO-8859-1"?>';
-					xml += '<ERPMK><tabela>';
+      function createSQLContent(table, options) {
+        const header = getHeader(table, options);
+        const columnNames = options.columnNames ? getColumnNames(table) : '';
+        const baseContent = `table ${header} (${columnNames}) \n${getRows(
+          table,
+          options
+        )};`;
+        return baseContent;
+      }
 
-					// Header
-					$(el).find('thead').find('tr').each(function() {
-						$(this).filter(':visible').find('th').each(function(index,data) {
-							if ($(this).css('display') != 'none'){					
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									xml += "<campo>" + parseString($(this)) + "</campo>";
-								}
-							}
-						});									
-					});					
-					xml += '</tabela><data>';
-					
-					// Row Vs Column
-					var rowCount=1;
-					$(el).find('tbody').find('tr').each(function() {
-						xml += '<row id="'+rowCount+'">';
-						var colCount=0;
-						$(this).filter(':visible').find('td').each(function(index,data) {
-							if ($(this).css('display') != 'none'){	
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									xml += "<coluna-erpmk-"+colCount+">"+parseString($(this))+"</coluna-erpmk-"+colCount+">";
-								}
-							}
-							colCount++;
-						});															
-						rowCount++;
-						xml += '</row>';
-					});					
-					xml += '</data></ERPMK>'
-					
-					if(defaults.consoleLog == 'true'){
-						console.log(xml);
-					}
-					
-					var base64data = "base64," + $.base64.encode(xml);
-					window.open('data:application/xml;filename=exportData;' + base64data);
+      function createJSONContent(table, options) {
+        const header = getHeader(table, options);
+        const rows = getRows(table, options);
+        const jsonContent = JSON.stringify([{ header, rows }]);
+        return jsonContent;
+      }
 
-				}else if(defaults.type == 'excel' || defaults.type == 'doc'|| defaults.type == 'powerpoint'  ){
-					//console.log($(this).html());
-					var excel="<table>";
-					// Header
-					$(el).find('thead').find('tr').each(function() {
-						excel += "<tr>";
-						$(this).filter(':visible').find('th').each(function(index,data) {
-							if ($(this).css('display') != 'none'){					
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									excel += "<td>" + parseString($(this))+ "</td>";
-								}
-							}
-						});	
-						excel += '</tr>';						
-						
-					});					
-					
-					
-					// Row Vs Column
-					var rowCount=1;
-					$(el).find('tbody').find('tr').each(function() {
-						excel += "<tr>";
-						var colCount=0;
-						$(this).filter(':visible').find('td').each(function(index,data) {
-							if ($(this).css('display') != 'none'){	
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									excel += "<td>"+parseString($(this))+"</td>";
-								}
-							}
-							colCount++;
-						});															
-						rowCount++;
-						excel += '</tr>';
-					});					
-					excel += '</table>'
-					
-					if(defaults.consoleLog == 'true'){
-						console.log(excel);
-					}
-					
-					var excelFile = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:"+defaults.type+"' xmlns='http://www.w3.org/TR/REC-html40'>";
-					excelFile += "<head>";
-					excelFile += "<!--[if gte mso 9]>";
-					excelFile += "<xml>";
-					excelFile += "<x:ExcelWorkbook>";
-					excelFile += "<x:ExcelWorksheets>";
-					excelFile += "<x:ExcelWorksheet>";
-					excelFile += "<x:Name>";
-					excelFile += "ERPMK";
-					excelFile += "</x:Name>";
-					excelFile += "<x:WorksheetOptions>";
-					excelFile += "<x:DisplayGridlines/>";
-					excelFile += "</x:WorksheetOptions>";
-					excelFile += "</x:ExcelWorksheet>";
-					excelFile += "</x:ExcelWorksheets>";
-					excelFile += "</x:ExcelWorkbook>";
-					excelFile += "</xml>";
-					excelFile += "<![endif]-->";
-					excelFile += "</head>";
-					excelFile += "<body>";
-					excelFile += excel;
-					excelFile += "</body>";
-					excelFile += "</html>";
+      function createXMLContent(table, options) {
+        const header = getHeader(table, options);
+        const rows = getRows(table, options);
+        const xmlContent = `<?xml version="1.0" encoding="ISO-8859-1"?>
+          <ERPMK>
+            <tabela>
+              ${header}
+            </tabela>
+            <data>
+              ${rows}
+            </data>
+          </ERPMK>`;
+        return xmlContent;
+      }
 
-					var base64data = "base64," + $.base64.encode(excelFile);
-					window.open('data:application/vnd.ms-'+defaults.type+';filename=exportData.doc;' + base64data);
-					
-				}else if(defaults.type == 'png'){
-					html2canvas($(el), {
-						onrendered: function(canvas) {										
-							var img = canvas.toDataURL("image/png");
-							window.open(img);
-							
-							
-						}
-					});		
-				}else if(defaults.type == 'pdf'){
-	
-					var doc = new jsPDF('P','pt', 'a4', true);
-					doc.setFontSize(defaults.pdfFontSize);
-					
-					// Header
-					var startColPosition=defaults.pdfLeftMargin;
-					$(el).find('thead').find('tr').each(function() {
-						$(this).filter(':visible').find('th').each(function(index,data) {
-							if ($(this).css('display') != 'none'){					
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									var colPosition = startColPosition+ (index * 40);									
-									doc.text(colPosition,20, parseString($(this)));
-								}
-							}
-						});									
-					});					
-				
-				
-					// Row Vs Column
-					var startRowPosition = 20; var page =1;var rowPosition=0;
-					$(el).find('tbody').find('tr').each(function(index,data) {
-						rowCalc = index+1;
-						
-					if (rowCalc % 26 == 0){
-						doc.addPage();
-						page++;
-						startRowPosition=startRowPosition+10;
-					}
-					rowPosition=(startRowPosition + (rowCalc * 10)) - ((page -1) * 280);
-						
-						$(this).filter(':visible').find('td').each(function(index,data) {
-							if ($(this).css('display') != 'none'){	
-								if(defaults.ignoreColumn.indexOf(index) == -1){
-									var colPosition = startColPosition+ (index * 40);									
-									doc.text(colPosition,rowPosition, parseString($(this)));
-								}
-							}
-							
-						});															
-						
-					});					
-										
-					// Output as Data URI
-					doc.output('datauri');
-	
-				}
-				
-				
-				function parseString(data){
-				
-					if(defaults.htmlContent == 'true'){
-						content_data = data.html().trim();
-					}else{
-						content_data = data.text().trim();
-					}
-					
-					if(defaults.escape == 'true'){
-						content_data = escape(content_data);
-					}
-					
-					
-					
-					return content_data;
-				}
-			
-			}
+      function createHTMLContent(table, options) {
+        const header = getHeader(table, options);
+        const rows = getRows(table, options);
+        const htmlContent = `<table>${header}${rows}</table>`;
+        return htmlContent;
+      }
+
+      function createPNGImage(table, options) {
+        html2canvas(table, {
+          onrendered: function(canvas) {
+            const img = canvas.toDataURL('image/png');
+            window.open(img);
+          },
         });
-    })(jQuery);
-        
+      }
+
+      function createPDFFile(table, options) {
+        const doc = new jsPDF('P', 'pt', 'a4', true);
+        doc.setFontSize(options.pdfFontSize);
+        const header = getHeader(table, options);
+        const rows = getRows(table, options);
+        addHeader(doc, header, options);
+        addRows(doc, rows, options);
+        doc.output('datauri');
+      }
+
+      function getHeader(table, options) {
+        const header = table
+          .find('thead')
+          .find('tr')
+          .map(function() {
+            return $(this)
+              .find('th')
+              .not(':hidden')
+              .map(function(index) {
+                if (options.ignoreColumn.indexOf(index) === -1) {
+                  return parseString($(this), options);
+                }
+              })
+              .get()
+              .join(options.delimiter);
+          })
+          .get()
+          .join('\n');
+        return header;
+      }
+
+      function getColumnNames(table) {
+        const columnNames = table
+          .find('thead')
+          .find('tr')
+          .first()
+          .find('th')
+          .

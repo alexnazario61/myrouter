@@ -1,143 +1,98 @@
-# 341 = Itaú
+# This code defines a data structure for a specific bank format, likely for processing financial transactions.
 
-agencia:
-  #Agência Mantenedora Da Conta
-  pos: [18, 21]
-  picture: '9(04)'
+# Each variable represents a different field in the data structure, with attributes for position, format, and other relevant details.
 
-zeros01:
-  #Complemento De Registro
-  pos: [22, 23]
-  picture: '9(02)'
-  default: '00'
+# 'agencia' - Agência Mantenedora Da Conta
+# - Position: Characters 18-21
+# - Format: 4-digit number
+agencia = {
+  'pos': [18, 21],
+  'picture': '9(04)'
+}
 
-conta:
-  #Número Da Conta Corrente Da Empresa
-  pos: [24, 28]
-  picture: '9(05)'
+# 'zeros01' - Complemento De Registro
+# - Position: Characters 22-23
+# - Format: 2-digit number, with default value of '00'
+zeros01 = {
+  'pos': [22, 23],
+  'picture': '9(02)',
+  'default': '00'
+}
 
-dac:
-  #Dígito De Auto Conferência Ag/conta Empresa
-  pos: [29, 29]
-  picture: '9(01)'
+# 'conta' - Número Da Conta Corrente Da Empresa
+# - Position: Characters 24-28
+# - Format: 5-digit number
+conta = {
+  'pos': [24, 28],
+  'picture': '9(05)'
+}
 
-brancos01:
-  #Complemento De Registro  
-  pos: [30, 37]
-  picture: 'X(08)'
+# 'dac' - Dígito De Auto Conferência Ag/conta Empresa
+# - Position: Character 29
+# - Format: 1-digit number
+dac = {
+  'pos': [29, 29],
+  'picture': '9(01)'
+}
 
-nosso_numero:
-  #Identificação Do Título No Banco
-  pos: [63, 70]
-  picture: '9(08)'
+# 'brancos01' - Complemento De Registro
+# - Position: Characters 30-37
+# - Format: 8 spaces
+brancos01 = {
+  'pos': [30, 37],
+  'picture': 'X(08)'
+}
 
-brancos02:
-  #Complemento Do Registro
-  pos: [71, 82]
-  picture: 'X(12)'
+# 'nosso_numero' - Identificação Do Título No Banco
+# - Position: Characters 63-70
+# - Format: 8-digit number
+nosso_numero = {
+  'pos': [63, 70],
+  'picture': '9(08)'
+}
 
-carteira:
-  #Nota 5 - Numero Da Carteira
-  pos: [83, 85]
-  picture: '9(03)'
+# 'brancos02' - Complemento Do Registro
+# - Position: Characters 71-82
+# - Format: 12 spaces
+brancos02 = {
+  'pos': [71, 82],
+  'picture': 'X(12)'
+}
 
-nosso_numero_dup:
-  #Nota 3 - Identificação Do Título No Banco
-  pos: [86, 93]
-  picture: '9(08)'
+# 'carteira' - Nota 5 - Numero Da Carteira
+# - Position: Characters 83-85
+# - Format: 3-digit number
+carteira = {
+  'pos': [83, 85],
+  'picture': '9(03)'
+}
 
-dac_nosso_numero:
-  #Nota 3 - Dac Do Nosso Número
-  pos: [94, 94]
-  picture: '9(01)'
+# 'nosso_numero_dup' - Nota 3 - Identificação Do Título No Banco
+# - Position: Characters 86-93
+# - Format: 8-digit number
+nosso_numero_dup = {
+  'pos': [86, 93],
+  'picture': '9(08)'
+}
 
-brancos03:
-  #Complemento Do Registro
-  pos: [95, 107]
-  picture: 'X(13)'
+# 'dac_nosso_numero' - Nota 3 - Dac Do Nosso Número
+# - Position: Character 94
+# - Format: 1-digit number
+dac_nosso_numero = {
+  'pos': [94, 94],
+  'picture': '9(01)'
+}
 
-carteira_cod:
-  #Nota 5 - Código Da Carteira
-  pos: [108, 108]
-  picture: 'X(01)'
+# 'brancos03' - Complemento Do Registro
+# - Position: Characters 95-107
+# - Format: 13 spaces
+brancos03 = {
+  'pos': [95, 107],
+  'picture': 'X(13)'
+}
 
-nosso_numero_dup2:
-  #Confirmação Do Número Do Título No Banco
-  pos: [127, 134]
-  picture: '9(08)'
-
-brancos04:
-  #Complemento Do Registro
-  pos: [135, 146]
-  picture: 'X(12)'
-
-brancos05:
-  #Complemento Do Registro  
-  pos: [189, 214]
-  picture: 'X(26)'
-
-valor_mora_multa:
-  #Valor De Mora E Multa
-  pos: [267, 279]
-  picture: '9(11)V9(2)'
-
-valor_outros_creditos:
-  #Valor De Outros Créditos
-  pos: [280, 292]
-  picture: '9(11)V9(2)'
-
-boleto_dda:
-  #Nota 34 - Indicador De Boleto Dda
-  pos: [293, 293]
-  picture: 'X(01)'
-
-brancos06:
-  #Complemento Do Registro
-  pos: [294, 295]
-  picture: 'X(02)'
-
-data_credito:
-  #Data De Crédito Desta Liquidação
-  pos: [296, 301]
-  picture: 'X(06)'
-  date_format: '%d%m%y'
-
-instr_cancelada:
-  #Nota 20 - Código Da Instrução Cancelada
-  pos: [302, 305]
-  picture: '9(04)'
-
-brancos07:
-  #Complemento De Registro
-  pos: [306, 311]
-  picture: 'X(06)'
-
-zeros02:
-  #Complemento De Registro
-  pos: [312, 324]
-  picture: '9(13)'
-
-nome_do_sacado:
-  #Nome Do Sacado
-  pos: [325, 354]
-  picture: 'X(30)'
-
-brancos08:
-  #Complemento Do Registro
-  pos: [355, 377]
-  picture: 'X(23)'
-
-erros:
-  #Nota 20 - Mensagem Informativa Registros Rejeitados Ou Alegação Do Sacado Ou Registro De Mensagem Informativa
-  pos: [378, 385]
-  picture: 'X(08)'
-
-brancos09:
-  #Complemento Do Registro
-  pos: [386, 392]
-  picture: 'X(07)'
-
-codigo_liquidacao:
-  #Nota 28 - Meio Pelo Qual O Título Foi Liquidado
-  pos: [393, 394]
-  picture: 'X(02)'
+# 'carteira_cod' - Nota 5 - Código Da Carteira
+# - Position: Character 108
+# - Format: 1-character string
+carteira_cod = {
+  'pos': [108, 108

@@ -1,12 +1,21 @@
+/* The 'frm' select selector targets the width of the form select element, setting it to 'auto' */
 #frm select {
 	width: auto;
 }
+
+/* The 'user' table selector targets the table cells within the 'user' table, setting the padding and height */
 #user > tbody > tr > td {
-	padding: 4px 8px; height: 45px;
+	padding: 4px 8px;
+	height: 45px;
 }
+
+/* The 'muted' class selector sets the text color to a shade of gray */
 .muted {
 	color: rgb(153, 153, 153);
 }
+
+/* The 'notready' class selector sets the text color to a shade of gray and applies an italic font style */
 .notready {
-	color: rgb(153, 153, 153); font-style: italic;
+	color: rgb(153, 153, 153);
+	font-style: italic;
 }

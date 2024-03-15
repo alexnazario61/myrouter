@@ -1,36 +1,51 @@
 <?php
 
- 	require('../routeros_api.class.php');
- 	$API = new routeros_api();
-    $API->debug = true;
+// Include the RouterOS API class
+require('../routeros_api.class.php');
 
- 	$name = $_POST['nome']; 	
- 	$cpf = $_POST['cpf'];   
- 	$telefone = $_POST['ddd'].$_POST['fone']; 
- 	$senha= rand (1000, 9999);     
- 
+// Create a new instance of the API class
+$API = new routeros_api();
+$API->debug = true;
 
- 	$url =  "http://torpedus.com.br/sms/index.php?app=webservices&u=#user&p=#password&ta=pv&to=55".$telefone."&msg=ola+".$name."+seu+usuario+".$cpf."+sua+senha+".$senha;
- 	
- 	$curl = curl_init();
- 	
- 	curl_setopt($curl, CURLOPT_URL, $url);
- 	curl_exec($curl);
- 	curl_close($curl);
- 
+// Get the user input from the POST request
+$name = $_POST['nome'];
+$cpf = $_POST['cpf'];
+$telephone = $_POST['ddd'] . $_POST['fone'];
+$password = rand(1000, 9999);
 
- 	$ip = 'Ip from server where API is located';
- 	$usuario = 'User';
- 	$senharb = 'password';
+// Build the URL for the SMS API
+$smsUrl = "http://torpedus.com.br/sms/index.php?app=webservices&u=#user&p=#password&ta=pv&to=55$telephone&msg=Ol%C3%A1+$name+seu+usu%C3%A1rio+$cpf+sua+senha+$password";
 
-        if ($API>connect($ip, $usuario, $senharb)){
- 	$API>comm("/ip/hotspot/user/add", array(
-          "name"     => $cpf,
-          "password" => $senha,
-          "server" => "server",
-          "profile"  => "default",
- 		));
- 		$API>disconnect();
- 	}
- 	
- ?>
+// Initialize cURL
+$ch = curl_init();
+
+// Set cURL options
+curl_setopt($ch, CURLOPT_URL, $smsUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+// Execute the cURL request
+$smsResponse = curl_exec($ch);
+
+// Close the cURL session
+curl_close($ch);
+
+// Define the server details
+$ip = 'Ip from server where API is located';
+$username = 'User';
+$password = 'password';
+
+// Connect to the RouterOS API
+if ($API->connect($ip, $username, $password)) {
+    // Add the new hotspot user
+    $API->comm("/ip/hotspot/user/add", [
+        "name" => $cpf,
+        "password" => $password,
+        "server" => "server",
+        "profile" => "default",
+    ]);
+
+    // Disconnect from the RouterOS API
+    $API->disconnect();
+}
+
+?>

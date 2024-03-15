@@ -3,53 +3,93 @@ public Server(String url, String username, String password, int port, int timeou
     // Initialize the logger
     logger = Logger.getLogger(Server.class);
 
-    // Create a new PhantomJS process with the given URL, username, password, port, timeout, and max buffer size
-    Process process = new ProcessBuilder(url, username, password, Integer.toString(port), Integer.toString(timeout), Integer.toString(maxBufferSize)).start();
+    if (url == null || username == null || password == null) {
+        throw new NullPointerException("URL, username, and password cannot be null");
+    }
 
-    // Set the error stream for the process to be handled by the error handler thread
-    final InputStream errorStream = process.getErrorStream();
-    new Thread() {
-        public void run() {
-            try {
-                // Read from the error stream and log any errors
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = errorStream.read(buffer)) != -1) {
-                    logger.error(new String(buffer, 0, bytesRead));
+    try {
+        // Create a list of arguments for the ProcessBuilder
+        List<String> arguments = new ArrayList<>();
+        arguments.add("phantomjs");
+        arguments.add(url);
+        arguments.add(username);
+        arguments.add(password);
+        arguments.add(Integer.toString(port));
+        arguments.add(Integer.toString(timeout));
+        arguments.add(Integer.toString(maxBufferSize));
+
+        // Create a new PhantomJS process with the given arguments
+        ProcessBuilder processBuilder = new ProcessBuilder(arguments);
+        Process process = processBuilder.start();
+
+        // Set the error stream for the process to be handled by the error handler thread
+        final InputStream errorStream = process.getErrorStream();
+        new Thread() {
+            public void run() {
+                try {
+                    // Read from the error stream and log any errors
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = errorStream.read(buffer)) != -1) {
+                        logger.error(new String(buffer, 0, bytesRead));
+                    }
+                } catch (IOException e) {
+                    // Log any exceptions that occur while reading from the error stream
+                    logger.error("Error while shutting down process: " + e.getMessage());
                 }
-            } catch (IOException e) {
-                // Log any exceptions that occur while reading from the error stream
-                logger.error("Error while shutting down process: " + e.getMessage());
             }
-        }
-    }.start();
+        }.start();
 
-    // Set the input and output streams for the process to be handled by the input and output handler threads
-    final InputStream inputStream = process.getInputStream();
-    final OutputStream outputStream = process.getOutputStream();
-    new Thread() {
-        public void run() {
-            try {
-                // Read from the input stream and write to the output stream
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
+        // Set the input and output streams for the process to be handled by the input and output handler threads
+        final InputStream inputStream = process.getInputStream();
+        final OutputStream outputStream = process.getOutputStream();
+        new Thread() {
+            public void run() {
+                try {
+                    // Read from the input stream and write to the output stream
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                } catch (IOException e) {
+                    // Log any exceptions that occur while reading from the input stream or writing to the output stream
+                    logger.error("Error while shutting down process: " + e.getMessage());
+                } finally {
+                    // Close the input and output streams
+                    try {
+                        if (inputStream != null) {
+                            inputStream.close();
+                        }
+                        if (outputStream != null) {
+                            outputStream.close();
+                        }
+                    } catch (IOException e) {
+                        // Log any exceptions that occur while closing the streams
+                        logger.error("Error while closing streams: " + e.getMessage());
+                    }
                 }
-            } catch (IOException e) {
-                // Log any exceptions that occur while reading from the input stream or writing to the output stream
-                logger.error("Error while shutting down process: " + e.getMessage());
             }
-        }
-    }.start();
+        }.start();
 
-    // Set the output stream for the process to be closed when the Server object is garbage collected
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-        public void run() {
-            try {
-                // Close the output stream
-                outputStream.close();
-            } catch (IOException e) {
-                // Log any exceptions that occur while closing the output stream
-                logger.error("Error while shutting down process: " + e.getMessage());
-           
+        // Set the output stream for the process to be closed when the Server object is garbage collected
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                // Check if the process is still alive before closing the output stream
+                if (process != null && process.isAlive()) {
+                    try {
+                        // Close the output stream
+                        outputStream.close();
+                    } catch (IOException e) {
+                        // Log any exceptions that occur while closing the output stream
+                        logger.error("Error while shutting down process: " + e.getMessage());
+                    }
+                }
+            }
+        });
+
+    } catch (IOException e) {
+        // Log any exceptions that occur while creating the process
+        logger.error("Error while creating process: " + e.getMessage());
+    }
+}

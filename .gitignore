@@ -1,2 +1,13 @@
-
-.DS_Store
+# This is a .gitignore file, which is used to specify which files and directories
+# should be ignored by Git, a popular version control system.
+#
+# By adding files or directories to this file, Git will not track or include
+# them in the repository, which can be useful for excluding temporary files,
+# build artifacts, or other files that don't need to be version-controlled.
+#
+# Each line in this file specifies a file or directory pattern to ignore.
+# For example, the line ".DS_Store" tells Git to ignore any files with the name
+# ".DS_Store", which are created by the Mac OS X Finder.
+#
+# For more information on how to use .gitignore files, see the official Git
+# documentation: https://git-scm.com/docs/gitignore

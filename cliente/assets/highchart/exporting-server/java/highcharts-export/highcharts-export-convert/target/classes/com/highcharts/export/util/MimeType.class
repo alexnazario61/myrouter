@@ -1,13 +1,17 @@
-MimeType mimeType = MimeType.lookup("image/png");
-String extension = mimeType.getExtension(); // returns "png"
-
-
 for (MimeType mimeType : MimeType.values()) {
-    System.out.println(mimeType.getType() + " " + mimeType.getExtension());
+    String extension = mimeType.getExtension();
+    String type = mimeType.getType();
+    System.out.println(type + " " + (extension != null ? extension : "n/a"));
 }
 
+// Or, if you prefer using the ternary operator:
+for (MimeType mimeType : MimeType.values()) {
+    System.out.println(mimeType.getType() + " " + mimeType.getExtension() != null ? mimeType.getExtension() : "n/a");
+}
 
 image/png png
 image/jpeg jpeg
 application/pdf pdf
 image/svg+xml svg
+image/gif gif
+
